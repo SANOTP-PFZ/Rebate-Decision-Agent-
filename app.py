@@ -565,7 +565,7 @@ elif st.session_state.page == 'agent':
         if row.empty:
             return [0.0] * N_TOTAL
         values = row.iloc[0][MS_COLS].tolist()
-        return [float(v) * 100 if pd.notna(v) else 0.0 for v in values]
+        return [float(v) if pd.notna(v) else 0.0 for v in values]
 
     def get_mco_ocgrp(mco_name):
         row = df_ocgrp[df_ocgrp['MCO_NM'] == mco_name]
@@ -584,7 +584,7 @@ elif st.session_state.page == 'agent':
         status = str(status).strip() if pd.notna(status) and str(status).strip() not in ['', 'nan', 'None'] else "Data not available yet"
         payer = str(payer).strip() if pd.notna(payer) and str(payer).strip() not in ['', 'nan', 'None'] else "Data not available yet"
         try:
-            contrib = f"{float(contrib) * 100:.2f}%" if pd.notna(contrib) else "N/A"
+            contrib = f"{float(contrib):.2f}%" if pd.notna(contrib) else "N/A"
         except (TypeError, ValueError):
             contrib = "N/A"
         return status, payer, contrib
@@ -692,99 +692,68 @@ elif st.session_state.page == 'agent':
         projected = baseline_ms
 
     # =========================================================================
-    # CHART
+    # CHART — NATIONAL MARKET SHARE
     # =========================================================================
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=list(range(N_ACTUAL)), y=baseline_ms[:N_ACTUAL],
-        mode='lines+markers', name='Actual',
-        line=dict(color=PFZ_DARK_BLUE, width=2.5), marker=dict(size=4),
-    ))
-    fig.add_trace(go.Scatter(
-        x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_ms[N_ACTUAL - 1:],
-        mode='lines', name='Baseline (no change)',
-        line=dict(color='#B0BEC5', width=2, dash='dash'),
-    ))
     if step_key in STEP_TABLE:
+        baseline_natl_ms, projected_natl_ms = compute_national_ms(selected_mco, projected, change_idx)
+
+        fig = go.Figure()
         fig.add_trace(go.Scatter(
-            x=list(range(change_idx, N_TOTAL)), y=projected[change_idx:],
+            x=list(range(N_ACTUAL)), y=baseline_natl_ms[:N_ACTUAL],
+            mode='lines+markers', name='Actual National MS',
+            line=dict(color=PFZ_DARK_BLUE, width=2.5), marker=dict(size=4),
+        ))
+        fig.add_trace(go.Scatter(
+            x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_natl_ms[N_ACTUAL - 1:],
+            mode='lines', name='Baseline (no change)',
+            line=dict(color='#B0BEC5', width=2, dash='dash'),
+        ))
+        fig.add_trace(go.Scatter(
+            x=list(range(change_idx, N_TOTAL)), y=projected_natl_ms[change_idx:],
             mode='lines+markers', name='Projected (post change)',
             line=dict(color=PFZ_RED, width=2.5), marker=dict(size=4),
         ))
 
-    fig.add_shape(type="line", x0=change_idx, x1=change_idx,
-                  y0=0, y1=1, yref="paper",
-                  line=dict(color=PFZ_ORANGE, width=2, dash="dash"))
-    fig.add_annotation(x=change_idx, y=1.05, yref="paper",
-                       text="Status Change", showarrow=False,
-                       font=dict(color=PFZ_ORANGE, size=9))
+        fig.add_shape(type="line", x0=change_idx, x1=change_idx,
+                      y0=0, y1=1, yref="paper",
+                      line=dict(color=PFZ_ORANGE, width=2, dash="dash"))
+        fig.add_annotation(x=change_idx, y=1.05, yref="paper",
+                           text="Status Change", showarrow=False,
+                           font=dict(color=PFZ_ORANGE, size=9))
 
-    all_v = baseline_ms + (projected[change_idx:] if step_key in STEP_TABLE else [])
-    valid_v = [v for v in all_v if v > 0]
-    y_lo = min(valid_v) - 2 if valid_v else 0
-    y_hi = max(valid_v) + 2 if valid_v else 100
+        all_v = baseline_natl_ms + projected_natl_ms[change_idx:]
+        valid_v = [v for v in all_v if v > 0]
+        y_lo = min(valid_v) - 0.5 if valid_v else 0
+        y_hi = max(valid_v) + 0.5 if valid_v else 100
 
-    tick_idx = list(range(0, N_TOTAL, 6))
-    tick_lbl = [MONTH_LABELS[i] for i in tick_idx]
+        tick_idx = list(range(0, N_TOTAL, 6))
+        tick_lbl = [MONTH_LABELS[i] for i in tick_idx]
 
-    fig.update_layout(
-        xaxis=dict(tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
-                   tickfont=dict(size=10, color=PFZ_GRAY), showgrid=False),
-        yaxis=dict(title='Market Share (%)', ticksuffix='%',
-                   range=[y_lo, y_hi], gridcolor='#F0F2F5',
-                   tickfont=dict(size=10, color=PFZ_GRAY),
-                   title_font=dict(size=11, color=PFZ_DARK_BLUE)),
-        legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY)),
-        plot_bgcolor=PFZ_WHITE, paper_bgcolor=PFZ_WHITE,
-        height=380, margin=dict(l=50, r=20, t=50, b=30),
-        hovermode='x unified',
-    )
+        fig.update_layout(
+            xaxis=dict(tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
+                       tickfont=dict(size=10, color=PFZ_GRAY), showgrid=False),
+            yaxis=dict(title='National Market Share (%)', ticksuffix='%',
+                       range=[y_lo, y_hi], gridcolor='#F0F2F5',
+                       tickfont=dict(size=10, color=PFZ_GRAY),
+                       title_font=dict(size=11, color=PFZ_DARK_BLUE)),
+            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY)),
+            plot_bgcolor=PFZ_WHITE, paper_bgcolor=PFZ_WHITE,
+            height=380, margin=dict(l=50, r=20, t=50, b=30),
+            hovermode='x unified',
+        )
 
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
-    # =========================================================================
-    # MCO-LEVEL IMPACT
-    # =========================================================================
-    st.markdown('<div class="impact-header">MCO-LEVEL IMPACT</div>', unsafe_allow_html=True)
-
-    current_ms_val = baseline_ms[N_ACTUAL - 1]
-    projected_12m_val = projected[min(change_idx + 12, N_TOTAL - 1)]
-    delta = projected_12m_val - current_ms_val
-
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(f'<div class="metric-card"><div class="label">Current MS</div>'
-                    f'<div class="value positive">{current_ms_val:.1f}%</div></div>',
-                    unsafe_allow_html=True)
-    with c2:
-        cls = "negative" if projected_12m_val < current_ms_val else "positive"
-        st.markdown(f'<div class="metric-card"><div class="label">Projected MS (12m)</div>'
-                    f'<div class="value {cls}">{projected_12m_val:.1f}%</div></div>',
-                    unsafe_allow_html=True)
-    with c3:
-        cls = "negative" if delta < 0 else "positive"
-        st.markdown(f'<div class="metric-card"><div class="label">Delta Impact</div>'
-                    f'<div class="value {cls}">{delta:+.1f} pp</div></div>',
-                    unsafe_allow_html=True)
-    with c4:
-        st.markdown(f'<div class="metric-card"><div class="label">Analog Used</div>'
-                    f'<div class="value accent">{analog_name}</div></div>',
-                    unsafe_allow_html=True)
-
-    # =========================================================================
-    # NATIONAL ROLL-UP
-    # =========================================================================
-    st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-    st.markdown('<div class="impact-header">NATIONAL MARKET SHARE IMPACT</div>', unsafe_allow_html=True)
-
-    if step_key in STEP_TABLE:
-        baseline_natl_ms, projected_natl_ms = compute_national_ms(selected_mco, projected, change_idx)
+        # =========================================================================
+        # NATIONAL IMPACT METRICS
+        # =========================================================================
+        st.markdown('<div class="impact-header">NATIONAL MARKET SHARE IMPACT</div>', unsafe_allow_html=True)
 
         natl_baseline_current = baseline_natl_ms[N_ACTUAL - 1]
         natl_projected_12m = projected_natl_ms[min(change_idx + 12, N_TOTAL - 1)]
         natl_delta = natl_projected_12m - natl_baseline_current
 
-        c1, c2, c3 = st.columns(3)
+        c1, c2, c3, c4 = st.columns(4)
         with c1:
             st.markdown(f'<div class="metric-card"><div class="label">Baseline National MS</div>'
                         f'<div class="value positive">{natl_baseline_current:.2f}%</div></div>',
@@ -798,6 +767,10 @@ elif st.session_state.page == 'agent':
             cls = "negative" if natl_delta < 0 else "positive"
             st.markdown(f'<div class="metric-card"><div class="label">National Delta</div>'
                         f'<div class="value {cls}">{natl_delta:+.2f} pp</div></div>',
+                        unsafe_allow_html=True)
+        with c4:
+            st.markdown(f'<div class="metric-card"><div class="label">Analog Used</div>'
+                        f'<div class="value accent">{analog_name}</div></div>',
                         unsafe_allow_html=True)
     else:
         st.info("Select a valid status transition to see national impact.")
