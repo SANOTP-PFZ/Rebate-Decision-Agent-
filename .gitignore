@@ -1,0 +1,15 @@
+# Ignore large Excel file
+Rebate_model.xlsx
+~$Rebate_model.xlsx
+
+# Generated files
+wireframe_visual.png
+generate_wireframe.py
+
+# Cortex local cache
+.cortex/
+
+# Python
+__pycache__/
+*.pyc
+.env
