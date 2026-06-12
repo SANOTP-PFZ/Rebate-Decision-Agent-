@@ -565,7 +565,7 @@ elif st.session_state.page == 'agent':
         if row.empty:
             return [0.0] * N_TOTAL
         values = row.iloc[0][MS_COLS].tolist()
-        return [float(v) if pd.notna(v) else 0.0 for v in values]
+        return [float(v) * 100 if pd.notna(v) else 0.0 for v in values]
 
     def get_mco_ocgrp(mco_name):
         row = df_ocgrp[df_ocgrp['MCO_NM'] == mco_name]

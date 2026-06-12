@@ -26,10 +26,17 @@ A Streamlit webapp hosted as a **Dataiku webapp** that allows business leads to 
 
 | Dataset Name | Description | Source |
 |---|---|---|
-| `mco_current_status` | MCO name + current Nurtec formulary status (latest period from MMIT) | Snowflake MMIT table |
-| `nurtec_xpo_share_pct` | Nurtec market share % by MCO by month (actuals Jan'25 - Mar'26, forecast Apr'26 - Dec'27) | Snowflake XPONENT + forecast logic |
-| `ocgrp_xpo_claims` | OCGRP total claims by MCO by month (for contribution weighting) | Snowflake XPONENT |
-| `analog_curves` | Month-over-month relative rate-of-change for BCBS, Providence, and Blended analogs | Pre-computed from analog analysis |
+| `SQL_NURTEC_XPO_NPA_SCALED_MS_by_MONTH_SF` | Nurtec market share by MCO by month (actuals Jan'25 - Mar'26, forecast Apr'26 - Dec'27) | Snowflake XPONENT + forecast logic |
+| `SQL_XPO_NPA_SCALED_OCGRP_TRX_MONTH_SF` | OCGRP total claims by MCO by month (for national roll-up weighting) | Snowflake XPONENT |
+| `PAYER_MODEL_ANALOG_MCO_SF` | Month-over-month relative rate-of-change for BCBS, Providence, and Blended analogs | Pre-computed from analog analysis |
+| `PAYER_MODEL_STEP_SF` | Maps status transitions to analog curves with Step and Reverse parameters | Static reference |
+
+### Data Format Notes
+
+- **Market share values** (`NURTEC_MS_sum` columns): Stored as **decimals** (e.g., `0.44` = 44%). The app multiplies by 100 for display.
+- **OCGRP Contribution** (`FY_2025_OCGRP_CONTRIBUTION`): Stored as **already multiplied by 100** (e.g., `4.85` = 4.85%). The app displays as-is.
+- **Analog curve rates**: Stored as decimals representing relative change (e.g., `-0.2369` = -23.69% relative shift).
+- **OCGRP claims** (`OCGRP_NPA_TRX_sum` columns): Stored as raw claim counts (no percentage conversion needed).
 
 ---
 
