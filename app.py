@@ -772,6 +772,84 @@ elif st.session_state.page == 'agent':
             st.markdown(f'<div class="metric-card"><div class="label">Analog Used</div>'
                         f'<div class="value accent">{analog_name}</div></div>',
                         unsafe_allow_html=True)
+
+        # =========================================================================
+        # MCO-LEVEL CHART
+        # =========================================================================
+        st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
+
+        fig_mco = go.Figure()
+        fig_mco.add_trace(go.Scatter(
+            x=list(range(N_ACTUAL)), y=baseline_ms[:N_ACTUAL],
+            mode='lines+markers', name='Actual MCO MS',
+            line=dict(color=PFZ_DARK_BLUE, width=2.5), marker=dict(size=4),
+        ))
+        fig_mco.add_trace(go.Scatter(
+            x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_ms[N_ACTUAL - 1:],
+            mode='lines', name='Baseline (no change)',
+            line=dict(color='#B0BEC5', width=2, dash='dash'),
+        ))
+        fig_mco.add_trace(go.Scatter(
+            x=list(range(change_idx, N_TOTAL)), y=projected[change_idx:],
+            mode='lines+markers', name='Projected (post change)',
+            line=dict(color=PFZ_RED, width=2.5), marker=dict(size=4),
+        ))
+
+        fig_mco.add_shape(type="line", x0=change_idx, x1=change_idx,
+                          y0=0, y1=1, yref="paper",
+                          line=dict(color=PFZ_ORANGE, width=2, dash="dash"))
+        fig_mco.add_annotation(x=change_idx, y=1.05, yref="paper",
+                               text="Status Change", showarrow=False,
+                               font=dict(color=PFZ_ORANGE, size=9))
+
+        mco_all_v = baseline_ms + projected[change_idx:]
+        mco_valid_v = [v for v in mco_all_v if v > 0]
+        mco_y_lo = min(mco_valid_v) - 2 if mco_valid_v else 0
+        mco_y_hi = max(mco_valid_v) + 2 if mco_valid_v else 100
+
+        fig_mco.update_layout(
+            xaxis=dict(tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
+                       tickfont=dict(size=10, color=PFZ_GRAY), showgrid=False),
+            yaxis=dict(title=f'{selected_mco} Market Share (%)', ticksuffix='%',
+                       range=[mco_y_lo, mco_y_hi], gridcolor='#F0F2F5',
+                       tickfont=dict(size=10, color=PFZ_GRAY),
+                       title_font=dict(size=11, color=PFZ_DARK_BLUE)),
+            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY)),
+            plot_bgcolor=PFZ_WHITE, paper_bgcolor=PFZ_WHITE,
+            height=380, margin=dict(l=50, r=20, t=50, b=30),
+            hovermode='x unified',
+        )
+
+        st.plotly_chart(fig_mco, use_container_width=True, config={'displayModeBar': False})
+
+        # =========================================================================
+        # MCO-LEVEL IMPACT METRICS
+        # =========================================================================
+        st.markdown('<div class="impact-header">MCO-LEVEL IMPACT</div>', unsafe_allow_html=True)
+
+        mco_baseline_current = baseline_ms[N_ACTUAL - 1]
+        mco_projected_12m = projected[min(change_idx + 12, N_TOTAL - 1)]
+        mco_delta = mco_projected_12m - mco_baseline_current
+
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            st.markdown(f'<div class="metric-card"><div class="label">Current MCO MS</div>'
+                        f'<div class="value positive">{mco_baseline_current:.2f}%</div></div>',
+                        unsafe_allow_html=True)
+        with c2:
+            cls = "negative" if mco_projected_12m < mco_baseline_current else "positive"
+            st.markdown(f'<div class="metric-card"><div class="label">Projected MCO MS (12m)</div>'
+                        f'<div class="value {cls}">{mco_projected_12m:.2f}%</div></div>',
+                        unsafe_allow_html=True)
+        with c3:
+            cls = "negative" if mco_delta < 0 else "positive"
+            st.markdown(f'<div class="metric-card"><div class="label">MCO Delta</div>'
+                        f'<div class="value {cls}">{mco_delta:+.2f} pp</div></div>',
+                        unsafe_allow_html=True)
+        with c4:
+            st.markdown(f'<div class="metric-card"><div class="label">Analog Used</div>'
+                        f'<div class="value accent">{analog_name}</div></div>',
+                        unsafe_allow_html=True)
     else:
         st.info("Select a valid status transition to see national impact.")
 
