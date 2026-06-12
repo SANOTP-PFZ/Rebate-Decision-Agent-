@@ -591,9 +591,8 @@ elif st.session_state.page == 'agent':
 
     def apply_analog(baseline_ms, change_idx, analog_curve, reverse):
         projected = list(baseline_ms[:change_idx])
+        rate = analog_curve[0]
         for i in range(change_idx, N_TOTAL):
-            m = i - change_idx
-            rate = analog_curve[m] if m < len(analog_curve) else analog_curve[-1]
             val = baseline_ms[i] * (1 + rate * reverse)
             projected.append(round(max(val, 0.1), 4))
         return projected
