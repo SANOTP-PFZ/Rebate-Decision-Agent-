@@ -458,7 +458,7 @@ elif st.session_state.page == 'rules':
                     -0.6317, -0.6495, -0.6369, -0.6605, -0.7398],
     })
     st.dataframe(analog_df, use_container_width=True, hide_index=True)
-    st.caption("Note: Only the Month 1 rate is applied in the projection formula. The full curve is shown here for reference.")
+    st.caption("Note: Month 1 rate is applied at the change month, Month 2 rate at the next month, and so on. Each rate represents the total impact on market share at that point in time.")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -614,8 +614,9 @@ elif st.session_state.page == 'agent':
 
     def apply_analog(baseline_ms, change_idx, analog_curve, reverse):
         projected = list(baseline_ms[:change_idx])
-        rate = analog_curve[0]
         for i in range(change_idx, N_TOTAL):
+            m = i - change_idx
+            rate = analog_curve[m] if m < len(analog_curve) else analog_curve[-1]
             val = baseline_ms[i] * (1 + rate * reverse)
             projected.append(round(max(val, 0.1), 4))
         return projected
