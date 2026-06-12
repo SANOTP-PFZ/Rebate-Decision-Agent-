@@ -439,7 +439,30 @@ elif st.session_state.page == 'rules':
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # --- Section 4: National Roll-Up ---
+    # --- Section 4: Analog Curves ---
+    st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">Analog Curves (Month-Level Dynamics)</h4>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:12px; color:#555;">Monthly relative rate-of-change values for each analog. The Month 1 value is used as the impact rate for all projected months post status change.</p>', unsafe_allow_html=True)
+
+    analog_df = pd.DataFrame({
+        'Month': [f"Month {i+1}" for i in range(23)],
+        'BCBS': [0.0614, 0.0668, 0.1452, 0.1246, 0.1582, 0.1501, 0.0961, 0.1315,
+                 0.1024, 0.1168, 0.1870, 0.1495, 0.1634, 0.1469, 0.1861, 0.1517,
+                 0.1199, 0.1131, 0.1209, 0.1245, 0.1448, 0.1379, 0.2415],
+        'Providence': [-0.1755, -0.1993, -0.0906, -0.0744, -0.3362, -0.2854,
+                       -0.4238, -0.3848, -0.3862, -0.4169, -0.4470, -0.5508,
+                       -0.4832, -0.4727, -0.5195, -0.4965, -0.4912, -0.4835,
+                       -0.5108, -0.5250, -0.4921, -0.5226, -0.4983],
+        'Blended': [-0.2369, -0.2662, -0.2358, -0.1991, -0.4944, -0.4354,
+                    -0.5198, -0.5163, -0.4886, -0.5337, -0.6340, -0.7003,
+                    -0.6465, -0.6195, -0.7056, -0.6482, -0.6110, -0.5966,
+                    -0.6317, -0.6495, -0.6369, -0.6605, -0.7398],
+    })
+    st.dataframe(analog_df, use_container_width=True, hide_index=True)
+    st.caption("Note: Only the Month 1 rate is applied in the projection formula. The full curve is shown here for reference.")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # --- Section 5: National Roll-Up ---
     st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">National Roll-Up Logic</h4>', unsafe_allow_html=True)
     st.markdown("""
     <div style="background:white; border:1px solid #E4ECF2; border-radius:8px; padding:18px 22px; margin:10px 0;">
