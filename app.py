@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import os
+import dataiku
 
 # =============================================================================
 # PAGE CONFIG
@@ -497,53 +498,41 @@ elif st.session_state.page == 'agent':
     """, unsafe_allow_html=True)
 
     # =========================================================================
-    # DATA LOADING
+    # DATA LOADING (from Dataiku datasets)
     # =========================================================================
-    DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Rebate_backend_implementation.xlsx')
-    _file_mtime = os.path.getmtime(DATA_FILE)
-
-    @st.cache_data(ttl=60)
-    def load_data(_mtime):
-        """Load all 4 sheets. _mtime param busts cache when file changes."""
-        df_ms_raw = pd.read_excel(DATA_FILE, sheet_name='Market Share', header=None)
-        headers_ms = df_ms_raw.iloc[6].tolist()
-        df_ms = df_ms_raw.iloc[8:].copy()
-        df_ms.columns = headers_ms
-        df_ms = df_ms.reset_index(drop=True)
+    @st.cache_data(ttl=300)
+    def load_data():
+        """Load all 4 datasets from Dataiku."""
+        # Market Share
+        df_ms = dataiku.Dataset("SQL_NURTEC_XPO_NPA_SCALED_MS_by_MONTH_SF").get_dataframe()
         df_ms = df_ms.dropna(subset=['MCO_NM'])
 
-        df_oc_raw = pd.read_excel(DATA_FILE, sheet_name='OCGRP claims', header=None)
-        headers_oc = df_oc_raw.iloc[5].tolist()
-        df_oc = df_oc_raw.iloc[7:].copy()
-        df_oc.columns = headers_oc
-        df_oc = df_oc.reset_index(drop=True)
+        # OCGRP Claims
+        df_oc = dataiku.Dataset("SQL_XPO_NPA_SCALED_OCGRP_TRX_MONTH_SF").get_dataframe()
         df_oc = df_oc.dropna(subset=['MCO_NM'])
 
-        df_analog_raw = pd.read_excel(DATA_FILE, sheet_name='Analogs', header=None)
-        analog_data = df_analog_raw.iloc[17:40, 0:4].copy()
-        analog_data.columns = ['Month', 'BCBS', 'Providence', 'Blended']
-        analog_data = analog_data.reset_index(drop=True)
+        # Analog Curves
+        df_analog = dataiku.Dataset("PAYER_MODEL_ANALOG_MCO_SF").get_dataframe()
         analog_curves = {
-            'BCBS': [float(x) for x in analog_data['BCBS'].tolist()],
-            'Providence': [float(x) for x in analog_data['Providence'].tolist()],
-            'Blended': [float(x) for x in analog_data['Blended'].tolist()],
+            'BCBS': [float(x) for x in df_analog['BCBS'].tolist()],
+            'Providence': [float(x) for x in df_analog['Providence'].tolist()],
+            'Blended': [float(x) for x in df_analog['Blended'].tolist()],
         }
 
-        df_step_raw = pd.read_excel(DATA_FILE, sheet_name='Analog Implementation', header=None)
-        step_data = df_step_raw.iloc[4:14, 0:5].copy()
-        step_data.columns = ['Current', 'Future', 'Analog', 'Step', 'Reverse']
-        step_data = step_data.reset_index(drop=True)
+        # Step Table
+        df_step = dataiku.Dataset("PAYER_MODEL_STEP_SF").get_dataframe()
         step_table = {}
-        for _, row in step_data.iterrows():
+        for _, row in df_step.iterrows():
             key = (str(row['Current']).strip(), str(row['Future']).strip())
             step_table[key] = {
-                'analog': str(row['Analog']).strip(),
+                'analog': str(row['Analog used']).strip(),
                 'step': int(row['Step']),
                 'reverse': int(row['Reverse']),
             }
+
         return df_ms, df_oc, analog_curves, step_table
 
-    df_market_share, df_ocgrp, ANALOG_CURVES, STEP_TABLE = load_data(_file_mtime)
+    df_market_share, df_ocgrp, ANALOG_CURVES, STEP_TABLE = load_data()
 
     MCO_LIST = sorted(df_market_share['MCO_NM'].unique().tolist())
     MONTH_LABELS = [
@@ -568,40 +557,30 @@ elif st.session_state.page == 'agent':
     # =========================================================================
     # HELPERS
     # =========================================================================
+    MS_COLS = [f"{y}{m:02d}_NURTEC_MS_sum" for y in range(2025, 2028) for m in range(1, 13)][:36]
+    OCGRP_COLS = [f"{y}{m:02d}_OCGRP_NPA_TRX_sum" for y in range(2025, 2028) for m in range(1, 13)][:36]
+
     def get_mco_ms(mco_name):
         row = df_market_share[df_market_share['MCO_NM'] == mco_name]
         if row.empty:
             return [0.0] * N_TOTAL
-        values = row.iloc[0, 4:40].tolist()
-        ms = []
-        for v in values:
-            try:
-                val = float(v) * 100
-                ms.append(val)
-            except (TypeError, ValueError):
-                ms.append(0.0)
-        return ms
+        values = row.iloc[0][MS_COLS].tolist()
+        return [float(v) * 100 if pd.notna(v) else 0.0 for v in values]
 
     def get_mco_ocgrp(mco_name):
         row = df_ocgrp[df_ocgrp['MCO_NM'] == mco_name]
         if row.empty:
             return [0.0] * N_TOTAL
-        values = row.iloc[0, 1:37].tolist()
-        claims = []
-        for v in values:
-            try:
-                claims.append(float(v))
-            except (TypeError, ValueError):
-                claims.append(0.0)
-        return claims
+        values = row.iloc[0][OCGRP_COLS].tolist()
+        return [float(v) if pd.notna(v) else 0.0 for v in values]
 
     def get_mco_metadata(mco_name):
         row = df_market_share[df_market_share['MCO_NM'] == mco_name]
         if row.empty:
             return "Data not available yet", "Data not available yet", "N/A"
-        status = row.iloc[0, 1]
-        payer = row.iloc[0, 2]
-        contrib = row.iloc[0, 3]
+        status = row.iloc[0]['CURRENT_NURTEC_STATUS']
+        payer = row.iloc[0]['PAYER_TYPE']
+        contrib = row.iloc[0]['FY_2025_OCGRP_CONTRIBUTION']
         status = str(status).strip() if pd.notna(status) and str(status).strip() not in ['', 'nan', 'None'] else "Data not available yet"
         payer = str(payer).strip() if pd.notna(payer) and str(payer).strip() not in ['', 'nan', 'None'] else "Data not available yet"
         try:
