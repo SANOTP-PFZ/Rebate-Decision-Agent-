@@ -36,14 +36,24 @@ st.markdown("""
     }
     .stApp { background-color: #F7FAFC; }
 
+    /* Fade-in animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .main .block-container {
+        animation: fadeIn 0.4s ease-out;
+    }
+
     .pfizer-header {
-        background: #002F6C;
-        padding: 12px 28px;
+        background: linear-gradient(135deg, #002F6C, #004B8D);
+        padding: 14px 28px;
         display: flex;
         align-items: center;
         gap: 20px;
         border-radius: 6px;
         margin-bottom: 1.2rem;
+        box-shadow: 0 3px 10px rgba(0,47,108,0.15);
     }
     .pfizer-logo {
         font-size: 22px;
@@ -139,6 +149,7 @@ st.markdown("""
         border: none !important;
         border-radius: 5px !important;
         padding: 10px !important;
+        transition: background 0.2s ease;
     }
     section[data-testid="stSidebar"] .stButton > button:hover {
         background: #002F6C !important;
@@ -155,9 +166,11 @@ st.markdown("""
     .scenario-box {
         background: #E8F4FD;
         border: 1px solid #0093D0;
+        border-left: 4px solid #0093D0;
         border-radius: 5px;
         padding: 12px;
         margin-top: 14px;
+        transition: border-color 0.3s ease;
     }
     .scenario-box h4 {
         color: #002F6C; margin: 0 0 6px 0;
@@ -168,41 +181,61 @@ st.markdown("""
         color: #333; font-size: 11px; margin: 2px 0;
     }
 
+    /* Metric cards */
     .metric-card {
         background: white;
         border-radius: 8px;
-        padding: 16px 10px;
+        padding: 18px 12px;
         text-align: center;
         border: 1px solid #D0DEE8;
-        box-shadow: 0 1px 4px rgba(0,47,108,0.06);
+        border-left: 4px solid #0093D0;
+        box-shadow: 0 2px 6px rgba(0,47,108,0.06);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .metric-card:hover {
+        box-shadow: 0 4px 12px rgba(0,47,108,0.12);
+        transform: translateY(-1px);
     }
     .metric-card .label {
         font-size: 10px; color: #63666A;
         text-transform: uppercase; letter-spacing: 0.5px;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
     }
     .metric-card .value {
-        font-size: 22px; font-weight: 800;
+        font-size: 24px; font-weight: 800;
     }
     .metric-card .value.negative { color: #E03C31; }
     .metric-card .value.positive { color: #002F6C; }
     .metric-card .value.accent { color: #0093D0; }
+    .metric-card.border-negative { border-left-color: #E03C31; }
+    .metric-card.border-positive { border-left-color: #002F6C; }
+    .metric-card.border-accent { border-left-color: #0093D0; }
 
     .impact-header {
-        background: #002F6C;
+        background: linear-gradient(135deg, #002F6C, #003D7A);
         color: white;
-        padding: 8px;
+        padding: 10px 8px;
         border-radius: 4px;
         text-align: center;
         font-size: 11px;
         font-weight: 700;
         letter-spacing: 1px;
-        margin: 6px 0 10px 0;
+        margin: 8px 0 12px 0;
+        box-shadow: 0 2px 4px rgba(0,47,108,0.1);
     }
 
     .section-divider {
-        border-top: 2px solid #D0DEE8;
-        margin: 16px 0 12px 0;
+        border-top: 1px solid #E4ECF2;
+        margin: 24px 0 16px 0;
+    }
+
+    /* Chart title */
+    .chart-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #002F6C;
+        margin: 0 0 4px 0;
+        padding-left: 4px;
     }
 
     /* Primary buttons (landing page) */
@@ -214,6 +247,7 @@ st.markdown("""
         border: none !important;
         border-radius: 6px !important;
         padding: 12px !important;
+        transition: background 0.2s ease;
     }
     .stButton > button[kind="primary"]:hover,
     button[data-testid="baseButton-primary"]:hover {
@@ -229,6 +263,7 @@ st.markdown("""
         border: 2px solid #0093D0 !important;
         border-radius: 6px !important;
         padding: 12px !important;
+        transition: background 0.2s ease, border-color 0.2s ease;
     }
     .stButton > button[kind="secondary"]:hover,
     button[data-testid="baseButton-secondary"]:hover {
@@ -720,23 +755,33 @@ elif st.session_state.page == 'agent':
     # CHART — NATIONAL MARKET SHARE
     # =========================================================================
     if step_key in STEP_TABLE:
-        baseline_natl_ms, projected_natl_ms = compute_national_ms(selected_mco, projected, change_idx)
+        with st.spinner("Computing national roll-up..."):
+            baseline_natl_ms, projected_natl_ms = compute_national_ms(selected_mco, projected, change_idx)
+
+        st.markdown('<p class="chart-title">National Market Share Trend</p>', unsafe_allow_html=True)
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=list(range(N_ACTUAL)), y=baseline_natl_ms[:N_ACTUAL],
             mode='lines+markers', name='Actual National MS',
             line=dict(color=PFZ_DARK_BLUE, width=2.5), marker=dict(size=4),
+            hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
+            text=[MONTH_LABELS[i] for i in range(N_ACTUAL)],
         ))
         fig.add_trace(go.Scatter(
             x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_natl_ms[N_ACTUAL - 1:],
             mode='lines', name='Baseline (no change)',
             line=dict(color='#B0BEC5', width=2, dash='dash'),
+            hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
+            text=[MONTH_LABELS[i] for i in range(N_ACTUAL - 1, N_TOTAL)],
         ))
         fig.add_trace(go.Scatter(
             x=list(range(change_idx, N_TOTAL)), y=projected_natl_ms[change_idx:],
             mode='lines+markers', name='Projected (post change)',
-            line=dict(color=PFZ_RED, width=2.5), marker=dict(size=4),
+            line=dict(color=PFZ_RED, width=2.5), marker=dict(size=5),
+            fill='tonexty', fillcolor='rgba(224, 60, 49, 0.06)',
+            hovertemplate='%{text}<br>Projected: %{y:.2f}%<extra></extra>',
+            text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
         ))
 
         fig.add_shape(type="line", x0=change_idx, x1=change_idx,
@@ -780,21 +825,22 @@ elif st.session_state.page == 'agent':
 
         c1, c2, c3, c4 = st.columns(4)
         with c1:
-            st.markdown(f'<div class="metric-card"><div class="label">Baseline National MS</div>'
+            st.markdown(f'<div class="metric-card border-positive"><div class="label">Baseline National MS</div>'
                         f'<div class="value positive">{natl_baseline_current:.2f}%</div></div>',
                         unsafe_allow_html=True)
         with c2:
             cls = "negative" if natl_projected_12m < natl_baseline_current else "positive"
-            st.markdown(f'<div class="metric-card"><div class="label">Projected National MS (12m)</div>'
+            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">Projected National MS (12m)</div>'
                         f'<div class="value {cls}">{natl_projected_12m:.2f}%</div></div>',
                         unsafe_allow_html=True)
         with c3:
             cls = "negative" if natl_delta < 0 else "positive"
-            st.markdown(f'<div class="metric-card"><div class="label">National Delta</div>'
-                        f'<div class="value {cls}">{natl_delta:+.2f} pp</div></div>',
+            arrow = "&#9660;" if natl_delta < 0 else "&#9650;"
+            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">National Delta</div>'
+                        f'<div class="value {cls}">{arrow} {natl_delta:+.2f} pp</div></div>',
                         unsafe_allow_html=True)
         with c4:
-            st.markdown(f'<div class="metric-card"><div class="label">Analog Used</div>'
+            st.markdown(f'<div class="metric-card border-accent"><div class="label">Analog Used</div>'
                         f'<div class="value accent">{analog_name}</div></div>',
                         unsafe_allow_html=True)
 
@@ -802,22 +848,30 @@ elif st.session_state.page == 'agent':
         # MCO-LEVEL CHART
         # =========================================================================
         st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
+        st.markdown(f'<p class="chart-title">{selected_mco} — Market Share Trend</p>', unsafe_allow_html=True)
 
         fig_mco = go.Figure()
         fig_mco.add_trace(go.Scatter(
             x=list(range(N_ACTUAL)), y=baseline_ms[:N_ACTUAL],
             mode='lines+markers', name='Actual MCO MS',
             line=dict(color=PFZ_DARK_BLUE, width=2.5), marker=dict(size=4),
+            hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
+            text=[MONTH_LABELS[i] for i in range(N_ACTUAL)],
         ))
         fig_mco.add_trace(go.Scatter(
             x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_ms[N_ACTUAL - 1:],
             mode='lines', name='Baseline (no change)',
             line=dict(color='#B0BEC5', width=2, dash='dash'),
+            hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
+            text=[MONTH_LABELS[i] for i in range(N_ACTUAL - 1, N_TOTAL)],
         ))
         fig_mco.add_trace(go.Scatter(
             x=list(range(change_idx, N_TOTAL)), y=projected[change_idx:],
             mode='lines+markers', name='Projected (post change)',
-            line=dict(color=PFZ_RED, width=2.5), marker=dict(size=4),
+            line=dict(color=PFZ_RED, width=2.5), marker=dict(size=5),
+            fill='tonexty', fillcolor='rgba(224, 60, 49, 0.06)',
+            hovertemplate='%{text}<br>Projected: %{y:.2f}%<extra></extra>',
+            text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
         ))
 
         fig_mco.add_shape(type="line", x0=change_idx, x1=change_idx,
@@ -858,21 +912,22 @@ elif st.session_state.page == 'agent':
 
         c1, c2, c3, c4 = st.columns(4)
         with c1:
-            st.markdown(f'<div class="metric-card"><div class="label">Current MCO MS</div>'
+            st.markdown(f'<div class="metric-card border-positive"><div class="label">Current MCO MS</div>'
                         f'<div class="value positive">{mco_baseline_current:.2f}%</div></div>',
                         unsafe_allow_html=True)
         with c2:
             cls = "negative" if mco_projected_12m < mco_baseline_current else "positive"
-            st.markdown(f'<div class="metric-card"><div class="label">Projected MCO MS (12m)</div>'
+            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">Projected MCO MS (12m)</div>'
                         f'<div class="value {cls}">{mco_projected_12m:.2f}%</div></div>',
                         unsafe_allow_html=True)
         with c3:
             cls = "negative" if mco_delta < 0 else "positive"
-            st.markdown(f'<div class="metric-card"><div class="label">MCO Delta</div>'
-                        f'<div class="value {cls}">{mco_delta:+.2f} pp</div></div>',
+            arrow = "&#9660;" if mco_delta < 0 else "&#9650;"
+            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">MCO Delta</div>'
+                        f'<div class="value {cls}">{arrow} {mco_delta:+.2f} pp</div></div>',
                         unsafe_allow_html=True)
         with c4:
-            st.markdown(f'<div class="metric-card"><div class="label">Analog Used</div>'
+            st.markdown(f'<div class="metric-card border-accent"><div class="label">Analog Used</div>'
                         f'<div class="value accent">{analog_name}</div></div>',
                         unsafe_allow_html=True)
     else:
