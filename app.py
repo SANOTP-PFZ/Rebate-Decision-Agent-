@@ -536,6 +536,8 @@ elif st.session_state.page == 'agent':
 
         # Analog Curves
         df_analog = dataiku.Dataset("PAYER_MODEL_ANALOG_MCO_SF").get_dataframe()
+        df_analog['month_num'] = df_analog['MONTH'].str.extract(r'(\d+)').astype(int)
+        df_analog = df_analog.sort_values('month_num').reset_index(drop=True)
         analog_curves = {
             'BCBS': [float(x) for x in df_analog['BCBS'].tolist()],
             'Providence': [float(x) for x in df_analog['Providence'].tolist()],
