@@ -753,22 +753,27 @@ st.markdown("""
     .agent-kpi .delta.pos { color: var(--up); font-weight: 600; }
     .agent-kpi .delta.neg { color: var(--down); font-weight: 600; }
 
-    /* Sidebar — pull content to the very top (zero out Streamlit's default top padding) */
-    section[data-testid="stSidebar"] > div:first-child {
-        padding-top: 0 !important;
-    }
+    /* Sidebar — pull content to the very top (zero out Streamlit's default top padding).
+       Streamlit has several nested containers each contributing ~1rem or more of top
+       padding, so we target ALL of them aggressively. */
+    section[data-testid="stSidebar"],
+    section[data-testid="stSidebar"] > div,
+    section[data-testid="stSidebar"] > div > div,
+    section[data-testid="stSidebar"] > div:first-child,
     section[data-testid="stSidebar"] [data-testid="stSidebarContent"],
-    section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+    section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"],
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"],
+    section[data-testid="stSidebar"] .block-container,
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div:first-child,
+    section[data-testid="stSidebar"] [data-testid="stElementContainer"]:first-child {
         padding-top: 0 !important;
         margin-top: 0 !important;
     }
-    section[data-testid="stSidebar"] .block-container {
-        padding-top: 0 !important;
-    }
-    /* Kill any residual margin on the first child inside the sidebar */
-    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div:first-child {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
+    /* Sidebar collapse-control area (arrow button) — hide the top padding it reserves */
+    section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"],
+    section[data-testid="stSidebar"] [data-testid="stSidebarCollapsedControl"] {
+        top: 0.25rem !important;
     }
 
     /* Global — zero out Streamlit's app-level top padding so BOTH the sidebar
@@ -815,7 +820,7 @@ st.markdown("""
         display: flex;
         flex-direction: column;
         gap: 0.6rem;
-        padding: 1.6rem 1.1rem 1rem 1.1rem;
+        padding: 0.5rem 1.1rem 1rem 1.1rem;
         margin: 0 -1rem 0 -1rem;
         border-bottom: 1px solid var(--hairline);
     }
