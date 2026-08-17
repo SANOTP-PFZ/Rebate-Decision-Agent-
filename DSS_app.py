@@ -794,7 +794,36 @@ st.markdown("""
 
     /* Section header breathing room on rules page */
     body:has(.rules-page-marker) h4 {
-        margin-top: 28px !important;
+        margin-top: 18px !important;
+        margin-bottom: 6px !important;
+    }
+
+    /* Rules page — tighten global vertical rhythm */
+    body:has(.rules-page-marker) .block-container {
+        padding-top: 0.8rem !important;
+        padding-bottom: 1rem !important;
+    }
+    /* Compact the Back-to-Home button block */
+    body:has(.rules-page-marker) .stButton {
+        margin-bottom: 0 !important;
+    }
+    /* Trim <hr> divider spacing */
+    body:has(.rules-page-marker) hr {
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    /* Shrink <br> visual gaps between sections */
+    body:has(.rules-page-marker) [data-testid="stMarkdownContainer"] br {
+        line-height: 0.4 !important;
+    }
+    /* Tighter H2 page-title spacing */
+    body:has(.rules-page-marker) h2 {
+        margin-top: 4px !important;
+        margin-bottom: 2px !important;
+    }
+    /* Collapse Streamlit element gaps a touch */
+    body:has(.rules-page-marker) [data-testid="stVerticalBlock"] {
+        gap: 0.35rem !important;
     }
 
     /* Sidebar */
@@ -2065,7 +2094,7 @@ elif st.session_state.page == 'rules':
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+
 
     # --- Section 2: Projection Formula ---
     st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Projection Formula</h4>', unsafe_allow_html=True)
@@ -2083,7 +2112,7 @@ elif st.session_state.page == 'rules':
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+
 
     # --- Section 3: Transition Mapping ---
     st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Status Transition Mapping</h4>', unsafe_allow_html=True)
@@ -2132,7 +2161,7 @@ elif st.session_state.page == 'rules':
     )
     st.caption("Note: Specialty status is treated as equivalent to Covered for transition mapping purposes.")
 
-    st.markdown("<br>", unsafe_allow_html=True)
+
 
     # --- Section 4: Analog Curves ---
     st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Analog Curves (Month-Level Dynamics)</h4>', unsafe_allow_html=True)
@@ -2174,7 +2203,7 @@ elif st.session_state.page == 'rules':
     )
     st.caption("Note: Month 1 rate is applied at the change month, Month 2 rate at the next month, and so on. Each rate represents the total impact on market share at that point in time.")
 
-    st.markdown("<br>", unsafe_allow_html=True)
+
 
     # --- Section 5: National Roll-Up ---
     st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">National Roll-Up Logic</h4>', unsafe_allow_html=True)
@@ -2191,7 +2220,7 @@ elif st.session_state.page == 'rules':
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+
 
     # --- Section 5: Timeline ---
     st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Data Timeline</h4>', unsafe_allow_html=True)
