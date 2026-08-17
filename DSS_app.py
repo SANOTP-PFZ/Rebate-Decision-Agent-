@@ -753,6 +753,66 @@ st.markdown("""
     .agent-kpi .delta.pos { color: var(--up); font-weight: 600; }
     .agent-kpi .delta.neg { color: var(--down); font-weight: 600; }
 
+    /* Agent — sidebar brand block (logo + product name at the very top) */
+    .agent-sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        margin: -6px 0 16px 0;
+        background: linear-gradient(135deg, rgba(28,79,192,0.10), rgba(65,182,230,0.06));
+        border: 1px solid var(--hairline);
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+    }
+    .agent-sidebar-brand::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--navy-600), var(--accent));
+        opacity: 0.85;
+    }
+    .agent-sidebar-brand .brand-logo {
+        height: 28px;
+        width: auto;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+    .agent-sidebar-brand .brand-logo-fallback {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        color: var(--navy-700);
+        font-size: 16px;
+        line-height: 1;
+    }
+    .agent-sidebar-brand .brand-copy { line-height: 1.15; }
+    .agent-sidebar-brand .brand-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--navy-900);
+        letter-spacing: -0.01em;
+    }
+    .agent-sidebar-brand .brand-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        color: var(--text-muted);
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-top: 3px;
+    }
+
+    /* Agent — tighter main-content top padding so Back-to-Home aligns
+       vertically with the sidebar brand block */
+    .agent-main-tight .block-container,
+    body:has(.agent-page-marker) .block-container {
+        padding-top: 0.6rem !important;
+    }
+
     /* Agent — Back-to-Home compact button (overrides the global sidebar button style) */
     .st-key-agent_back_home .stButton > button,
     div[class*="st-key-agent_back_home"] .stButton > button {
@@ -1078,37 +1138,72 @@ def get_first_name():
 # =============================================================================
 # Load and resize logo for embedding
 def _get_logo_b64():
-    """Load logo.png relative to this script, resize for header, return base64."""
+    """Locate logo.png in common Streamlit / Dataiku webapp paths and return
+    a base64-encoded PNG. Uses PIL to resize for the header when available;
+    falls back to the raw file bytes so the logo still renders even without PIL."""
     import io
-    from PIL import Image
-    # In Dataiku webapps, os.getcwd() points to the webapp code directory
-    for path in [os.path.join(os.getcwd(), "logo.png"),
-                 os.path.join(os.path.dirname(__file__), "logo.png") if '__file__' in globals() else None]:
-        if path and os.path.isfile(path):
-            img = Image.open(path)
-            # Resize to 40px height for header
-            ratio = 40 / img.height
-            img = img.resize((int(img.width * ratio), 40), Image.LANCZOS)
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            return base64.b64encode(buf.getvalue()).decode()
-    return None
+
+    candidates = []
+    # 1) CWD
+    candidates.append(os.path.join(os.getcwd(), "logo.png"))
+    # 2) Same directory as this script (works in most Streamlit runners)
+    try:
+        if '__file__' in globals():
+            candidates.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png"))
+    except Exception:
+        pass
+    # 3) Parent of CWD (Dataiku sometimes runs from a nested working dir)
+    candidates.append(os.path.join(os.path.dirname(os.getcwd()), "logo.png"))
+    # 4) Dataiku webapp resource conventions
+    candidates.append("/home/dataiku/dss/lib/logo.png")
+    candidates.append(os.path.join(os.getcwd(), "resource", "logo.png"))
+    candidates.append(os.path.join(os.getcwd(), "static", "logo.png"))
+
+    logo_path = None
+    for p in candidates:
+        try:
+            if p and os.path.isfile(p):
+                logo_path = p
+                break
+        except Exception:
+            continue
+    if not logo_path:
+        return None
+
+    # Prefer PIL-resized output; fall back to raw bytes so the image still shows.
+    try:
+        from PIL import Image
+        img = Image.open(logo_path)
+        ratio = 40 / img.height
+        img = img.resize((int(img.width * ratio), 40), Image.LANCZOS)
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return base64.b64encode(buf.getvalue()).decode()
+    except Exception:
+        try:
+            with open(logo_path, "rb") as f:
+                return base64.b64encode(f.read()).decode()
+        except Exception:
+            return None
 
 _b64 = _get_logo_b64()
-if _b64:
-    st.markdown(f"""
-    <div class="pfizer-header">
-        <span class="pfizer-logo"><img src="data:image/png;base64,{_b64}" alt="Pfizer"></span>
-        <h1>REBATE DECISION AGENT</h1>
-    </div>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown("""
-    <div class="pfizer-header">
-        <span class="pfizer-logo" style="font-family:Manrope,sans-serif;font-weight:800;color:#1C4FC0;font-size:20px;">Pfizer</span>
-        <h1>REBATE DECISION AGENT</h1>
-    </div>
-    """, unsafe_allow_html=True)
+# On the agent page, the brand block lives in the sidebar (see agent-sidebar-brand).
+# Render the wide global header only on the landing and business-rules pages.
+if st.session_state.page != 'agent':
+    if _b64:
+        st.markdown(f"""
+        <div class="pfizer-header">
+            <span class="pfizer-logo"><img src="data:image/png;base64,{_b64}" alt="Pfizer"></span>
+            <h1>REBATE DECISION AGENT</h1>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div class="pfizer-header">
+            <span class="pfizer-logo"><img src="logo.png" alt="Pfizer" style="height:30px;object-fit:contain;"></span>
+            <h1>REBATE DECISION AGENT</h1>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # =============================================================================
@@ -1294,6 +1389,9 @@ elif st.session_state.page == 'rules':
 # =============================================================================
 elif st.session_state.page == 'agent':
 
+    # Marker used by CSS to tighten main-content top padding on this page
+    st.markdown('<span class="agent-page-marker" style="display:none"></span>', unsafe_allow_html=True)
+
     # Force sidebar open via set_page_config workaround
     st.markdown("""
     <style>
@@ -1452,6 +1550,21 @@ elif st.session_state.page == 'agent':
         return f'<span class="agent-status-tag {cls}">{status}</span>'
 
     with st.sidebar:
+        # ---- Brand block at the very top ----
+        if _b64:
+            _brand_logo = f'<img class="brand-logo" src="data:image/png;base64,{_b64}" alt="Pfizer">'
+        else:
+            _brand_logo = '<span class="brand-logo-fallback">Pfizer</span>'
+        st.markdown(f"""
+        <div class="agent-sidebar-brand">
+            {_brand_logo}
+            <div class="brand-copy">
+                <div class="brand-title">Rebate Decision</div>
+                <div class="brand-subtitle">Agent</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
         # ---- Section A: Scenario Inputs ----
         st.markdown('<div class="agent-sec-hdr">Scenario Inputs</div>', unsafe_allow_html=True)
 
