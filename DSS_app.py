@@ -702,6 +702,101 @@ st.markdown("""
         font-size: 11px;
     }
 
+    /* ==============================================================
+       Rules page — product-grade table treatment
+       Scoped so landing & agent pages are untouched.
+       ============================================================== */
+    body:has(.rules-page-marker) .rules-table-wrap {
+        border: 1px solid rgba(15,23,42,0.08);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(15,23,42,0.05);
+        background: #ffffff;
+        margin: 8px 0 4px 0;
+    }
+    body:has(.rules-page-marker) .rules-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        color: #0A1A3D;
+    }
+    body:has(.rules-page-marker) .rules-table thead th {
+        background: linear-gradient(180deg, #0A1A3D 0%, #0F2554 100%);
+        color: #ffffff;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 11.5px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        text-align: left;
+        padding: 14px 18px;
+        border: none;
+        white-space: nowrap;
+    }
+    body:has(.rules-page-marker) .rules-table thead th.num {
+        text-align: right;
+    }
+    body:has(.rules-page-marker) .rules-table tbody td {
+        padding: 12px 18px;
+        border-bottom: 1px solid rgba(15,23,42,0.06);
+        vertical-align: middle;
+        background: #ffffff;
+    }
+    body:has(.rules-page-marker) .rules-table tbody tr:nth-child(even) td {
+        background: #F8FAFC;
+    }
+    body:has(.rules-page-marker) .rules-table tbody tr:hover td {
+        background: rgba(28,79,192,0.06);
+    }
+    body:has(.rules-page-marker) .rules-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    body:has(.rules-page-marker) .rules-table td.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: 'tnum' 1;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+    }
+    body:has(.rules-page-marker) .rules-table td.num.pos { color: #0F766E; }
+    body:has(.rules-page-marker) .rules-table td.num.neg { color: #B45309; }
+    body:has(.rules-page-marker) .rules-table td.num.zero { color: #64748B; }
+    body:has(.rules-page-marker) .rules-table td.month {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 600;
+        color: #334155;
+        font-size: 12.5px;
+    }
+
+    /* Badges (status + analog) */
+    body:has(.rules-page-marker) .rules-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 11px;
+        border-radius: 999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        line-height: 1.4;
+        border: 1px solid transparent;
+    }
+    /* Status tints */
+    body:has(.rules-page-marker) .rules-badge.status-covered      { background:#E0F2FE; color:#075985; border-color:#BAE6FD; }
+    body:has(.rules-page-marker) .rules-badge.status-preferred    { background:#EDE9FE; color:#5B21B6; border-color:#DDD6FE; }
+    body:has(.rules-page-marker) .rules-badge.status-not-covered  { background:#F1F5F9; color:#475569; border-color:#E2E8F0; }
+    body:has(.rules-page-marker) .rules-badge.status-specialty    { background:#CCFBF1; color:#115E59; border-color:#99F6E4; }
+    /* Analog tints */
+    body:has(.rules-page-marker) .rules-badge.analog-bcbs         { background:#DBEAFE; color:#1E3A8A; border-color:#BFDBFE; }
+    body:has(.rules-page-marker) .rules-badge.analog-providence   { background:#FEF3C7; color:#92400E; border-color:#FDE68A; }
+    body:has(.rules-page-marker) .rules-badge.analog-blended      { background:#FCE7F3; color:#9D174D; border-color:#FBCFE8; }
+
+    /* Section header breathing room on rules page */
+    body:has(.rules-page-marker) h4 {
+        margin-top: 28px !important;
+    }
+
     /* Sidebar */
     section[data-testid="stSidebar"] {
         background: rgba(255,255,255,0.62) !important;
@@ -1938,6 +2033,8 @@ elif st.session_state.page == 'rules':
 
     st.button("Back to Home", on_click=go_to_landing)
 
+    st.markdown('<div class="rules-page-marker" style="display:none;"></div>', unsafe_allow_html=True)
+
     st.markdown("---")
     st.markdown('<h2 style="font-family:Manrope,sans-serif; color:#0A1A3D; margin-bottom:4px; letter-spacing:-0.02em;">Business Rules & Methodology</h2>', unsafe_allow_html=True)
     st.markdown('<p style="font-family:Inter,sans-serif; color:#64748B; font-size:13px; margin-bottom:20px;">How the Rebate Decision Agent computes market share projections</p>', unsafe_allow_html=True)
@@ -2004,7 +2101,35 @@ elif st.session_state.page == 'rules':
         {"Current": "Preferred", "Future": "Not Covered", "Analog": "Blended", "Step": -2, "Reverse": 1},
         {"Current": "Covered", "Future": "Not Covered", "Analog": "Providence", "Step": -1, "Reverse": 1},
     ])
-    st.table(step_df)
+
+    def _status_badge(v):
+        slug = v.lower().replace(' ', '-')
+        return f'<span class="rules-badge status-{slug}">{v}</span>'
+
+    def _analog_badge(v):
+        return f'<span class="rules-badge analog-{v.lower()}">{v}</span>'
+
+    def _signed_int(v):
+        cls = 'pos' if v > 0 else ('neg' if v < 0 else 'zero')
+        sign = '+' if v > 0 else ('' if v < 0 else '')
+        return f'<td class="num {cls}">{sign}{v}</td>'
+
+    _step_rows = "".join(
+        f"<tr><td>{_status_badge(r['Current'])}</td>"
+        f"<td>{_status_badge(r['Future'])}</td>"
+        f"<td>{_analog_badge(r['Analog'])}</td>"
+        f"{_signed_int(r['Step'])}{_signed_int(r['Reverse'])}</tr>"
+        for r in step_df.to_dict('records')
+    )
+    st.markdown(
+        '<div class="rules-table-wrap"><table class="rules-table">'
+        '<thead><tr>'
+        '<th>Current Status</th><th>Future Status</th><th>Analog Curve</th>'
+        '<th class="num">Step</th><th class="num">Reverse</th>'
+        '</tr></thead>'
+        f'<tbody>{_step_rows}</tbody></table></div>',
+        unsafe_allow_html=True,
+    )
     st.caption("Note: Specialty status is treated as equivalent to Covered for transition mapping purposes.")
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -2027,7 +2152,26 @@ elif st.session_state.page == 'rules':
                     -0.6465, -0.6195, -0.7056, -0.6482, -0.6110, -0.5966,
                     -0.6317, -0.6495, -0.6369, -0.6605, -0.7398],
     })
-    st.table(analog_df)
+
+    def _signed_pct(v):
+        cls = 'pos' if v > 0 else ('neg' if v < 0 else 'zero')
+        sign = '+' if v > 0 else ''
+        return f'<td class="num {cls}">{sign}{v:.4f}</td>'
+
+    _analog_rows = "".join(
+        f"<tr><td class=\"month\">{r['Month']}</td>"
+        f"{_signed_pct(r['BCBS'])}{_signed_pct(r['Providence'])}{_signed_pct(r['Blended'])}</tr>"
+        for r in analog_df.to_dict('records')
+    )
+    st.markdown(
+        '<div class="rules-table-wrap"><table class="rules-table">'
+        '<thead><tr>'
+        '<th>Month</th>'
+        '<th class="num">BCBS</th><th class="num">Providence</th><th class="num">Blended</th>'
+        '</tr></thead>'
+        f'<tbody>{_analog_rows}</tbody></table></div>',
+        unsafe_allow_html=True,
+    )
     st.caption("Note: Month 1 rate is applied at the change month, Month 2 rate at the next month, and so on. Each rate represents the total impact on market share at that point in time.")
 
     st.markdown("<br>", unsafe_allow_html=True)
