@@ -564,6 +564,112 @@ st.markdown("""
     }
     .landing-footer .dot { color: var(--hairline); margin: 0 8px; }
 
+    /* ------------------------------------------------------------------
+       Landing page: single-viewport compaction
+       Scoped tight so nothing bleeds into agent/rules pages.
+       Goal: everything (brandbar, hero, disclaimer, cards, footer) fits
+       inside one 100vh window at typical desktop zoom without scrolling.
+       ------------------------------------------------------------------ */
+    body:has(.landing-page-marker) .block-container {
+        padding-top: 0.6rem !important;
+        padding-bottom: 0.4rem !important;
+        max-width: 1160px !important;
+    }
+    /* Brandbar — trim vertical padding */
+    body:has(.landing-page-marker) .landing-brandbar {
+        padding: 10px 18px;
+        margin: 0 0 14px 0;
+    }
+    body:has(.landing-page-marker) .landing-brandbar .brand-logo { height: 26px; }
+    body:has(.landing-page-marker) .landing-brandbar .brand-divider { height: 26px; }
+    body:has(.landing-page-marker) .landing-brandbar .brand-title { font-size: 15.5px; }
+    body:has(.landing-page-marker) .landing-brandbar .brand-subtitle { font-size: 11px; }
+
+    /* Hero — smaller title, tighter margins */
+    body:has(.landing-page-marker) .landing-hero {
+        margin: 2px auto 10px auto;
+        padding: 2px 4px;
+    }
+    body:has(.landing-page-marker) .landing-hero h1 {
+        font-size: 1.75rem;
+        line-height: 1.15;
+        margin: 0 0 8px 0;
+    }
+    body:has(.landing-page-marker) .landing-hero .lede {
+        font-size: 13.5px;
+        line-height: 1.5;
+        margin: 0 auto 10px auto;
+    }
+    body:has(.landing-page-marker) .landing-stat-pill {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+
+    /* Disclaimer — compress paddings & type */
+    body:has(.landing-page-marker) .landing-disclaimer-wrap {
+        margin: 10px auto 12px auto;
+    }
+    body:has(.landing-page-marker) .landing-disclaimer-card {
+        padding: 12px 18px 12px 50px;
+    }
+    body:has(.landing-page-marker) .landing-disclaimer-card::before {
+        top: 12px; left: 16px;
+        width: 22px; height: 22px;
+        background-size: 22px 22px;
+    }
+    body:has(.landing-page-marker) .landing-disclaimer-card::after {
+        top: 10px; right: 14px;
+        font-size: 9px;
+        padding: 2px 7px;
+    }
+    body:has(.landing-page-marker) .landing-disclaimer-card .ld-title {
+        font-size: 12.5px;
+        margin-bottom: 4px;
+    }
+    body:has(.landing-page-marker) .landing-disclaimer-card .ld-lede {
+        font-size: 11.5px;
+        line-height: 1.5;
+        margin: 0 0 6px 0;
+    }
+    body:has(.landing-page-marker) .landing-disclaimer-card .ld-list li {
+        font-size: 11px;
+        line-height: 1.55;
+    }
+
+    /* Cards — smaller icon, less padding, lower min-height */
+    body:has(.landing-page-marker) .st-key-landing_go_agent .stButton > button,
+    body:has(.landing-page-marker) .st-key-landing_go_rules .stButton > button,
+    body:has(.landing-page-marker) div[class*="st-key-landing_go_agent"] .stButton > button,
+    body:has(.landing-page-marker) div[class*="st-key-landing_go_rules"] .stButton > button {
+        padding: 58px 24px 20px 24px !important;
+        min-height: 168px !important;
+        border-radius: 16px !important;
+        font-size: 12.5px !important;
+        line-height: 1.55 !important;
+    }
+    body:has(.landing-page-marker) .st-key-landing_go_agent .stButton > button::first-line,
+    body:has(.landing-page-marker) .st-key-landing_go_rules .stButton > button::first-line,
+    body:has(.landing-page-marker) div[class*="st-key-landing_go_agent"] .stButton > button::first-line,
+    body:has(.landing-page-marker) div[class*="st-key-landing_go_rules"] .stButton > button::first-line {
+        font-size: 1.2rem;
+    }
+    body:has(.landing-page-marker) .st-key-landing_go_agent .stButton > button::before,
+    body:has(.landing-page-marker) .st-key-landing_go_rules .stButton > button::before,
+    body:has(.landing-page-marker) div[class*="st-key-landing_go_agent"] .stButton > button::before,
+    body:has(.landing-page-marker) div[class*="st-key-landing_go_rules"] .stButton > button::before {
+        top: 18px; left: 22px;
+        width: 36px; height: 36px;
+        border-radius: 10px;
+        background-size: 20px 20px;
+    }
+
+    /* Footer — pull up close to cards */
+    body:has(.landing-page-marker) .landing-footer {
+        margin: 12px auto 6px auto;
+        padding: 10px 8px 2px 8px;
+        font-size: 11px;
+    }
+
     /* Sidebar */
     section[data-testid="stSidebar"] {
         background: rgba(255,255,255,0.62) !important;
