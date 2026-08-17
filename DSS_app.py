@@ -821,7 +821,7 @@ st.markdown("""
         flex-direction: column;
         gap: 0.6rem;
         padding: 0.5rem 1.1rem 1rem 1.1rem;
-        margin: 0 -1rem 0 -1rem;
+        margin: -40px -1rem 0 -1rem;
         border-bottom: 1px solid var(--hairline);
     }
     .agent-sidebar-brand .brand-logo {
