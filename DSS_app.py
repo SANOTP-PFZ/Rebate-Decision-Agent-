@@ -168,6 +168,314 @@ st.markdown("""
         margin: 8px 0;
     }
 
+    /* =========================================================================
+       LANDING PAGE — new product-grade design
+       (scoped so nothing leaks to the agent or rules pages)
+       ========================================================================= */
+    .landing-brandbar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 20px;
+        background: rgba(255,255,255,0.75);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        border: 1px solid var(--hairline);
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+        margin: 0 0 28px 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .landing-brandbar::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--navy-600), var(--accent), var(--navy-500));
+        opacity: 0.75;
+    }
+    .landing-brandbar .brand-logo {
+        height: 30px;
+        width: auto;
+        object-fit: contain;
+        display: block;
+    }
+    .landing-brandbar .brand-divider {
+        width: 1px;
+        height: 30px;
+        background: var(--hairline);
+    }
+    .landing-brandbar .brand-copy {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+    }
+    .landing-brandbar .brand-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--navy-900);
+        letter-spacing: -0.02em;
+    }
+    .landing-brandbar .brand-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: var(--text-muted);
+        letter-spacing: 0.01em;
+        margin-top: 2px;
+    }
+    .landing-brandbar .brand-spacer { flex: 1; }
+    .landing-brandbar .brand-env {
+        font-family: 'Inter', sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--navy-700);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(28, 79, 192, 0.08);
+        border: 1px solid rgba(28, 79, 192, 0.18);
+        padding: 5px 10px;
+        border-radius: 999px;
+    }
+
+    /* Hero */
+    .landing-hero {
+        max-width: 920px;
+        margin: 8px auto 22px auto;
+        padding: 8px 4px;
+        text-align: center;
+    }
+    .landing-hero .eyebrow {
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent-alt, var(--navy-600));
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+    .landing-hero h1 {
+        font-family: 'Manrope', sans-serif;
+        font-size: 2.35rem;
+        font-weight: 800;
+        color: var(--navy-900);
+        letter-spacing: -0.028em;
+        line-height: 1.12;
+        margin: 0 0 12px 0;
+    }
+    .landing-hero .lede {
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        color: var(--text-soft);
+        line-height: 1.55;
+        max-width: 640px;
+        margin: 0 auto 18px auto;
+    }
+    .landing-stat-row {
+        display: inline-flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 4px;
+    }
+    .landing-stat-pill {
+        font-family: 'Inter', sans-serif;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--navy-700);
+        background: rgba(255,255,255,0.7);
+        border: 1px solid var(--hairline);
+        padding: 6px 12px;
+        border-radius: 999px;
+        letter-spacing: 0.01em;
+    }
+    .landing-stat-pill strong {
+        color: var(--navy-900);
+        font-weight: 800;
+    }
+
+    /* Nav cards — 2 col grid.
+       Each card = a visual header (st.markdown div) + a Streamlit button that
+       we style to look like the card's bottom half + CTA row. */
+    .landing-nav-wrap {
+        max-width: 920px;
+        margin: 4px auto 20px auto;
+    }
+    .landing-nav-card {
+        border-radius: 16px 16px 0 0;
+        padding: 22px 24px 14px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+    .landing-nav-card--primary {
+        background: linear-gradient(135deg, #163990 0%, #1C4FC0 100%);
+        color: #ffffff;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-bottom: none;
+    }
+    .landing-nav-card--secondary {
+        background: rgba(255,255,255,0.85);
+        color: var(--navy-900);
+        border: 1px solid var(--hairline);
+        border-bottom: none;
+    }
+    .landing-nav-card .card-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+    .landing-nav-card--primary .card-icon {
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+    .landing-nav-card--secondary .card-icon {
+        background: rgba(28, 79, 192, 0.10);
+        border: 1px solid rgba(28, 79, 192, 0.18);
+    }
+    .landing-nav-card .card-icon svg { width: 18px; height: 18px; }
+    .landing-nav-card--primary .card-icon svg { stroke: #ffffff; }
+    .landing-nav-card--secondary .card-icon svg { stroke: var(--navy-700); }
+    .landing-nav-card .card-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 0 0 6px 0;
+    }
+    .landing-nav-card--primary .card-title { color: #ffffff; }
+    .landing-nav-card--secondary .card-title { color: var(--navy-900); }
+    .landing-nav-card .card-desc {
+        font-family: 'Inter', sans-serif;
+        font-size: 12.5px;
+        line-height: 1.5;
+        margin: 0;
+        min-height: 36px;
+    }
+    .landing-nav-card--primary .card-desc { color: rgba(255,255,255,0.85); }
+    .landing-nav-card--secondary .card-desc { color: var(--text-soft); }
+
+    /* Style the buttons that sit immediately under each card so they read as
+       the card's CTA row and visually fuse with the card above. */
+    .st-key-landing_go_agent,
+    .st-key-landing_go_rules,
+    div[class*="st-key-landing_go_agent"],
+    div[class*="st-key-landing_go_rules"] {
+        margin-top: -1px !important;
+    }
+    .st-key-landing_go_agent .stButton > button,
+    div[class*="st-key-landing_go_agent"] .stButton > button {
+        background: linear-gradient(135deg, #163990 0%, #1C4FC0 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255,255,255,0.06) !important;
+        border-top: 1px solid rgba(255,255,255,0.14) !important;
+        border-radius: 0 0 16px 16px !important;
+        padding: 14px 24px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 13px !important;
+        letter-spacing: 0.02em !important;
+        text-align: left !important;
+        justify-content: space-between !important;
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: 0 8px 24px rgba(22, 57, 144, 0.22) !important;
+        transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out) !important;
+    }
+    .st-key-landing_go_agent .stButton > button:hover,
+    div[class*="st-key-landing_go_agent"] .stButton > button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 12px 28px rgba(22, 57, 144, 0.32) !important;
+    }
+    .st-key-landing_go_agent .stButton > button::after,
+    div[class*="st-key-landing_go_agent"] .stButton > button::after {
+        content: '→';
+        font-size: 16px;
+        font-weight: 700;
+        margin-left: 12px;
+    }
+
+    .st-key-landing_go_rules .stButton > button,
+    div[class*="st-key-landing_go_rules"] .stButton > button {
+        background: rgba(255,255,255,0.85) !important;
+        color: var(--navy-900) !important;
+        border: 1px solid var(--hairline) !important;
+        border-top: 1px solid var(--hairline) !important;
+        border-radius: 0 0 16px 16px !important;
+        padding: 14px 24px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 13px !important;
+        letter-spacing: 0.02em !important;
+        text-align: left !important;
+        justify-content: space-between !important;
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+        transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out), background 0.18s var(--ease-out) !important;
+    }
+    .st-key-landing_go_rules .stButton > button:hover,
+    div[class*="st-key-landing_go_rules"] .stButton > button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.10) !important;
+        background: #ffffff !important;
+    }
+    .st-key-landing_go_rules .stButton > button::after,
+    div[class*="st-key-landing_go_rules"] .stButton > button::after {
+        content: '→';
+        font-size: 16px;
+        font-weight: 700;
+        margin-left: 12px;
+        color: var(--navy-700);
+    }
+
+    /* Compact disclaimer (expander) */
+    .landing-disclaimer-wrap {
+        max-width: 920px;
+        margin: 18px auto 12px auto;
+    }
+    body:has(.landing-page-marker) .stExpander,
+    body:has(.landing-page-marker) [data-testid="stExpander"] {
+        background: rgba(255,255,255,0.6) !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+    }
+    body:has(.landing-page-marker) [data-testid="stExpander"] summary,
+    body:has(.landing-page-marker) [data-testid="stExpander"] details > summary {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: var(--text-soft) !important;
+        padding: 10px 14px !important;
+    }
+    body:has(.landing-page-marker) [data-testid="stExpander"] p,
+    body:has(.landing-page-marker) [data-testid="stExpander"] li {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
+        color: var(--text-soft) !important;
+        line-height: 1.65 !important;
+    }
+
+    /* Landing footer (mirrors agent-footer) */
+    .landing-footer {
+        max-width: 920px;
+        margin: 24px auto 12px auto;
+        padding: 14px 8px 4px 8px;
+        text-align: center;
+        border-top: 1px solid var(--hairline);
+        font-family: 'Inter', sans-serif;
+        font-size: 11.5px;
+        color: var(--text-muted);
+        letter-spacing: 0.01em;
+    }
+    .landing-footer .dot { color: var(--hairline); margin: 0 8px; }
+
     /* Sidebar */
     section[data-testid="stSidebar"] {
         background: rgba(255,255,255,0.62) !important;
@@ -1273,11 +1581,11 @@ def _get_logo_b64():
 
 _b64 = _get_logo_b64()
 # On the agent page, the brand block lives in the sidebar (see agent-sidebar-brand).
-# Render the wide global header only on the landing and business-rules pages.
-# Primary logo source is the Pfizer corporate CDN — matches the Migraine
-# Intelligence Hub reference and bypasses file-path issues in Dataiku.
+# Render the wide global header only on the business-rules page.
+# The landing page renders its own polished .landing-brandbar; the agent page
+# uses the sidebar brand block.
 _pfizer_cdn_url = "https://cdn.pfizer.com/pfizercom/2022-10/Pfizer_Logo_Color_CMYK.png"
-if st.session_state.page != 'agent':
+if st.session_state.page not in ('agent', 'landing'):
     if _b64:
         _hdr_img = (
             f'<img src="{_pfizer_cdn_url}" '
@@ -1303,31 +1611,101 @@ if st.session_state.page != 'agent':
 # =============================================================================
 if st.session_state.page == 'landing':
 
-    # Hide sidebar on landing page
+    # Hide sidebar on landing page + mark body for landing-scoped CSS
     st.markdown("""
     <style>
         section[data-testid="stSidebar"] { display: none !important; }
     </style>
+    <div class="landing-page-marker" style="display:none;"></div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
-    <div class="disclaimer-box">
-        <h3>Disclaimer</h3>
-        <p>This tool provides projected market share estimates based on historical analog data and formulary status change assumptions. Results are indicative and intended to support scenario planning only.</p>
-        <ul>
-            <li>Projections are based on analog-derived rate-of-change curves (BCBS, Providence, Blended)</li>
-            <li>Actual market dynamics may differ due to competitive actions, market access changes, or other external factors</li>
-            <li>National roll-up assumes all other MCOs maintain baseline trajectory</li>
-            <li>This tool does not constitute a financial commitment or guarantee</li>
-        </ul>
+    # ---- Brand bar (Pfizer logo + product name + subtitle + env pill)
+    if _b64:
+        _lb_img = (
+            f'<img class="brand-logo" src="{_pfizer_cdn_url}" '
+            f'onerror="this.onerror=null;this.src=\'data:image/png;base64,{_b64}\';" '
+            f'alt="Pfizer">'
+        )
+    else:
+        _lb_img = (
+            f'<img class="brand-logo" src="{_pfizer_cdn_url}" '
+            f'onerror="this.onerror=null;this.src=\'logo.png\';" '
+            f'alt="Pfizer">'
+        )
+    st.markdown(f"""
+    <div class="landing-brandbar">
+        {_lb_img}
+        <div class="brand-divider"></div>
+        <div class="brand-copy">
+            <span class="brand-title">Rebate Decision Agent</span>
+            <span class="brand-subtitle">Nurtec&reg; Payer Model</span>
+        </div>
+        <div class="brand-spacer"></div>
+        <span class="brand-env">Internal &bull; Dataiku</span>
     </div>
     """, unsafe_allow_html=True)
 
-    col_left, col_center, col_right = st.columns([1, 2, 1])
-    with col_center:
-        st.button("Rebate Decision Agent", on_click=go_to_agent, use_container_width=True, type="primary")
-        st.markdown("")
-        st.button("Business Rules", on_click=go_to_rules, use_container_width=True)
+    # ---- Hero
+    st.markdown("""
+    <div class="landing-hero">
+        <div class="eyebrow">Payer Analytics &bull; Nurtec&reg;</div>
+        <h1>Model formulary changes.<br/>See the market-share impact.</h1>
+        <p class="lede">Simulate the projected impact of a status change &mdash; Preferred, Covered, Not&nbsp;Covered, Specialty &mdash; across MCOs and roll it up to national market share, in seconds.</p>
+        <div class="landing-stat-row">
+            <span class="landing-stat-pill"><strong>2,700+</strong> MCOs</span>
+            <span class="landing-stat-pill"><strong>36-month</strong> horizon</span>
+            <span class="landing-stat-pill"><strong>3</strong> analog curves</span>
+            <span class="landing-stat-pill">Data as of <strong>Mar 2026</strong></span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ---- Nav cards (2-column grid; each = markdown visual + styled st.button CTA)
+    st.markdown('<div class="landing-nav-wrap">', unsafe_allow_html=True)
+    _nc_l, _nc_r = st.columns(2, gap="medium")
+    with _nc_l:
+        st.markdown("""
+        <div class="landing-nav-card landing-nav-card--primary">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+            </div>
+            <div class="card-title">Rebate Decision Agent</div>
+            <p class="card-desc">Pick an MCO, choose a future status and change month, and see the 12-month projected market-share trajectory instantly.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.button("Open agent", on_click=go_to_agent, use_container_width=True, key="landing_go_agent")
+    with _nc_r:
+        st.markdown("""
+        <div class="landing-nav-card landing-nav-card--secondary">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
+            <div class="card-title">Business Rules</div>
+            <p class="card-desc">How projections are computed &mdash; data sources, analog curves, step tables, and the national roll-up methodology.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.button("View rules", on_click=go_to_rules, use_container_width=True, key="landing_go_rules")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # ---- Compact disclaimer (collapsed by default)
+    st.markdown('<div class="landing-disclaimer-wrap">', unsafe_allow_html=True)
+    with st.expander("Indicative projections only \u2014 not a financial commitment. Read full disclaimer", expanded=False):
+        st.markdown("""
+This tool provides projected market-share estimates based on historical analog data and formulary status change assumptions. Results are indicative and intended to support scenario planning only.
+
+- Projections are based on analog-derived rate-of-change curves (BCBS, Providence, Blended)
+- Actual market dynamics may differ due to competitive actions, market access changes, or other external factors
+- National roll-up assumes all other MCOs maintain baseline trajectory
+- This tool does not constitute a financial commitment or guarantee
+        """)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # ---- Footer
+    st.markdown("""
+    <div class="landing-footer">
+        Data as of Mar 2026 <span class="dot">&bull;</span> Source: Xponent (Plantrak) via Dataiku <span class="dot">&bull;</span> Nurtec&reg; Payer Model <span class="dot">&bull;</span> Pfizer Confidential
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # =============================================================================
