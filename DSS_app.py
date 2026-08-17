@@ -855,6 +855,14 @@ st.markdown("""
         padding: 0 !important;
         gap: 0 !important;
         border: none !important;
+        min-height: 0 !important;
+    }
+    /* Pull the chart wrap tight under the toggle to eliminate any residual gap */
+    .agent-chart-wrap {
+        margin-top: 4px !important;
+    }
+    .agent-trend-title {
+        margin-bottom: 4px !important;
     }
 
     /* Agent — segmented toggle (radio styled as pills) */
@@ -992,7 +1000,7 @@ st.markdown("""
 
     /* Agent — footer meta */
     .agent-footer {
-        text-align: right;
+        text-align: center;
         color: var(--text-muted);
         font-family: 'Inter', sans-serif;
         font-size: 10.5px;
@@ -1570,18 +1578,15 @@ elif st.session_state.page == 'agent':
         # =====================================================================
         # 1) CHART with segmented toggle (National | MCO) — rendered FIRST
         # =====================================================================
-        _tog_l, _tog_r = st.columns([6, 2])
-        with _tog_l:
-            st.markdown('<div class="agent-sec-title">Market Share Trend</div>', unsafe_allow_html=True)
-        with _tog_r:
-            chart_view = st.radio(
-                "chart-view",
-                options=["National", "MCO"],
-                index=0,
-                horizontal=True,
-                label_visibility="collapsed",
-                key="agent_chart_view",
-            )
+        st.markdown('<div class="agent-sec-title agent-trend-title">Market Share Trend</div>', unsafe_allow_html=True)
+        chart_view = st.radio(
+            "chart-view",
+            options=["National", "MCO"],
+            index=0,
+            horizontal=True,
+            label_visibility="collapsed",
+            key="agent_chart_view",
+        )
 
         # Pick series + labels based on active view
         if chart_view == "National":
