@@ -771,6 +771,35 @@ st.markdown("""
         padding-top: 0 !important;
     }
 
+    /* Global — zero out Streamlit's app-level top padding so BOTH the sidebar
+       and the main content start flush against the top of the browser viewport
+       (Dataiku webapp iframe adds no extra chrome, so this is what pushes
+       everything down by ~50-60 px). */
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewBlockContainer"],
+    section[data-testid="stMain"],
+    section[data-testid="stMain"] > div:first-child,
+    div[data-testid="stAppViewMain"] {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    /* The main .block-container is where Streamlit puts a large top offset
+       (default ~6rem) to clear the built-in toolbar. Zero it. */
+    .stApp .block-container,
+    [data-testid="stAppViewBlockContainer"] .block-container,
+    section[data-testid="stMain"] .block-container {
+        padding-top: 0 !important;
+    }
+    /* Kill Streamlit's floating toolbar / decoration bar that reserves top space */
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    div[data-testid="stHeader"] {
+        display: none !important;
+        height: 0 !important;
+    }
+
     /* Hide the invisible agent-page-marker container so it doesn't add vertical space above Back-to-Home */
     [data-testid="stElementContainer"]:has(.agent-page-marker),
     div:has(> .agent-page-marker) {
@@ -849,16 +878,15 @@ st.markdown("""
     .agent-state-panel { margin-top: 0.15rem; }
     .agent-details-panel { margin-top: 0.15rem; }
 
-    /* Main-content top alignment — line the Back-to-Home button up with
-       the sidebar brand block's logo. Streamlit's sidebar has hidden internal
-       top offsets we can't reliably zero, so we push the button down with an
-       explicit margin. Value derived from measured screenshot offset (~34 px). */
+    /* Main-content top alignment — with the top padding of the app zeroed,
+       both sidebar and main content now sit flush against the viewport top.
+       Add a small consistent inner padding for breathing room. */
     body:has(.agent-page-marker) .block-container {
-        padding-top: 0.5rem !important;
+        padding-top: 1rem !important;
     }
     .st-key-agent_back_home,
     div[class*="st-key-agent_back_home"] {
-        margin-top: 60px !important;
+        margin-top: 0 !important;
     }
     .st-key-agent_back_home .stButton,
     div[class*="st-key-agent_back_home"] .stButton {
