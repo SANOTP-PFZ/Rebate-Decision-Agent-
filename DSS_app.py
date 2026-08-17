@@ -461,6 +461,35 @@ st.markdown("""
         color: white !important;
         font-family: 'Inter', sans-serif !important;
     }
+    [data-testid="stDataFrame"] td {
+        background: white !important;
+        color: var(--text) !important;
+    }
+    [data-testid="stDataFrame"] table {
+        background: white !important;
+    }
+    [data-testid="stDataFrame"] [data-testid="glideDataEditor"],
+    [data-testid="stDataFrame"] [class*="glide"] {
+        background: white !important;
+    }
+    /* Glide data grid (Streamlit's dataframe renderer) */
+    .dvn-scroller,
+    [data-testid="stDataFrame"] > div,
+    [data-testid="stDataFrame"] > div > div,
+    [data-testid="stDataFrame"] canvas + div {
+        background-color: white !important;
+    }
+    [data-testid="stDataFrame"] [role="grid"] {
+        background-color: white !important;
+    }
+    [data-testid="stDataFrame"] [role="gridcell"] {
+        background-color: white !important;
+        color: var(--text) !important;
+    }
+    [data-testid="stDataFrame"] [role="columnheader"] {
+        background-color: var(--navy-900) !important;
+        color: white !important;
+    }
 
     /* Info box */
     .stAlert {
@@ -529,50 +558,39 @@ def get_first_name():
 # =============================================================================
 # HEADER (all pages)
 # =============================================================================
-# Load logo as base64 for HTML embedding (resized for header use)
-def _load_logo_b64():
-    """Try multiple paths to find, resize, and encode logo.png."""
-    candidates = []
-    try:
-        candidates.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png"))
-    except Exception:
-        pass
-    candidates.append(os.path.join(os.getcwd(), "logo.png"))
-    candidates.append(r"C:\Users\SANOTP\Desktop\Rebate_model\logo.png")
-    for p in candidates:
-        if p and os.path.isfile(p):
-            try:
-                from PIL import Image
-                import io
-                img = Image.open(p)
-                # Resize to max height of 60px for header
-                max_h = 60
-                if img.height > max_h:
-                    ratio = max_h / img.height
-                    img = img.resize((int(img.width * ratio), max_h), Image.LANCZOS)
-                buf = io.BytesIO()
-                img.save(buf, format="PNG", optimize=True)
-                return base64.b64encode(buf.getvalue()).decode()
-            except ImportError:
-                # No PIL, use raw file
-                with open(p, "rb") as f:
-                    return base64.b64encode(f.read()).decode()
-            except Exception:
-                continue
+# Load and resize logo for embedding
+def _get_logo_b64():
+    """Load logo.png relative to this script, resize for header, return base64."""
+    import io
+    from PIL import Image
+    # In Dataiku webapps, os.getcwd() points to the webapp code directory
+    for path in [os.path.join(os.getcwd(), "logo.png"),
+                 os.path.join(os.path.dirname(__file__), "logo.png") if '__file__' in globals() else None]:
+        if path and os.path.isfile(path):
+            img = Image.open(path)
+            # Resize to 40px height for header
+            ratio = 40 / img.height
+            img = img.resize((int(img.width * ratio), 40), Image.LANCZOS)
+            buf = io.BytesIO()
+            img.save(buf, format="PNG")
+            return base64.b64encode(buf.getvalue()).decode()
     return None
 
-_logo_b64 = _load_logo_b64()
-if _logo_b64:
-    _logo_html = f'<img src="data:image/png;base64,{_logo_b64}" alt="Pfizer">'
+_b64 = _get_logo_b64()
+if _b64:
+    st.markdown(f"""
+    <div class="pfizer-header">
+        <span class="pfizer-logo"><img src="data:image/png;base64,{_b64}" alt="Pfizer"></span>
+        <h1>REBATE DECISION AGENT</h1>
+    </div>
+    """, unsafe_allow_html=True)
 else:
-    _logo_html = '<span style="font-family:Manrope,sans-serif;font-weight:800;color:#1C4FC0;font-size:20px;">Pfizer</span>'
-
-st.markdown(f"""
-<div class="pfizer-header">
-    <span class="pfizer-logo">{_logo_html}</span>
-    <h1>REBATE DECISION AGENT</h1>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown("""
+    <div class="pfizer-header">
+        <span class="pfizer-logo" style="font-family:Manrope,sans-serif;font-weight:800;color:#1C4FC0;font-size:20px;">Pfizer</span>
+        <h1>REBATE DECISION AGENT</h1>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # =============================================================================
