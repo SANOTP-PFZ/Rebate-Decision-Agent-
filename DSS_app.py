@@ -297,7 +297,8 @@ st.markdown("""
     }
 
     /* Nav cards — each is a single fully-clickable st.button, styled as a
-       tall product tile (title, description, arrow row all inside the button). */
+       tall product tile. Both cards share the SAME visual language for a
+       consistent, professional look. */
     .landing-nav-wrap {
         max-width: 920px;
         margin: 8px auto 20px auto;
@@ -316,79 +317,153 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* Common tile shell */
+    /* Shared tile shell — both cards identical */
     .st-key-landing_go_agent .stButton > button,
     .st-key-landing_go_rules .stButton > button,
     div[class*="st-key-landing_go_agent"] .stButton > button,
     div[class*="st-key-landing_go_rules"] .stButton > button {
-        border-radius: 16px !important;
-        padding: 24px 26px !important;
-        min-height: 220px !important;
+        position: relative !important;
+        background: #ffffff !important;
+        color: var(--navy-900) !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 18px !important;
+        padding: 28px 30px !important;
+        min-height: 210px !important;
         text-align: left !important;
         justify-content: flex-start !important;
         align-items: flex-start !important;
         white-space: pre-wrap !important;
         font-family: 'Inter', sans-serif !important;
         font-size: 13px !important;
-        line-height: 1.55 !important;
+        line-height: 1.6 !important;
         letter-spacing: 0.005em !important;
-        transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background 0.2s var(--ease-out) !important;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06),
+                    0 1px 3px rgba(15, 23, 42, 0.04) !important;
+        transition: transform 0.22s var(--ease-out),
+                    box-shadow 0.22s var(--ease-out),
+                    border-color 0.22s var(--ease-out) !important;
         cursor: pointer !important;
         display: flex !important;
         flex-direction: column !important;
+        overflow: hidden !important;
     }
-
-    /* Title = first line of the button label. Streamlit renders the label
-       inside a <p> or <div>; we use ::first-line to bump its size/weight. */
+    /* Force text color on inner spans/paragraphs (Streamlit wraps label) */
+    .st-key-landing_go_agent .stButton > button *,
+    .st-key-landing_go_rules .stButton > button *,
+    div[class*="st-key-landing_go_agent"] .stButton > button *,
+    div[class*="st-key-landing_go_rules"] .stButton > button * {
+        color: var(--text-soft) !important;
+        -webkit-text-fill-color: var(--text-soft) !important;
+    }
+    /* First line = the title. Bump it. */
     .st-key-landing_go_agent .stButton > button::first-line,
     .st-key-landing_go_rules .stButton > button::first-line,
     div[class*="st-key-landing_go_agent"] .stButton > button::first-line,
     div[class*="st-key-landing_go_rules"] .stButton > button::first-line {
         font-family: 'Manrope', sans-serif;
-        font-size: 1.2rem;
+        font-size: 1.28rem;
         font-weight: 800;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.022em;
         line-height: 1.2;
+        color: var(--navy-900);
     }
-
-    /* Primary (Rebate Decision Agent) — navy gradient, white text */
-    .st-key-landing_go_agent .stButton > button,
-    div[class*="st-key-landing_go_agent"] .stButton > button {
-        background: linear-gradient(135deg, #163990 0%, #1C4FC0 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(255,255,255,0.06) !important;
-        box-shadow: 0 10px 28px rgba(22, 57, 144, 0.24) !important;
+    /* Top accent bar — thin navy→cyan gradient at the top of each card */
+    .st-key-landing_go_agent .stButton > button::before,
+    .st-key-landing_go_rules .stButton > button::before,
+    div[class*="st-key-landing_go_agent"] .stButton > button::before,
+    div[class*="st-key-landing_go_rules"] .stButton > button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--navy-700), var(--navy-600), var(--accent));
+        opacity: 0.85;
     }
-    .st-key-landing_go_agent .stButton > button *,
-    div[class*="st-key-landing_go_agent"] .stButton > button * {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
+    /* Decorative arrow tucked in the bottom-right */
+    .st-key-landing_go_agent .stButton > button::after,
+    .st-key-landing_go_rules .stButton > button::after,
+    div[class*="st-key-landing_go_agent"] .stButton > button::after,
+    div[class*="st-key-landing_go_rules"] .stButton > button::after {
+        content: '\2192';
+        position: absolute;
+        right: 24px;
+        bottom: 22px;
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        background: rgba(28, 79, 192, 0.08);
+        border: 1px solid rgba(28, 79, 192, 0.18);
+        color: var(--navy-700);
+        -webkit-text-fill-color: var(--navy-700);
+        font-size: 15px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.22s var(--ease-out),
+                    transform 0.22s var(--ease-out),
+                    border-color 0.22s var(--ease-out);
     }
+    /* Hover: lift + accent border + fill arrow */
     .st-key-landing_go_agent .stButton > button:hover,
-    div[class*="st-key-landing_go_agent"] .stButton > button:hover {
-        transform: translateY(-3px) !important;
-        box-shadow: 0 18px 36px rgba(22, 57, 144, 0.34) !important;
-        background: linear-gradient(135deg, #1C4FC0 0%, #2563d9 100%) !important;
-    }
-
-    /* Secondary (Business Rules) — white card, navy text */
-    .st-key-landing_go_rules .stButton > button,
-    div[class*="st-key-landing_go_rules"] .stButton > button {
-        background: rgba(255,255,255,0.9) !important;
-        color: var(--navy-900) !important;
-        border: 1px solid var(--hairline) !important;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
-    }
-    .st-key-landing_go_rules .stButton > button *,
-    div[class*="st-key-landing_go_rules"] .stButton > button * {
-        color: var(--navy-900) !important;
-        -webkit-text-fill-color: var(--navy-900) !important;
-    }
     .st-key-landing_go_rules .stButton > button:hover,
+    div[class*="st-key-landing_go_agent"] .stButton > button:hover,
     div[class*="st-key-landing_go_rules"] .stButton > button:hover {
         transform: translateY(-3px) !important;
-        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12) !important;
-        background: #ffffff !important;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12),
+                    0 4px 10px rgba(22, 57, 144, 0.10) !important;
+        border-color: rgba(28, 79, 192, 0.35) !important;
+    }
+    .st-key-landing_go_agent .stButton > button:hover::after,
+    .st-key-landing_go_rules .stButton > button:hover::after,
+    div[class*="st-key-landing_go_agent"] .stButton > button:hover::after,
+    div[class*="st-key-landing_go_rules"] .stButton > button:hover::after {
+        background: linear-gradient(135deg, var(--navy-700), var(--navy-600));
+        border-color: var(--navy-600);
+        color: #ffffff;
+        -webkit-text-fill-color: #ffffff;
+        transform: translateX(3px);
+    }
+
+    /* Always-visible disclaimer card */
+    .landing-disclaimer-wrap {
+        max-width: 920px;
+        margin: 18px auto 20px auto;
+    }
+    .landing-disclaimer-card {
+        background: rgba(255,255,255,0.75);
+        border: 1px solid var(--hairline);
+        border-left: 3px solid var(--accent);
+        border-radius: 12px;
+        padding: 16px 22px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .landing-disclaimer-card .ld-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: -0.005em;
+        margin-bottom: 8px;
+    }
+    .landing-disclaimer-card .ld-lede {
+        font-family: 'Inter', sans-serif;
+        font-size: 12.5px;
+        line-height: 1.65;
+        color: var(--text-soft);
+        margin: 0 0 10px 0;
+    }
+    .landing-disclaimer-card .ld-list {
+        margin: 0;
+        padding-left: 20px;
+    }
+    .landing-disclaimer-card .ld-list li {
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        line-height: 1.7;
+        color: var(--text-soft);
     }
 
     /* Compact disclaimer (expander) */
@@ -1614,29 +1689,31 @@ if st.session_state.page == 'landing':
     </div>
     """, unsafe_allow_html=True)
 
-    # ---- Compact disclaimer (collapsed by default) — sits right under the stat pills
-    st.markdown('<div class="landing-disclaimer-wrap">', unsafe_allow_html=True)
-    with st.expander("Indicative projections only \u2014 not a financial commitment. Read full disclaimer", expanded=False):
-        st.markdown("""
-This tool provides projected market-share estimates based on historical analog data and formulary status change assumptions. Results are indicative and intended to support scenario planning only.
+    # ---- Compact disclaimer — always visible (not collapsible)
+    st.markdown("""
+    <div class="landing-disclaimer-wrap">
+        <div class="landing-disclaimer-card">
+            <div class="ld-title">Indicative projections only &mdash; not a financial commitment.</div>
+            <p class="ld-lede">This tool provides projected market-share estimates based on historical analog data and formulary status change assumptions. Results are indicative and intended to support scenario planning only.</p>
+            <ul class="ld-list">
+                <li>Projections are based on analog-derived rate-of-change curves (BCBS, Providence, Blended)</li>
+                <li>Actual market dynamics may differ due to competitive actions, market access changes, or other external factors</li>
+                <li>National roll-up assumes all other MCOs maintain baseline trajectory</li>
+                <li>This tool does not constitute a financial commitment or guarantee</li>
+            </ul>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-- Projections are based on analog-derived rate-of-change curves (BCBS, Providence, Blended)
-- Actual market dynamics may differ due to competitive actions, market access changes, or other external factors
-- National roll-up assumes all other MCOs maintain baseline trajectory
-- This tool does not constitute a financial commitment or guarantee
-        """)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # ---- Nav cards — entire card is a single clickable st.button, styled to
-    # look like a rich tile (title + description + arrow row).
+    # ---- Nav cards — entire card is a single clickable st.button, styled as
+    # a rich uniform tile (both cards share the same visual language).
     st.markdown('<div class="landing-nav-wrap">', unsafe_allow_html=True)
     _nc_l, _nc_r = st.columns(2, gap="medium")
     with _nc_l:
         st.button(
             "Rebate Decision Agent\n\n"
             "Pick an MCO, choose a future status and change month, and see the "
-            "12-month projected market-share trajectory instantly.\n\n"
-            "Open agent  \u2192",
+            "12-month projected market-share trajectory instantly.",
             on_click=go_to_agent,
             use_container_width=True,
             key="landing_go_agent",
@@ -1645,8 +1722,7 @@ This tool provides projected market-share estimates based on historical analog d
         st.button(
             "Business Rules\n\n"
             "How projections are computed \u2014 data sources, analog curves, "
-            "step tables, and the national roll-up methodology.\n\n"
-            "View rules  \u2192",
+            "step tables, and the national roll-up methodology.",
             on_click=go_to_rules,
             use_container_width=True,
             key="landing_go_rules",
