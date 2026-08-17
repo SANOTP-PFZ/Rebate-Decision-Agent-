@@ -927,21 +927,26 @@ st.markdown("""
     .st-key-agent_chart_view .stRadio > div[role="radiogroup"],
     div[class*="st-key-agent_chart_view"] .stRadio > div[role="radiogroup"] {
         display: inline-flex !important;
-        gap: 0 !important;
-        background: var(--surface-2) !important;
-        border: 1px solid var(--hairline) !important;
-        border-radius: 999px !important;
-        padding: 3px !important;
-        box-shadow: var(--shadow-sm) !important;
+        gap: 2px !important;
+        background: #EEF2F8 !important;
+        border: 1px solid rgba(10, 26, 61, 0.06) !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
+        box-shadow: inset 0 1px 2px rgba(10, 26, 61, 0.05) !important;
     }
     .st-key-agent_chart_view .stRadio label,
     div[class*="st-key-agent_chart_view"] .stRadio label {
         margin: 0 !important;
-        padding: 6px 18px !important;
-        border-radius: 999px !important;
+        padding: 7px 20px !important;
+        border-radius: 8px !important;
         cursor: pointer !important;
-        transition: all 0.18s var(--ease-out) !important;
+        transition: background 0.18s var(--ease-out), color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out) !important;
         background: transparent !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 76px !important;
+        gap: 0 !important;
     }
     /* Force text color on ALL descendants (Streamlit wraps label text in <p>/<div>) */
     .st-key-agent_chart_view .stRadio label,
@@ -949,40 +954,56 @@ st.markdown("""
     div[class*="st-key-agent_chart_view"] .stRadio label,
     div[class*="st-key-agent_chart_view"] .stRadio label * {
         font-family: 'Inter', sans-serif !important;
-        font-size: 12px !important;
-        font-weight: 700 !important;
-        color: var(--navy-900) !important;
-        letter-spacing: -0.005em !important;
-        -webkit-text-fill-color: var(--navy-900) !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        color: #4A5878 !important;
+        letter-spacing: 0.01em !important;
+        -webkit-text-fill-color: #4A5878 !important;
+        line-height: 1 !important;
     }
     .st-key-agent_chart_view .stRadio label:hover,
     .st-key-agent_chart_view .stRadio label:hover *,
     div[class*="st-key-agent_chart_view"] .stRadio label:hover,
     div[class*="st-key-agent_chart_view"] .stRadio label:hover * {
-        color: var(--navy-700) !important;
-        -webkit-text-fill-color: var(--navy-700) !important;
+        color: var(--navy-900) !important;
+        -webkit-text-fill-color: var(--navy-900) !important;
+    }
+    .st-key-agent_chart_view .stRadio label:hover:not(:has(input:checked)),
+    div[class*="st-key-agent_chart_view"] .stRadio label:hover:not(:has(input:checked)) {
+        background: rgba(255, 255, 255, 0.6) !important;
     }
     .st-key-agent_chart_view .stRadio label:has(input:checked),
     div[class*="st-key-agent_chart_view"] .stRadio label:has(input:checked) {
-        background: linear-gradient(135deg, var(--navy-600), var(--navy-500)) !important;
-        box-shadow: var(--shadow-sm) !important;
+        background: #FFFFFF !important;
+        box-shadow: 0 1px 2px rgba(10, 26, 61, 0.08), 0 2px 6px rgba(10, 26, 61, 0.06) !important;
     }
     .st-key-agent_chart_view .stRadio label:has(input:checked),
     .st-key-agent_chart_view .stRadio label:has(input:checked) *,
     div[class*="st-key-agent_chart_view"] .stRadio label:has(input:checked),
     div[class*="st-key-agent_chart_view"] .stRadio label:has(input:checked) * {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
+        color: var(--navy-700) !important;
+        -webkit-text-fill-color: var(--navy-700) !important;
+        font-weight: 700 !important;
     }
+    /* Hide the native radio input AND its visual circle wrapper completely */
     .st-key-agent_chart_view .stRadio input[type="radio"],
     div[class*="st-key-agent_chart_view"] .stRadio input[type="radio"] {
         display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        position: absolute !important;
     }
     .st-key-agent_chart_view .stRadio > label > div:first-child,
     .st-key-agent_chart_view .stRadio label [data-baseweb="radio"],
+    .st-key-agent_chart_view .stRadio label > div[data-testid="stMarkdownContainer"] ~ div,
     div[class*="st-key-agent_chart_view"] .stRadio > label > div:first-child,
     div[class*="st-key-agent_chart_view"] .stRadio label [data-baseweb="radio"] {
         display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     /* Kill every source of white strip: element container margin, padding, background */
     .st-key-agent_chart_view,
