@@ -573,7 +573,20 @@ st.markdown("""
     body:has(.landing-page-marker) .block-container {
         padding-top: 0.6rem !important;
         padding-bottom: 0.4rem !important;
-        max-width: 1160px !important;
+        padding-left: 1.4rem !important;
+        padding-right: 1.4rem !important;
+        max-width: 100% !important;
+    }
+    /* Widen every landing section to the full container */
+    body:has(.landing-page-marker) .landing-brandbar,
+    body:has(.landing-page-marker) .landing-hero,
+    body:has(.landing-page-marker) .landing-disclaimer-wrap,
+    body:has(.landing-page-marker) .landing-footer {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    body:has(.landing-page-marker) .landing-hero .lede {
+        max-width: 780px;
     }
     /* Brandbar — trim vertical padding */
     body:has(.landing-page-marker) .landing-brandbar {
