@@ -1414,27 +1414,11 @@ elif st.session_state.page == 'agent':
             """, unsafe_allow_html=True)
 
     # =========================================================================
-    # ACTION ROW — Back to Home (top of main content)
+    # ACTION ROW — Back to Home (top-left of main content)
     # =========================================================================
-    _bh_l, _bh_r = st.columns([6, 1])
-    with _bh_r:
+    _bh_l, _bh_r = st.columns([1, 6])
+    with _bh_l:
         st.button("← Back to Home", on_click=go_to_landing, use_container_width=True, key="agent_back_home")
-
-    # =========================================================================
-    # CONTEXT CHIP ROW
-    # =========================================================================
-    _current_tag = _status_tag(current_status)
-    _future_tag  = _status_tag(future_status)
-    st.markdown(f"""
-    <div class="agent-context">
-        <span class="ctx-label">Scenario</span>
-        <span class="chip">MCO&nbsp;·&nbsp;{selected_mco}</span>
-        <span class="sep"></span>
-        <span class="chip chip-transition">{_current_tag}&nbsp;<span class="arrow">&rarr;</span>&nbsp;{_future_tag}</span>
-        <span class="sep"></span>
-        <span class="chip">Change&nbsp;·&nbsp;{selected_change_month}</span>
-    </div>
-    """, unsafe_allow_html=True)
 
     # =========================================================================
     # COMPUTE (backend math unchanged)
@@ -1451,6 +1435,20 @@ elif st.session_state.page == 'agent':
         reverse = 0
         projected = baseline_ms
 
+    # Context chip row markup (rendered AFTER the chart, before the KPI hero)
+    _current_tag = _status_tag(current_status)
+    _future_tag  = _status_tag(future_status)
+    _context_html = f"""
+    <div class="agent-context">
+        <span class="ctx-label">Scenario</span>
+        <span class="chip">MCO&nbsp;·&nbsp;{selected_mco}</span>
+        <span class="sep"></span>
+        <span class="chip chip-transition">{_current_tag}&nbsp;<span class="arrow">&rarr;</span>&nbsp;{_future_tag}</span>
+        <span class="sep"></span>
+        <span class="chip">Change&nbsp;·&nbsp;{selected_change_month}</span>
+    </div>
+    """
+
     # =========================================================================
     # NATIONAL ROLL-UP (cached per scenario in session_state — pure memoization,
     # calls the untouched compute_national_ms)
@@ -1464,8 +1462,9 @@ elif st.session_state.page == 'agent':
             baseline_natl_ms, projected_natl_ms = st.session_state.agent_rollup_cache[cache_key]
         else:
             # Show skeleton placeholders while computing
-            _sk_kpi = st.empty()
             _sk_chart = st.empty()
+            _sk_kpi = st.empty()
+            _sk_chart.markdown('<div class="agent-skeleton c"></div>', unsafe_allow_html=True)
             _sk_kpi.markdown(
                 '<div class="agent-kpi-row">'
                 '<div class="agent-skeleton k"></div>'
@@ -1473,60 +1472,13 @@ elif st.session_state.page == 'agent':
                 '<div class="agent-skeleton k"></div>'
                 '<div class="agent-skeleton k"></div>'
                 '</div>', unsafe_allow_html=True)
-            _sk_chart.markdown('<div class="agent-skeleton c"></div>', unsafe_allow_html=True)
             baseline_natl_ms, projected_natl_ms = compute_national_ms(selected_mco, projected, change_idx)
             st.session_state.agent_rollup_cache[cache_key] = (baseline_natl_ms, projected_natl_ms)
             _sk_kpi.empty()
             _sk_chart.empty()
 
         # =====================================================================
-        # KPI HERO ROW — 4 cards, value + delta (single row, replaces two strips)
-        # =====================================================================
-        natl_baseline_current = baseline_natl_ms[N_ACTUAL - 1]
-        natl_projected_12m    = projected_natl_ms[min(change_idx + 12, N_TOTAL - 1)]
-        natl_delta            = natl_projected_12m - natl_baseline_current
-
-        mco_baseline_current  = baseline_ms[N_ACTUAL - 1]
-        mco_projected_12m     = projected[min(change_idx + 12, N_TOTAL - 1)]
-        mco_delta             = mco_projected_12m - mco_baseline_current
-
-        # Card 2 (Projected National MS 12m)
-        c2_delta_cls = 'neg' if natl_delta < 0 else 'pos'
-        c2_arrow = '&#9660;' if natl_delta < 0 else '&#9650;'
-        c2_kpi_cls = 'kpi-neg' if natl_delta < 0 else 'kpi-pos'
-        # Card 3 (MCO delta) — big value colored by sign
-        c3_val_cls = 'neg' if mco_delta < 0 else 'pos'
-        c3_arrow = '&#9660;' if mco_delta < 0 else '&#9650;'
-        c3_kpi_cls = 'kpi-neg' if mco_delta < 0 else 'kpi-pos'
-
-        st.markdown('<div class="agent-sec-title">National &amp; MCO Impact</div>', unsafe_allow_html=True)
-        st.markdown(f"""
-        <div class="agent-kpi-row">
-            <div class="agent-kpi">
-                <div class="label">Baseline National MS</div>
-                <div class="value">{natl_baseline_current:.2f}%</div>
-                <div class="delta">as of Mar 2026 (last actual)</div>
-            </div>
-            <div class="agent-kpi {c2_kpi_cls}">
-                <div class="label">Projected · 12m post change</div>
-                <div class="value">{natl_projected_12m:.2f}%</div>
-                <div class="delta {c2_delta_cls}">{c2_arrow} {natl_delta:+.2f} pp vs baseline</div>
-            </div>
-            <div class="agent-kpi {c3_kpi_cls}">
-                <div class="label">MCO-Level Delta</div>
-                <div class="value {c3_val_cls}">{c3_arrow} {mco_delta:+.2f} pp</div>
-                <div class="delta">{mco_baseline_current:.2f}% &rarr; {mco_projected_12m:.2f}%</div>
-            </div>
-            <div class="agent-kpi kpi-accent">
-                <div class="label">Analog Applied</div>
-                <div class="value small">{analog_name}</div>
-                <div class="delta">{current_status} &rarr; {future_status} · Step {STEP_TABLE[step_key]['step']:+d}</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # =====================================================================
-        # SINGLE CHART with segmented toggle (National | MCO)
+        # 1) CHART with segmented toggle (National | MCO) — rendered FIRST
         # =====================================================================
         _tog_l, _tog_r = st.columns([6, 2])
         with _tog_l:
@@ -1644,10 +1596,62 @@ elif st.session_state.page == 'agent':
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
         st.markdown('</div>', unsafe_allow_html=True)
 
+        # =====================================================================
+        # 2) CONTEXT CHIP ROW (Scenario · MCO · transition · Change month)
+        # =====================================================================
+        st.markdown(_context_html, unsafe_allow_html=True)
+
+        # =====================================================================
+        # 3) KPI HERO ROW — National & MCO Impact
+        # =====================================================================
+        natl_baseline_current = baseline_natl_ms[N_ACTUAL - 1]
+        natl_projected_12m    = projected_natl_ms[min(change_idx + 12, N_TOTAL - 1)]
+        natl_delta            = natl_projected_12m - natl_baseline_current
+
+        mco_baseline_current  = baseline_ms[N_ACTUAL - 1]
+        mco_projected_12m     = projected[min(change_idx + 12, N_TOTAL - 1)]
+        mco_delta             = mco_projected_12m - mco_baseline_current
+
+        # Card 2 (Projected National MS 12m)
+        c2_delta_cls = 'neg' if natl_delta < 0 else 'pos'
+        c2_arrow = '&#9660;' if natl_delta < 0 else '&#9650;'
+        c2_kpi_cls = 'kpi-neg' if natl_delta < 0 else 'kpi-pos'
+        # Card 3 (MCO delta) — big value colored by sign
+        c3_val_cls = 'neg' if mco_delta < 0 else 'pos'
+        c3_arrow = '&#9660;' if mco_delta < 0 else '&#9650;'
+        c3_kpi_cls = 'kpi-neg' if mco_delta < 0 else 'kpi-pos'
+
+        st.markdown('<div class="agent-sec-title">National &amp; MCO Impact</div>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="agent-kpi-row">
+            <div class="agent-kpi">
+                <div class="label">Baseline National MS</div>
+                <div class="value">{natl_baseline_current:.2f}%</div>
+                <div class="delta">as of Mar 2026 (last actual)</div>
+            </div>
+            <div class="agent-kpi {c2_kpi_cls}">
+                <div class="label">Projected · 12m post change</div>
+                <div class="value">{natl_projected_12m:.2f}%</div>
+                <div class="delta {c2_delta_cls}">{c2_arrow} {natl_delta:+.2f} pp vs baseline</div>
+            </div>
+            <div class="agent-kpi {c3_kpi_cls}">
+                <div class="label">MCO-Level Delta</div>
+                <div class="value {c3_val_cls}">{c3_arrow} {mco_delta:+.2f} pp</div>
+                <div class="delta">{mco_baseline_current:.2f}% &rarr; {mco_projected_12m:.2f}%</div>
+            </div>
+            <div class="agent-kpi kpi-accent">
+                <div class="label">Analog Applied</div>
+                <div class="value small">{analog_name}</div>
+                <div class="delta">{current_status} &rarr; {future_status} · Step {STEP_TABLE[step_key]['step']:+d}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
     else:
         # =====================================================================
-        # EMPTY STATE — invalid transition
+        # EMPTY STATE — invalid transition (context row shown above it)
         # =====================================================================
+        st.markdown(_context_html, unsafe_allow_html=True)
         _valid_futures = [s for s in STATUS_OPTIONS
                           if s != current_status and (current_status, s) in STEP_TABLE]
         _chips_html = ''.join(f'<span>{s}</span>' for s in _valid_futures) \
@@ -1669,7 +1673,7 @@ elif st.session_state.page == 'agent':
         """, unsafe_allow_html=True)
 
     # =========================================================================
-    # FOOTER META
+    # FOOTER META (bottom of page)
     # =========================================================================
     st.markdown(
         f'<div class="agent-footer">'
