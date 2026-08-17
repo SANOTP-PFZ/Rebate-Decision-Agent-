@@ -296,142 +296,99 @@ st.markdown("""
         font-weight: 800;
     }
 
-    /* Nav cards — 2 col grid.
-       Each card = a visual header (st.markdown div) + a Streamlit button that
-       we style to look like the card's bottom half + CTA row. */
+    /* Nav cards — each is a single fully-clickable st.button, styled as a
+       tall product tile (title, description, arrow row all inside the button). */
     .landing-nav-wrap {
         max-width: 920px;
-        margin: 4px auto 20px auto;
+        margin: 8px auto 20px auto;
     }
-    .landing-nav-card {
-        border-radius: 16px 16px 0 0;
-        padding: 22px 24px 14px 24px;
-        position: relative;
-        overflow: hidden;
-    }
-    .landing-nav-card--primary {
-        background: linear-gradient(135deg, #163990 0%, #1C4FC0 100%);
-        color: #ffffff;
-        border: 1px solid rgba(255,255,255,0.06);
-        border-bottom: none;
-    }
-    .landing-nav-card--secondary {
-        background: rgba(255,255,255,0.85);
-        color: var(--navy-900);
-        border: 1px solid var(--hairline);
-        border-bottom: none;
-    }
-    .landing-nav-card .card-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 12px;
-    }
-    .landing-nav-card--primary .card-icon {
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.25);
-    }
-    .landing-nav-card--secondary .card-icon {
-        background: rgba(28, 79, 192, 0.10);
-        border: 1px solid rgba(28, 79, 192, 0.18);
-    }
-    .landing-nav-card .card-icon svg { width: 18px; height: 18px; }
-    .landing-nav-card--primary .card-icon svg { stroke: #ffffff; }
-    .landing-nav-card--secondary .card-icon svg { stroke: var(--navy-700); }
-    .landing-nav-card .card-title {
-        font-family: 'Manrope', sans-serif;
-        font-size: 1.15rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        margin: 0 0 6px 0;
-    }
-    .landing-nav-card--primary .card-title { color: #ffffff; }
-    .landing-nav-card--secondary .card-title { color: var(--navy-900); }
-    .landing-nav-card .card-desc {
-        font-family: 'Inter', sans-serif;
-        font-size: 12.5px;
-        line-height: 1.5;
-        margin: 0;
-        min-height: 36px;
-    }
-    .landing-nav-card--primary .card-desc { color: rgba(255,255,255,0.85); }
-    .landing-nav-card--secondary .card-desc { color: var(--text-soft); }
-
-    /* Style the buttons that sit immediately under each card so they read as
-       the card's CTA row and visually fuse with the card above. */
+    /* Kill the default Streamlit gap around the button */
     .st-key-landing_go_agent,
     .st-key-landing_go_rules,
     div[class*="st-key-landing_go_agent"],
     div[class*="st-key-landing_go_rules"] {
-        margin-top: -1px !important;
+        margin: 0 !important;
     }
+    .st-key-landing_go_agent .stButton,
+    .st-key-landing_go_rules .stButton,
+    div[class*="st-key-landing_go_agent"] .stButton,
+    div[class*="st-key-landing_go_rules"] .stButton {
+        margin: 0 !important;
+    }
+
+    /* Common tile shell */
+    .st-key-landing_go_agent .stButton > button,
+    .st-key-landing_go_rules .stButton > button,
+    div[class*="st-key-landing_go_agent"] .stButton > button,
+    div[class*="st-key-landing_go_rules"] .stButton > button {
+        border-radius: 16px !important;
+        padding: 24px 26px !important;
+        min-height: 220px !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+        white-space: pre-wrap !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 13px !important;
+        line-height: 1.55 !important;
+        letter-spacing: 0.005em !important;
+        transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background 0.2s var(--ease-out) !important;
+        cursor: pointer !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Title = first line of the button label. Streamlit renders the label
+       inside a <p> or <div>; we use ::first-line to bump its size/weight. */
+    .st-key-landing_go_agent .stButton > button::first-line,
+    .st-key-landing_go_rules .stButton > button::first-line,
+    div[class*="st-key-landing_go_agent"] .stButton > button::first-line,
+    div[class*="st-key-landing_go_rules"] .stButton > button::first-line {
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+    }
+
+    /* Primary (Rebate Decision Agent) — navy gradient, white text */
     .st-key-landing_go_agent .stButton > button,
     div[class*="st-key-landing_go_agent"] .stButton > button {
         background: linear-gradient(135deg, #163990 0%, #1C4FC0 100%) !important;
         color: #ffffff !important;
         border: 1px solid rgba(255,255,255,0.06) !important;
-        border-top: 1px solid rgba(255,255,255,0.14) !important;
-        border-radius: 0 0 16px 16px !important;
-        padding: 14px 24px !important;
-        font-family: 'Inter', sans-serif !important;
-        font-weight: 700 !important;
-        font-size: 13px !important;
-        letter-spacing: 0.02em !important;
-        text-align: left !important;
-        justify-content: space-between !important;
-        display: flex !important;
-        align-items: center !important;
-        box-shadow: 0 8px 24px rgba(22, 57, 144, 0.22) !important;
-        transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out) !important;
+        box-shadow: 0 10px 28px rgba(22, 57, 144, 0.24) !important;
+    }
+    .st-key-landing_go_agent .stButton > button *,
+    div[class*="st-key-landing_go_agent"] .stButton > button * {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
     .st-key-landing_go_agent .stButton > button:hover,
     div[class*="st-key-landing_go_agent"] .stButton > button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 12px 28px rgba(22, 57, 144, 0.32) !important;
-    }
-    .st-key-landing_go_agent .stButton > button::after,
-    div[class*="st-key-landing_go_agent"] .stButton > button::after {
-        content: '→';
-        font-size: 16px;
-        font-weight: 700;
-        margin-left: 12px;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 18px 36px rgba(22, 57, 144, 0.34) !important;
+        background: linear-gradient(135deg, #1C4FC0 0%, #2563d9 100%) !important;
     }
 
+    /* Secondary (Business Rules) — white card, navy text */
     .st-key-landing_go_rules .stButton > button,
     div[class*="st-key-landing_go_rules"] .stButton > button {
-        background: rgba(255,255,255,0.85) !important;
+        background: rgba(255,255,255,0.9) !important;
         color: var(--navy-900) !important;
         border: 1px solid var(--hairline) !important;
-        border-top: 1px solid var(--hairline) !important;
-        border-radius: 0 0 16px 16px !important;
-        padding: 14px 24px !important;
-        font-family: 'Inter', sans-serif !important;
-        font-weight: 700 !important;
-        font-size: 13px !important;
-        letter-spacing: 0.02em !important;
-        text-align: left !important;
-        justify-content: space-between !important;
-        display: flex !important;
-        align-items: center !important;
         box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
-        transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out), background 0.18s var(--ease-out) !important;
+    }
+    .st-key-landing_go_rules .stButton > button *,
+    div[class*="st-key-landing_go_rules"] .stButton > button * {
+        color: var(--navy-900) !important;
+        -webkit-text-fill-color: var(--navy-900) !important;
     }
     .st-key-landing_go_rules .stButton > button:hover,
     div[class*="st-key-landing_go_rules"] .stButton > button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.10) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12) !important;
         background: #ffffff !important;
-    }
-    .st-key-landing_go_rules .stButton > button::after,
-    div[class*="st-key-landing_go_rules"] .stButton > button::after {
-        content: '→';
-        font-size: 16px;
-        font-weight: 700;
-        margin-left: 12px;
-        color: var(--navy-700);
     }
 
     /* Compact disclaimer (expander) */
@@ -1640,15 +1597,12 @@ if st.session_state.page == 'landing':
             <span class="brand-title">Rebate Decision Agent</span>
             <span class="brand-subtitle">Nurtec&reg; Payer Model</span>
         </div>
-        <div class="brand-spacer"></div>
-        <span class="brand-env">Internal &bull; Dataiku</span>
     </div>
     """, unsafe_allow_html=True)
 
     # ---- Hero
     st.markdown("""
     <div class="landing-hero">
-        <div class="eyebrow">Payer Analytics &bull; Nurtec&reg;</div>
         <h1>Model formulary changes.<br/>See the market-share impact.</h1>
         <p class="lede">Simulate the projected impact of a status change &mdash; Preferred, Covered, Not&nbsp;Covered, Specialty &mdash; across MCOs and roll it up to national market share, in seconds.</p>
         <div class="landing-stat-row">
@@ -1660,34 +1614,7 @@ if st.session_state.page == 'landing':
     </div>
     """, unsafe_allow_html=True)
 
-    # ---- Nav cards (2-column grid; each = markdown visual + styled st.button CTA)
-    st.markdown('<div class="landing-nav-wrap">', unsafe_allow_html=True)
-    _nc_l, _nc_r = st.columns(2, gap="medium")
-    with _nc_l:
-        st.markdown("""
-        <div class="landing-nav-card landing-nav-card--primary">
-            <div class="card-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
-            </div>
-            <div class="card-title">Rebate Decision Agent</div>
-            <p class="card-desc">Pick an MCO, choose a future status and change month, and see the 12-month projected market-share trajectory instantly.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        st.button("Open agent", on_click=go_to_agent, use_container_width=True, key="landing_go_agent")
-    with _nc_r:
-        st.markdown("""
-        <div class="landing-nav-card landing-nav-card--secondary">
-            <div class="card-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            </div>
-            <div class="card-title">Business Rules</div>
-            <p class="card-desc">How projections are computed &mdash; data sources, analog curves, step tables, and the national roll-up methodology.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        st.button("View rules", on_click=go_to_rules, use_container_width=True, key="landing_go_rules")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # ---- Compact disclaimer (collapsed by default)
+    # ---- Compact disclaimer (collapsed by default) — sits right under the stat pills
     st.markdown('<div class="landing-disclaimer-wrap">', unsafe_allow_html=True)
     with st.expander("Indicative projections only \u2014 not a financial commitment. Read full disclaimer", expanded=False):
         st.markdown("""
@@ -1700,10 +1627,36 @@ This tool provides projected market-share estimates based on historical analog d
         """)
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # ---- Nav cards — entire card is a single clickable st.button, styled to
+    # look like a rich tile (title + description + arrow row).
+    st.markdown('<div class="landing-nav-wrap">', unsafe_allow_html=True)
+    _nc_l, _nc_r = st.columns(2, gap="medium")
+    with _nc_l:
+        st.button(
+            "Rebate Decision Agent\n\n"
+            "Pick an MCO, choose a future status and change month, and see the "
+            "12-month projected market-share trajectory instantly.\n\n"
+            "Open agent  \u2192",
+            on_click=go_to_agent,
+            use_container_width=True,
+            key="landing_go_agent",
+        )
+    with _nc_r:
+        st.button(
+            "Business Rules\n\n"
+            "How projections are computed \u2014 data sources, analog curves, "
+            "step tables, and the national roll-up methodology.\n\n"
+            "View rules  \u2192",
+            on_click=go_to_rules,
+            use_container_width=True,
+            key="landing_go_rules",
+        )
+    st.markdown('</div>', unsafe_allow_html=True)
+
     # ---- Footer
     st.markdown("""
     <div class="landing-footer">
-        Data as of Mar 2026 <span class="dot">&bull;</span> Source: Xponent (Plantrak) via Dataiku <span class="dot">&bull;</span> Nurtec&reg; Payer Model <span class="dot">&bull;</span> Pfizer Confidential
+        Developed by <strong>ZS Primary Care Analytics Team</strong>
     </div>
     """, unsafe_allow_html=True)
 
