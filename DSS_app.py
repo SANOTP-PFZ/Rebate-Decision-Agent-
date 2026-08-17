@@ -529,11 +529,40 @@ def get_first_name():
 # =============================================================================
 # HEADER (all pages)
 # =============================================================================
-# Load logo as base64
-_logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png")
-if os.path.exists(_logo_path):
-    with open(_logo_path, "rb") as _f:
-        _logo_b64 = base64.b64encode(_f.read()).decode()
+# Load logo as base64 for HTML embedding (resized for header use)
+def _load_logo_b64():
+    """Try multiple paths to find, resize, and encode logo.png."""
+    candidates = []
+    try:
+        candidates.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png"))
+    except Exception:
+        pass
+    candidates.append(os.path.join(os.getcwd(), "logo.png"))
+    candidates.append(r"C:\Users\SANOTP\Desktop\Rebate_model\logo.png")
+    for p in candidates:
+        if p and os.path.isfile(p):
+            try:
+                from PIL import Image
+                import io
+                img = Image.open(p)
+                # Resize to max height of 60px for header
+                max_h = 60
+                if img.height > max_h:
+                    ratio = max_h / img.height
+                    img = img.resize((int(img.width * ratio), max_h), Image.LANCZOS)
+                buf = io.BytesIO()
+                img.save(buf, format="PNG", optimize=True)
+                return base64.b64encode(buf.getvalue()).decode()
+            except ImportError:
+                # No PIL, use raw file
+                with open(p, "rb") as f:
+                    return base64.b64encode(f.read()).decode()
+            except Exception:
+                continue
+    return None
+
+_logo_b64 = _load_logo_b64()
+if _logo_b64:
     _logo_html = f'<img src="data:image/png;base64,{_logo_b64}" alt="Pfizer">'
 else:
     _logo_html = '<span style="font-family:Manrope,sans-serif;font-weight:800;color:#1C4FC0;font-size:20px;">Pfizer</span>'
