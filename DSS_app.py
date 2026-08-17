@@ -765,14 +765,28 @@ st.markdown("""
     section[data-testid="stSidebar"] .block-container {
         padding-top: 0 !important;
     }
+    /* Kill any residual margin on the first child inside the sidebar */
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Hide the invisible agent-page-marker container so it doesn't add vertical space above Back-to-Home */
+    [data-testid="stElementContainer"]:has(.agent-page-marker),
+    div:has(> .agent-page-marker) {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
 
     /* Agent — sidebar brand block (stacked: logo on top, title below,
        spacing matched to Migraine Intelligence Hub reference) */
     .agent-sidebar-brand {
         display: flex;
         flex-direction: column;
-        gap: 0.7rem;
-        padding: 1.1rem 1.1rem 1rem 1.1rem;
+        gap: 0.6rem;
+        padding: 1.6rem 1.1rem 1rem 1.1rem;
         margin: 0 -1rem 0 -1rem;
         border-bottom: 1px solid var(--hairline);
     }
@@ -835,9 +849,11 @@ st.markdown("""
     .agent-state-panel { margin-top: 0.15rem; }
     .agent-details-panel { margin-top: 0.15rem; }
 
-    /* Main-content top alignment — start at same vertical position as sidebar brand */
+    /* Main-content top alignment — line the Back-to-Home button up with
+       the sidebar brand block's logo (sidebar brand has padding-top: 1.6rem
+       so match it here) */
     body:has(.agent-page-marker) .block-container {
-        padding-top: 1.1rem !important;
+        padding-top: 1.6rem !important;
     }
 
     /* Agent — Back-to-Home compact button (overrides the global sidebar button style) */
