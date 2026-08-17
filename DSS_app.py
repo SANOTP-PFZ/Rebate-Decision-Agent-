@@ -1241,21 +1241,28 @@ def _get_logo_b64():
 _b64 = _get_logo_b64()
 # On the agent page, the brand block lives in the sidebar (see agent-sidebar-brand).
 # Render the wide global header only on the landing and business-rules pages.
+# Primary logo source is the Pfizer corporate CDN — matches the Migraine
+# Intelligence Hub reference and bypasses file-path issues in Dataiku.
+_pfizer_cdn_url = "https://cdn.pfizer.com/pfizercom/2022-10/Pfizer_Logo_Color_CMYK.png"
 if st.session_state.page != 'agent':
     if _b64:
-        st.markdown(f"""
-        <div class="pfizer-header">
-            <span class="pfizer-logo"><img src="data:image/png;base64,{_b64}" alt="Pfizer"></span>
-            <h1>REBATE DECISION AGENT</h1>
-        </div>
-        """, unsafe_allow_html=True)
+        _hdr_img = (
+            f'<img src="{_pfizer_cdn_url}" '
+            f'onerror="this.onerror=null;this.src=\'data:image/png;base64,{_b64}\';" '
+            f'alt="Pfizer" style="height:30px;object-fit:contain;">'
+        )
     else:
-        st.markdown(f"""
-        <div class="pfizer-header">
-            <span class="pfizer-logo"><img src="logo.png" alt="Pfizer" style="height:30px;object-fit:contain;"></span>
-            <h1>REBATE DECISION AGENT</h1>
-        </div>
-        """, unsafe_allow_html=True)
+        _hdr_img = (
+            f'<img src="{_pfizer_cdn_url}" '
+            f'onerror="this.onerror=null;this.src=\'logo.png\';" '
+            f'alt="Pfizer" style="height:30px;object-fit:contain;">'
+        )
+    st.markdown(f"""
+    <div class="pfizer-header">
+        <span class="pfizer-logo">{_hdr_img}</span>
+        <h1>REBATE DECISION AGENT</h1>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # =============================================================================
@@ -1603,10 +1610,21 @@ elif st.session_state.page == 'agent':
 
     with st.sidebar:
         # ---- Brand block at the very top (stacked: logo -> title -> subtitle) ----
+        # Primary: Pfizer CDN logo (works on the corporate network, same source
+        # as the Migraine Intelligence Hub reference). Fallback: local base64.
+        _pfizer_cdn = "https://cdn.pfizer.com/pfizercom/2022-10/Pfizer_Logo_Color_CMYK.png"
         if _b64:
-            _brand_logo = f'<img class="brand-logo" src="data:image/png;base64,{_b64}" alt="Pfizer">'
+            _brand_logo = (
+                f'<img class="brand-logo" src="{_pfizer_cdn}" '
+                f'onerror="this.onerror=null;this.src=\'data:image/png;base64,{_b64}\';" '
+                f'alt="Pfizer">'
+            )
         else:
-            _brand_logo = '<span class="brand-logo-fallback">Pfizer</span>'
+            _brand_logo = (
+                f'<img class="brand-logo" src="{_pfizer_cdn}" '
+                f'onerror="this.onerror=null;this.src=\'logo.png\';" '
+                f'alt="Pfizer">'
+            )
         st.markdown(f"""
         <div class="agent-sidebar-brand">
             {_brand_logo}
