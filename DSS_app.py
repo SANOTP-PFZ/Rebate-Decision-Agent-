@@ -794,8 +794,9 @@ st.markdown("""
 
     /* Section header breathing room on rules page */
     body:has(.rules-page-marker) h4 {
-        margin-top: 18px !important;
-        margin-bottom: 6px !important;
+        margin-top: 22px !important;
+        margin-bottom: 14px !important;
+        padding-bottom: 10px !important;
     }
 
     /* Rules page — tighten global vertical rhythm */
@@ -812,18 +813,14 @@ st.markdown("""
         margin-top: 10px !important;
         margin-bottom: 10px !important;
     }
-    /* Shrink <br> visual gaps between sections */
-    body:has(.rules-page-marker) [data-testid="stMarkdownContainer"] br {
-        line-height: 0.4 !important;
-    }
     /* Tighter H2 page-title spacing */
     body:has(.rules-page-marker) h2 {
         margin-top: 4px !important;
         margin-bottom: 2px !important;
     }
-    /* Collapse Streamlit element gaps a touch */
+    /* Collapse Streamlit element gaps a touch (but leave room for h4 underlines) */
     body:has(.rules-page-marker) [data-testid="stVerticalBlock"] {
-        gap: 0.35rem !important;
+        gap: 0.6rem !important;
     }
 
     /* Sidebar */
