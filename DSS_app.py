@@ -796,41 +796,65 @@ st.markdown("""
         border-radius: 999px !important;
         cursor: pointer !important;
         transition: all 0.18s var(--ease-out) !important;
+        background: transparent !important;
+    }
+    /* Force text color on ALL descendants (Streamlit wraps label text in <p>/<div>) */
+    .st-key-agent_chart_view .stRadio label,
+    .st-key-agent_chart_view .stRadio label *,
+    div[class*="st-key-agent_chart_view"] .stRadio label,
+    div[class*="st-key-agent_chart_view"] .stRadio label * {
         font-family: 'Inter', sans-serif !important;
         font-size: 12px !important;
         font-weight: 700 !important;
         color: var(--navy-900) !important;
         letter-spacing: -0.005em !important;
+        -webkit-text-fill-color: var(--navy-900) !important;
     }
     .st-key-agent_chart_view .stRadio label:hover,
-    div[class*="st-key-agent_chart_view"] .stRadio label:hover {
+    .st-key-agent_chart_view .stRadio label:hover *,
+    div[class*="st-key-agent_chart_view"] .stRadio label:hover,
+    div[class*="st-key-agent_chart_view"] .stRadio label:hover * {
         color: var(--navy-700) !important;
+        -webkit-text-fill-color: var(--navy-700) !important;
     }
     .st-key-agent_chart_view .stRadio label:has(input:checked),
     div[class*="st-key-agent_chart_view"] .stRadio label:has(input:checked) {
         background: linear-gradient(135deg, var(--navy-600), var(--navy-500)) !important;
-        color: #ffffff !important;
         box-shadow: var(--shadow-sm) !important;
+    }
+    .st-key-agent_chart_view .stRadio label:has(input:checked),
+    .st-key-agent_chart_view .stRadio label:has(input:checked) *,
+    div[class*="st-key-agent_chart_view"] .stRadio label:has(input:checked),
+    div[class*="st-key-agent_chart_view"] .stRadio label:has(input:checked) * {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
     .st-key-agent_chart_view .stRadio input[type="radio"],
     div[class*="st-key-agent_chart_view"] .stRadio input[type="radio"] {
         display: none !important;
     }
     .st-key-agent_chart_view .stRadio > label > div:first-child,
-    div[class*="st-key-agent_chart_view"] .stRadio > label > div:first-child {
+    .st-key-agent_chart_view .stRadio label [data-baseweb="radio"],
+    div[class*="st-key-agent_chart_view"] .stRadio > label > div:first-child,
+    div[class*="st-key-agent_chart_view"] .stRadio label [data-baseweb="radio"] {
         display: none !important;
     }
-    /* Kill the empty white strip Streamlit inserts below the radio */
+    /* Kill every source of white strip: element container margin, padding, background */
     .st-key-agent_chart_view,
-    div[class*="st-key-agent_chart_view"] {
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-    }
+    div[class*="st-key-agent_chart_view"],
     .st-key-agent_chart_view [data-testid="stRadio"],
-    div[class*="st-key-agent_chart_view"] [data-testid="stRadio"] {
+    .st-key-agent_chart_view [data-testid="stElementContainer"],
+    .st-key-agent_chart_view [data-testid="element-container"],
+    .st-key-agent_chart_view [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_chart_view"] [data-testid="stRadio"],
+    div[class*="st-key-agent_chart_view"] [data-testid="stElementContainer"],
+    div[class*="st-key-agent_chart_view"] [data-testid="element-container"],
+    div[class*="st-key-agent_chart_view"] [data-testid="stVerticalBlock"] {
         background: transparent !important;
         margin: 0 !important;
         padding: 0 !important;
+        gap: 0 !important;
+        border: none !important;
     }
 
     /* Agent — segmented toggle (radio styled as pills) */
@@ -1515,20 +1539,6 @@ elif st.session_state.page == 'agent':
         reverse = 0
         projected = baseline_ms
 
-    # Context chip row markup (rendered AFTER the chart, before the KPI hero)
-    _current_tag = _status_tag(current_status)
-    _future_tag  = _status_tag(future_status)
-    _context_html = f"""
-    <div class="agent-context">
-        <span class="ctx-label">Scenario</span>
-        <span class="chip">MCO&nbsp;·&nbsp;{selected_mco}</span>
-        <span class="sep"></span>
-        <span class="chip chip-transition">{_current_tag}&nbsp;<span class="arrow">&rarr;</span>&nbsp;{_future_tag}</span>
-        <span class="sep"></span>
-        <span class="chip">Change&nbsp;·&nbsp;{selected_change_month}</span>
-    </div>
-    """
-
     # =========================================================================
     # NATIONAL ROLL-UP (cached per scenario in session_state — pure memoization,
     # calls the untouched compute_national_ms)
@@ -1675,12 +1685,7 @@ elif st.session_state.page == 'agent':
         st.markdown('</div>', unsafe_allow_html=True)
 
         # =====================================================================
-        # 2) CONTEXT CHIP ROW (Scenario · MCO · transition · Change month)
-        # =====================================================================
-        st.markdown(_context_html, unsafe_allow_html=True)
-
-        # =====================================================================
-        # 3) KPI HERO ROW — National & MCO Impact
+        # 2) KPI HERO ROW — National & MCO Impact
         # =====================================================================
         natl_baseline_current = baseline_natl_ms[N_ACTUAL - 1]
         natl_projected_12m    = projected_natl_ms[min(change_idx + 12, N_TOTAL - 1)]
@@ -1727,9 +1732,8 @@ elif st.session_state.page == 'agent':
 
     else:
         # =====================================================================
-        # EMPTY STATE — invalid transition (context row shown above it)
+        # EMPTY STATE — invalid transition
         # =====================================================================
-        st.markdown(_context_html, unsafe_allow_html=True)
         _valid_futures = [s for s in STATUS_OPTIONS
                           if s != current_status and (current_status, s) in STEP_TABLE]
         _chips_html = ''.join(f'<span>{s}</span>' for s in _valid_futures) \
