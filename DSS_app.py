@@ -15,277 +15,400 @@ st.set_page_config(
 )
 
 # =============================================================================
-# PFIZER BRAND COLORS
+# PFIZER BRAND COLORS (aligned with Migraine Intelligence Hub palette)
 # =============================================================================
-PFZ_BLUE = '#0093D0'
-PFZ_DARK_BLUE = '#002F6C'
-PFZ_RED = '#E03C31'
-PFZ_ORANGE = '#F5A623'
-PFZ_GRAY = '#63666A'
+PFZ_BLUE = '#3B6FD9'
+PFZ_DARK_BLUE = '#0A1A3D'
+PFZ_NAVY_700 = '#163990'
+PFZ_NAVY_600 = '#1C4FC0'
+PFZ_ACCENT = '#41B6E6'
+PFZ_RED = '#EF4444'
+PFZ_ORANGE = '#F59E0B'
+PFZ_GREEN = '#10B981'
+PFZ_GRAY = '#64748B'
 PFZ_WHITE = '#FFFFFF'
+PFZ_BG = '#EEF3FB'
+PFZ_SURFACE = '#FFFFFF'
 
 # =============================================================================
 # CSS
 # =============================================================================
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --navy-900: #0A1A3D;
+        --navy-800: #102A5C;
+        --navy-700: #163990;
+        --navy-600: #1C4FC0;
+        --navy-500: #3B6FD9;
+        --accent: #41B6E6;
+        --bg: #EEF3FB;
+        --surface: #FFFFFF;
+        --surface-2: #F8FAFD;
+        --text: #0F172A;
+        --text-muted: #64748B;
+        --text-soft: #475569;
+        --hairline: rgba(15,23,42,0.08);
+        --up: #10B981;
+        --down: #EF4444;
+        --shadow-sm: 0 2px 8px rgba(15,23,42,0.05), 0 1px 2px rgba(15,23,42,0.04);
+        --shadow-md: 0 6px 16px rgba(15,23,42,0.07), 0 2px 4px rgba(15,23,42,0.04);
+        --shadow-lg: 0 18px 40px rgba(15,23,42,0.10), 0 6px 12px rgba(15,23,42,0.06);
+        --panel-radius: 18px;
+        --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     .block-container {
-        padding-top: 1rem !important;
+        padding-top: 1.2rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
     }
-    .stApp { background-color: #F7FAFC; }
+    .stApp {
+        background:
+            radial-gradient(ellipse 80% 60% at 0% 0%, rgba(28,79,192,0.08) 0%, transparent 60%),
+            radial-gradient(ellipse 70% 50% at 100% 0%, rgba(65,182,230,0.07) 0%, transparent 55%),
+            radial-gradient(ellipse 60% 50% at 50% 100%, rgba(124,58,237,0.04) 0%, transparent 60%),
+            var(--bg) !important;
+    }
 
     /* Fade-in animation */
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(8px); }
+        from { opacity: 0; transform: translateY(6px); }
         to { opacity: 1; transform: translateY(0); }
     }
     .main .block-container {
-        animation: fadeIn 0.4s ease-out;
+        animation: fadeIn 0.35s var(--ease-out);
     }
 
+    /* Header */
     .pfizer-header {
-        background: linear-gradient(135deg, #002F6C, #004B8D);
-        padding: 14px 28px;
+        background: rgba(255,255,255,0.62);
+        backdrop-filter: saturate(180%) blur(22px);
+        -webkit-backdrop-filter: saturate(180%) blur(22px);
+        padding: 14px 24px;
         display: flex;
         align-items: center;
-        gap: 20px;
-        border-radius: 6px;
-        margin-bottom: 1.2rem;
-        box-shadow: 0 3px 10px rgba(0,47,108,0.15);
+        gap: 18px;
+        border-radius: 14px;
+        margin-bottom: 1.4rem;
+        border: 1px solid var(--hairline);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+    }
+    .pfizer-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--navy-600), var(--accent), var(--navy-500));
+        opacity: 0.7;
     }
     .pfizer-logo {
-        font-size: 22px;
-        font-weight: 900;
-        color: #0093D0;
-        font-style: italic;
-        border-right: 2px solid rgba(0,147,208,0.4);
-        padding-right: 20px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--navy-600);
+        border-right: 1px solid var(--hairline);
+        padding-right: 18px;
+        letter-spacing: -0.02em;
     }
     .pfizer-header h1 {
-        color: white;
-        font-size: 18px;
+        color: var(--navy-900);
+        font-family: 'Manrope', sans-serif;
+        font-size: 16px;
         margin: 0;
-        font-weight: 600;
-        letter-spacing: 1px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
     }
 
     /* Landing page */
     .greeting {
-        font-size: 36px;
-        font-weight: 700;
-        color: #002F6C;
+        font-family: 'Manrope', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--navy-900);
         text-align: center;
-        margin: 40px 0 8px 0;
+        margin: 48px 0 8px 0;
+        letter-spacing: -0.025em;
     }
     .disclaimer-box {
-        background: white;
-        border-radius: 10px;
-        padding: 24px 32px;
-        border: 1px solid #D0DEE8;
-        box-shadow: 0 2px 8px rgba(0,47,108,0.05);
+        background: rgba(255,255,255,0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        padding: 28px 36px;
+        border: 1px solid var(--hairline);
+        box-shadow: var(--shadow-md);
         max-width: 700px;
-        margin: 20px auto 30px auto;
+        margin: 24px auto 36px auto;
     }
     .disclaimer-box h3 {
-        color: #002F6C;
+        font-family: 'Manrope', sans-serif;
+        color: var(--navy-900);
         font-size: 14px;
         font-weight: 700;
-        margin: 0 0 10px 0;
-        padding-bottom: 6px;
-        border-bottom: 2px solid #0093D0;
+        margin: 0 0 12px 0;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--accent);
     }
     .disclaimer-box p, .disclaimer-box li {
-        color: #555;
-        font-size: 12px;
+        color: var(--text-soft);
+        font-size: 12.5px;
         line-height: 1.7;
+        font-family: 'Inter', sans-serif;
     }
     .disclaimer-box ul {
         padding-left: 18px;
-        margin: 6px 0;
+        margin: 8px 0;
     }
 
     /* Sidebar */
     section[data-testid="stSidebar"] {
-        background-color: #F0F6FC !important;
+        background: rgba(255,255,255,0.62) !important;
+        backdrop-filter: saturate(180%) blur(22px) !important;
+        -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
         width: 320px !important;
-        border-right: 2px solid #0093D0 !important;
+        border-right: 1px solid var(--hairline) !important;
+        box-shadow: var(--shadow-sm) !important;
     }
     section[data-testid="stSidebar"] label {
-        color: #002F6C !important;
+        color: var(--navy-900) !important;
+        font-family: 'Inter', sans-serif !important;
         font-weight: 600 !important;
         font-size: 12px !important;
     }
     section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] {
-        background-color: white !important;
-        border-color: #0093D0 !important;
+        background-color: rgba(255,255,255,0.8) !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 10px !important;
     }
     section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] span {
-        color: #002F6C !important;
+        color: var(--navy-900) !important;
+        font-family: 'Inter', sans-serif !important;
     }
     section[data-testid="stSidebar"] .stSelectbox svg {
-        fill: #0093D0 !important;
+        fill: var(--navy-600) !important;
     }
     section[data-testid="stSidebar"] .stTextInput input {
-        background-color: #EDF1F5 !important;
-        color: #002F6C !important;
-        border: 1px solid #0093D0 !important;
-        -webkit-text-fill-color: #002F6C !important;
+        background-color: var(--surface-2) !important;
+        color: var(--navy-900) !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 10px !important;
+        -webkit-text-fill-color: var(--navy-900) !important;
         opacity: 1 !important;
+        font-family: 'Inter', sans-serif !important;
     }
     section[data-testid="stSidebar"] .stTextInput input:disabled {
-        background-color: #E8F4FD !important;
-        color: #002F6C !important;
-        -webkit-text-fill-color: #002F6C !important;
+        background-color: rgba(28,79,192,0.05) !important;
+        color: var(--navy-900) !important;
+        -webkit-text-fill-color: var(--navy-900) !important;
         opacity: 1 !important;
         font-weight: 600 !important;
-        border: 1px solid #B0D4E8 !important;
+        border: 1px solid rgba(28,79,192,0.15) !important;
     }
     section[data-testid="stSidebar"] .stButton > button {
-        background: #0093D0 !important;
+        background: linear-gradient(135deg, var(--navy-600), var(--navy-500)) !important;
         color: white !important;
-        font-weight: 700 !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 600 !important;
         border: none !important;
-        border-radius: 5px !important;
-        padding: 10px !important;
-        transition: background 0.2s ease;
+        border-radius: 10px !important;
+        padding: 10px 16px !important;
+        box-shadow: var(--shadow-sm) !important;
+        transition: all 0.25s var(--ease) !important;
     }
     section[data-testid="stSidebar"] .stButton > button:hover {
-        background: #002F6C !important;
+        background: linear-gradient(135deg, var(--navy-700), var(--navy-600)) !important;
+        box-shadow: var(--shadow-md) !important;
+        transform: translateY(-1px) !important;
     }
 
     .sidebar-header {
-        color: #002F6C;
-        font-size: 14px;
+        font-family: 'Manrope', sans-serif;
+        color: var(--navy-900);
+        font-size: 13px;
         font-weight: 700;
-        padding-bottom: 6px;
-        border-bottom: 2px solid #0093D0;
-        margin-bottom: 10px;
-    }
-    .scenario-box {
-        background: #E8F4FD;
-        border: 1px solid #0093D0;
-        border-left: 4px solid #0093D0;
-        border-radius: 5px;
-        padding: 12px;
-        margin-top: 14px;
-        transition: border-color 0.3s ease;
-    }
-    .scenario-box h4 {
-        color: #002F6C; margin: 0 0 6px 0;
-        font-size: 11px; font-weight: 700;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--accent);
+        margin-bottom: 12px;
+        letter-spacing: -0.01em;
         text-transform: uppercase;
     }
+    .scenario-box {
+        background: rgba(28,79,192,0.04);
+        border: 1px solid rgba(28,79,192,0.12);
+        border-left: 3px solid var(--navy-600);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-top: 16px;
+        transition: all 0.25s var(--ease);
+    }
+    .scenario-box:hover {
+        background: rgba(28,79,192,0.06);
+        border-color: rgba(28,79,192,0.2);
+    }
+    .scenario-box h4 {
+        font-family: 'Manrope', sans-serif;
+        color: var(--navy-900); margin: 0 0 8px 0;
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.06em;
+    }
     .scenario-box p {
-        color: #333; font-size: 11px; margin: 2px 0;
+        color: var(--text-soft); font-size: 11.5px; margin: 3px 0;
+        font-family: 'Inter', sans-serif;
     }
 
     /* Metric cards */
     .metric-card {
-        background: white;
-        border-radius: 8px;
-        padding: 18px 12px;
+        background: var(--surface);
+        border-radius: 14px;
+        padding: 20px 14px;
         text-align: center;
-        border: 1px solid #D0DEE8;
-        border-left: 4px solid #0093D0;
-        box-shadow: 0 2px 6px rgba(0,47,108,0.06);
-        transition: box-shadow 0.2s ease, transform 0.2s ease;
+        border: 1px solid var(--hairline);
+        border-left: none;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.28s var(--ease-out), box-shadow 0.28s var(--ease);
+        position: relative;
+        overflow: hidden;
+    }
+    .metric-card::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 4px;
+        background: var(--accent);
+        border-radius: 0 4px 4px 0;
     }
     .metric-card:hover {
-        box-shadow: 0 4px 12px rgba(0,47,108,0.12);
-        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-3px);
     }
     .metric-card .label {
-        font-size: 10px; color: #63666A;
-        text-transform: uppercase; letter-spacing: 0.5px;
-        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 10.5px; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: 0.06em;
+        margin-bottom: 10px; font-weight: 500;
     }
     .metric-card .value {
-        font-size: 24px; font-weight: 800;
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.5rem; font-weight: 700;
+        letter-spacing: -0.02em;
+        font-variant-numeric: tabular-nums;
     }
-    .metric-card .value.negative { color: #E03C31; }
-    .metric-card .value.positive { color: #002F6C; }
-    .metric-card .value.accent { color: #0093D0; }
-    .metric-card.border-negative { border-left-color: #E03C31; }
-    .metric-card.border-positive { border-left-color: #002F6C; }
-    .metric-card.border-accent { border-left-color: #0093D0; }
+    .metric-card .value.negative { color: var(--down); }
+    .metric-card .value.positive { color: var(--navy-900); }
+    .metric-card .value.accent { color: var(--navy-600); }
+    .metric-card.border-negative::before { background: var(--down); }
+    .metric-card.border-positive::before { background: linear-gradient(180deg, var(--navy-600), var(--accent)); }
+    .metric-card.border-accent::before { background: var(--accent); }
 
     .impact-header {
-        background: linear-gradient(135deg, #002F6C, #003D7A);
-        color: white;
-        padding: 10px 8px;
-        border-radius: 4px;
+        background: rgba(255,255,255,0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: var(--navy-900);
+        padding: 12px 16px;
+        border-radius: 12px;
         text-align: center;
-        font-size: 11px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 12px;
         font-weight: 700;
-        letter-spacing: 1px;
-        margin: 8px 0 12px 0;
-        box-shadow: 0 2px 4px rgba(0,47,108,0.1);
+        letter-spacing: 0.06em;
+        margin: 12px 0 16px 0;
+        border: 1px solid var(--hairline);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+    }
+    .impact-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--navy-600), var(--accent));
     }
 
     .section-divider {
-        border-top: 1px solid #E4ECF2;
-        margin: 24px 0 16px 0;
+        border: none;
+        border-top: 1px solid var(--hairline);
+        margin: 28px 0 20px 0;
     }
 
     /* Chart title */
     .chart-title {
-        font-size: 13px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 14px;
         font-weight: 700;
-        color: #002F6C;
-        margin: 0 0 4px 0;
+        color: var(--navy-900);
+        margin: 0 0 6px 0;
         padding-left: 4px;
+        letter-spacing: -0.01em;
     }
 
     /* Primary buttons (landing page) */
     .stButton > button[kind="primary"],
     button[data-testid="baseButton-primary"] {
-        background: #002F6C !important;
+        background: linear-gradient(135deg, var(--navy-600), var(--navy-500)) !important;
         color: white !important;
-        font-weight: 700 !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 600 !important;
         border: none !important;
-        border-radius: 6px !important;
-        padding: 12px !important;
-        transition: background 0.2s ease;
+        border-radius: 12px !important;
+        padding: 14px !important;
+        box-shadow: var(--shadow-sm) !important;
+        transition: all 0.25s var(--ease) !important;
     }
     .stButton > button[kind="primary"]:hover,
     button[data-testid="baseButton-primary"]:hover {
-        background: #0093D0 !important;
+        background: linear-gradient(135deg, var(--navy-700), var(--navy-600)) !important;
+        box-shadow: var(--shadow-md) !important;
+        transform: translateY(-1px) !important;
     }
 
     /* Secondary buttons */
     .stButton > button[kind="secondary"],
     button[data-testid="baseButton-secondary"] {
-        background: white !important;
-        color: #002F6C !important;
+        background: rgba(255,255,255,0.8) !important;
+        color: var(--navy-900) !important;
+        font-family: 'Inter', sans-serif !important;
         font-weight: 600 !important;
-        border: 2px solid #0093D0 !important;
-        border-radius: 6px !important;
-        padding: 12px !important;
-        transition: background 0.2s ease, border-color 0.2s ease;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 12px !important;
+        padding: 14px !important;
+        box-shadow: var(--shadow-sm) !important;
+        transition: all 0.25s var(--ease) !important;
     }
     .stButton > button[kind="secondary"]:hover,
     button[data-testid="baseButton-secondary"]:hover {
-        background: #E8F4FD !important;
-        border-color: #002F6C !important;
+        background: rgba(255,255,255,1) !important;
+        border-color: rgba(28,79,192,0.25) !important;
+        box-shadow: var(--shadow-md) !important;
+        transform: translateY(-1px) !important;
     }
 
     /* Dataframe / table styling */
     [data-testid="stDataFrame"] {
-        border: 1px solid #D0DEE8;
-        border-radius: 6px;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        overflow: hidden;
     }
     [data-testid="stDataFrame"] th {
-        background: #002F6C !important;
+        background: var(--navy-900) !important;
         color: white !important;
+        font-family: 'Inter', sans-serif !important;
     }
 
     /* Info box */
     .stAlert {
-        background: #E8F4FD !important;
-        border: 1px solid #0093D0 !important;
-        color: #002F6C !important;
+        background: rgba(28,79,192,0.04) !important;
+        border: 1px solid rgba(28,79,192,0.12) !important;
+        border-radius: 12px !important;
+        color: var(--navy-900) !important;
+        font-family: 'Inter', sans-serif !important;
     }
 
     #MainMenu {visibility: hidden;}
@@ -404,46 +527,46 @@ elif st.session_state.page == 'rules':
     st.button("Back to Home", on_click=go_to_landing)
 
     st.markdown("---")
-    st.markdown('<h2 style="color:#002F6C; margin-bottom:4px;">Business Rules & Methodology</h2>', unsafe_allow_html=True)
-    st.markdown('<p style="color:#63666A; font-size:13px; margin-bottom:20px;">How the Rebate Decision Agent computes market share projections</p>', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-family:Manrope,sans-serif; color:#0A1A3D; margin-bottom:4px; letter-spacing:-0.02em;">Business Rules & Methodology</h2>', unsafe_allow_html=True)
+    st.markdown('<p style="font-family:Inter,sans-serif; color:#64748B; font-size:13px; margin-bottom:20px;">How the Rebate Decision Agent computes market share projections</p>', unsafe_allow_html=True)
 
     # --- Section 1: Data Sources ---
-    st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">Data Sources</h4>', unsafe_allow_html=True)
+    st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Data Sources</h4>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
-        <div style="background:white; border:1px solid #E4ECF2; border-radius:8px; padding:16px; margin-bottom:12px;">
-            <p style="font-weight:700; color:#002F6C; margin:0 0 6px 0;">Market Share Table</p>
-            <p style="font-size:12px; color:#555; margin:2px 0;">~2,723 MCOs with 36 months of baseline market share data (Jan 2025 - Dec 2027). Months Jan'25 - Mar'26 are actuals; Apr'26 onward are projected.</p>
+        <div style="background:rgba(255,255,255,0.75); border:1px solid rgba(15,23,42,0.08); border-radius:14px; padding:18px; margin-bottom:12px; box-shadow:0 2px 8px rgba(15,23,42,0.05);">
+            <p style="font-family:Manrope,sans-serif; font-weight:700; color:#0A1A3D; margin:0 0 6px 0;">Market Share Table</p>
+            <p style="font-family:Inter,sans-serif; font-size:12px; color:#475569; margin:2px 0;">~2,723 MCOs with 36 months of baseline market share data (Jan 2025 - Dec 2027). Months Jan'25 - Mar'26 are actuals; Apr'26 onward are projected.</p>
         </div>
-        <div style="background:white; border:1px solid #E4ECF2; border-radius:8px; padding:16px;">
-            <p style="font-weight:700; color:#002F6C; margin:0 0 6px 0;">OCGRP Claims Table</p>
-            <p style="font-size:12px; color:#555; margin:2px 0;">~2,730 MCOs with monthly OCGRP claim volumes. Used to convert MCO-level market share into claim counts for national roll-up calculations.</p>
+        <div style="background:rgba(255,255,255,0.75); border:1px solid rgba(15,23,42,0.08); border-radius:14px; padding:18px; box-shadow:0 2px 8px rgba(15,23,42,0.05);">
+            <p style="font-family:Manrope,sans-serif; font-weight:700; color:#0A1A3D; margin:0 0 6px 0;">OCGRP Claims Table</p>
+            <p style="font-family:Inter,sans-serif; font-size:12px; color:#475569; margin:2px 0;">~2,730 MCOs with monthly OCGRP claim volumes. Used to convert MCO-level market share into claim counts for national roll-up calculations.</p>
         </div>
         """, unsafe_allow_html=True)
     with col2:
         st.markdown("""
-        <div style="background:white; border:1px solid #E4ECF2; border-radius:8px; padding:16px; margin-bottom:12px;">
-            <p style="font-weight:700; color:#002F6C; margin:0 0 6px 0;">Analog Curves</p>
-            <p style="font-size:12px; color:#555; margin:2px 0;">23-month rate-of-change curves derived from historical formulary changes. Three analogs: BCBS (Covered to Preferred), Providence (Covered to Not Covered), Blended (Preferred to Not Covered).</p>
+        <div style="background:rgba(255,255,255,0.75); border:1px solid rgba(15,23,42,0.08); border-radius:14px; padding:18px; margin-bottom:12px; box-shadow:0 2px 8px rgba(15,23,42,0.05);">
+            <p style="font-family:Manrope,sans-serif; font-weight:700; color:#0A1A3D; margin:0 0 6px 0;">Analog Curves</p>
+            <p style="font-family:Inter,sans-serif; font-size:12px; color:#475569; margin:2px 0;">23-month rate-of-change curves derived from historical formulary changes. Three analogs: BCBS (Covered to Preferred), Providence (Covered to Not Covered), Blended (Preferred to Not Covered).</p>
         </div>
-        <div style="background:white; border:1px solid #E4ECF2; border-radius:8px; padding:16px;">
-            <p style="font-weight:700; color:#002F6C; margin:0 0 6px 0;">Step Table</p>
-            <p style="font-size:12px; color:#555; margin:2px 0;">Maps every possible status transition (Current to Future) to the appropriate analog curve with direction (Reverse) and magnitude (Step) parameters.</p>
+        <div style="background:rgba(255,255,255,0.75); border:1px solid rgba(15,23,42,0.08); border-radius:14px; padding:18px; box-shadow:0 2px 8px rgba(15,23,42,0.05);">
+            <p style="font-family:Manrope,sans-serif; font-weight:700; color:#0A1A3D; margin:0 0 6px 0;">Step Table</p>
+            <p style="font-family:Inter,sans-serif; font-size:12px; color:#475569; margin:2px 0;">Maps every possible status transition (Current to Future) to the appropriate analog curve with direction (Reverse) and magnitude (Step) parameters.</p>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --- Section 2: Projection Formula ---
-    st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">Projection Formula</h4>', unsafe_allow_html=True)
+    st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Projection Formula</h4>', unsafe_allow_html=True)
     st.markdown("""
-    <div style="background:#F0F6FC; border-left:4px solid #0093D0; padding:16px 20px; border-radius:4px; margin:12px 0;">
-        <p style="font-size:14px; color:#002F6C; font-weight:700; margin:0 0 8px 0;">For each month M from Change Month onward:</p>
-        <p style="font-size:16px; color:#002F6C; font-family:monospace; margin:0; background:white; padding:10px 14px; border-radius:4px; display:inline-block;">
+    <div style="background:rgba(28,79,192,0.04); border-left:4px solid #1C4FC0; padding:18px 22px; border-radius:12px; margin:12px 0;">
+        <p style="font-family:Manrope,sans-serif; font-size:14px; color:#0A1A3D; font-weight:700; margin:0 0 10px 0;">For each month M from Change Month onward:</p>
+        <p style="font-size:15px; color:#0A1A3D; font-family:monospace; margin:0; background:rgba(255,255,255,0.8); padding:12px 16px; border-radius:8px; display:inline-block; border:1px solid rgba(15,23,42,0.08);">
             Projected[M] = Baseline[M] &times; (1 + analog_rate &times; Reverse)
         </p>
-        <ul style="font-size:12px; color:#555; margin-top:12px;">
+        <ul style="font-family:Inter,sans-serif; font-size:12px; color:#475569; margin-top:14px;">
             <li><b>Baseline[M]</b> &mdash; Original forecasted market share from the Market Share table</li>
             <li><b>analog_rate</b> &mdash; Month-over-month relative difference value for the selected analog</li>
             <li><b>Reverse</b> &mdash; +1 for downward status changes, -1 for upward status changes</li>
@@ -454,8 +577,8 @@ elif st.session_state.page == 'rules':
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --- Section 3: Transition Mapping ---
-    st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">Status Transition Mapping</h4>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size:12px; color:#555;">Each formulary status change maps to a specific analog and direction:</p>', unsafe_allow_html=True)
+    st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Status Transition Mapping</h4>', unsafe_allow_html=True)
+    st.markdown('<p style="font-family:Inter,sans-serif; font-size:12px; color:#475569;">Each formulary status change maps to a specific analog and direction:</p>', unsafe_allow_html=True)
 
     step_df = pd.DataFrame([
         {"Current": "Not Covered", "Future": "Covered", "Analog": "Providence", "Step": 1, "Reverse": -1},
@@ -475,8 +598,8 @@ elif st.session_state.page == 'rules':
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --- Section 4: Analog Curves ---
-    st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">Analog Curves (Month-Level Dynamics)</h4>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size:12px; color:#555;">Monthly relative rate-of-change values for each analog. The Month 1 value is used as the impact rate for all projected months post status change.</p>', unsafe_allow_html=True)
+    st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Analog Curves (Month-Level Dynamics)</h4>', unsafe_allow_html=True)
+    st.markdown('<p style="font-family:Inter,sans-serif; font-size:12px; color:#475569;">Monthly relative rate-of-change values for each analog. The Month 1 value is used as the impact rate for all projected months post status change.</p>', unsafe_allow_html=True)
 
     analog_df = pd.DataFrame({
         'Month': [f"Month {i+1}" for i in range(23)],
@@ -498,14 +621,14 @@ elif st.session_state.page == 'rules':
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --- Section 5: National Roll-Up ---
-    st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">National Roll-Up Logic</h4>', unsafe_allow_html=True)
+    st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">National Roll-Up Logic</h4>', unsafe_allow_html=True)
     st.markdown("""
-    <div style="background:white; border:1px solid #E4ECF2; border-radius:8px; padding:18px 22px; margin:10px 0;">
-        <p style="font-size:12px; color:#555; margin:0 0 10px 0;">To compute the national-level impact of a single MCO's status change:</p>
-        <ol style="font-size:12px; color:#333; line-height:1.8; padding-left:18px;">
+    <div style="background:rgba(255,255,255,0.75); border:1px solid rgba(15,23,42,0.08); border-radius:14px; padding:20px 24px; margin:12px 0; box-shadow:0 2px 8px rgba(15,23,42,0.05);">
+        <p style="font-family:Inter,sans-serif; font-size:12px; color:#475569; margin:0 0 12px 0;">To compute the national-level impact of a single MCO's status change:</p>
+        <ol style="font-family:Inter,sans-serif; font-size:12px; color:#0F172A; line-height:1.9; padding-left:18px;">
             <li>For the <b>selected MCO</b>: apply projected (post-change) market share</li>
             <li>For <b>all other MCOs</b>: retain their baseline market share</li>
-            <li>Compute per MCO: <code>Nurtec Claims = Market Share &times; OCGRP Claims</code></li>
+            <li>Compute per MCO: <code style="background:rgba(28,79,192,0.06); padding:2px 6px; border-radius:4px;">Nurtec Claims = Market Share &times; OCGRP Claims</code></li>
             <li>Sum across all MCOs to get national totals</li>
             <li>National MS = Total Nurtec Claims &divide; Total OCGRP Claims</li>
         </ol>
@@ -515,22 +638,22 @@ elif st.session_state.page == 'rules':
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --- Section 5: Timeline ---
-    st.markdown('<h4 style="color:#002F6C; border-bottom:2px solid #0093D0; padding-bottom:4px;">Data Timeline</h4>', unsafe_allow_html=True)
+    st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Data Timeline</h4>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
-        <div style="background:#E8F4FD; border-radius:8px; padding:14px 18px; text-align:center;">
-            <p style="font-size:11px; color:#63666A; margin:0; text-transform:uppercase;">Actual Period</p>
-            <p style="font-size:18px; font-weight:700; color:#002F6C; margin:4px 0;">Jan 2025 - Mar 2026</p>
-            <p style="font-size:11px; color:#555; margin:0;">15 months of historical data</p>
+        <div style="background:rgba(28,79,192,0.04); border:1px solid rgba(28,79,192,0.1); border-radius:14px; padding:16px 20px; text-align:center;">
+            <p style="font-family:Inter,sans-serif; font-size:11px; color:#64748B; margin:0; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Actual Period</p>
+            <p style="font-family:Manrope,sans-serif; font-size:1.2rem; font-weight:700; color:#0A1A3D; margin:6px 0; letter-spacing:-0.02em;">Jan 2025 - Mar 2026</p>
+            <p style="font-family:Inter,sans-serif; font-size:11px; color:#475569; margin:0;">15 months of historical data</p>
         </div>
         """, unsafe_allow_html=True)
     with col2:
         st.markdown("""
-        <div style="background:#FFF8E1; border-radius:8px; padding:14px 18px; text-align:center;">
-            <p style="font-size:11px; color:#63666A; margin:0; text-transform:uppercase;">Forecast Period</p>
-            <p style="font-size:18px; font-weight:700; color:#002F6C; margin:4px 0;">Apr 2026 - Dec 2027</p>
-            <p style="font-size:11px; color:#555; margin:0;">21 months of projected data</p>
+        <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:14px; padding:16px 20px; text-align:center;">
+            <p style="font-family:Inter,sans-serif; font-size:11px; color:#64748B; margin:0; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Forecast Period</p>
+            <p style="font-family:Manrope,sans-serif; font-size:1.2rem; font-weight:700; color:#0A1A3D; margin:6px 0; letter-spacing:-0.02em;">Apr 2026 - Dec 2027</p>
+            <p style="font-family:Inter,sans-serif; font-size:11px; color:#475569; margin:0;">21 months of projected data</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -771,7 +894,7 @@ elif st.session_state.page == 'agent':
         fig.add_trace(go.Scatter(
             x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_natl_ms[N_ACTUAL - 1:],
             mode='lines', name='Baseline (no change)',
-            line=dict(color='#B0BEC5', width=2, dash='dash'),
+            line=dict(color='#94A3B8', width=2, dash='dash'),
             hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(N_ACTUAL - 1, N_TOTAL)],
         ))
@@ -779,7 +902,7 @@ elif st.session_state.page == 'agent':
             x=list(range(change_idx, N_TOTAL)), y=projected_natl_ms[change_idx:],
             mode='lines+markers', name='Projected (post change)',
             line=dict(color=PFZ_RED, width=2.5), marker=dict(size=5),
-            fill='tonexty', fillcolor='rgba(224, 60, 49, 0.06)',
+            fill='tonexty', fillcolor='rgba(239, 68, 68, 0.06)',
             hovertemplate='%{text}<br>Projected: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
         ))
@@ -801,13 +924,13 @@ elif st.session_state.page == 'agent':
 
         fig.update_layout(
             xaxis=dict(tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
-                       tickfont=dict(size=10, color=PFZ_GRAY), showgrid=False),
+                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'), showgrid=False),
             yaxis=dict(title='National Market Share (%)', ticksuffix='%',
-                       range=[y_lo, y_hi], gridcolor='#F0F2F5',
-                       tickfont=dict(size=10, color=PFZ_GRAY),
-                       title_font=dict(size=11, color=PFZ_DARK_BLUE)),
-            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY)),
-            plot_bgcolor=PFZ_WHITE, paper_bgcolor=PFZ_WHITE,
+                       range=[y_lo, y_hi], gridcolor='rgba(15,23,42,0.05)',
+                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'),
+                       title_font=dict(size=11, color=PFZ_DARK_BLUE, family='Manrope')),
+            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY, family='Inter')),
+            plot_bgcolor=PFZ_WHITE, paper_bgcolor='rgba(0,0,0,0)',
             height=380, margin=dict(l=50, r=20, t=50, b=30),
             hovermode='x unified',
         )
@@ -861,7 +984,7 @@ elif st.session_state.page == 'agent':
         fig_mco.add_trace(go.Scatter(
             x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_ms[N_ACTUAL - 1:],
             mode='lines', name='Baseline (no change)',
-            line=dict(color='#B0BEC5', width=2, dash='dash'),
+            line=dict(color='#94A3B8', width=2, dash='dash'),
             hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(N_ACTUAL - 1, N_TOTAL)],
         ))
@@ -869,7 +992,7 @@ elif st.session_state.page == 'agent':
             x=list(range(change_idx, N_TOTAL)), y=projected[change_idx:],
             mode='lines+markers', name='Projected (post change)',
             line=dict(color=PFZ_RED, width=2.5), marker=dict(size=5),
-            fill='tonexty', fillcolor='rgba(224, 60, 49, 0.06)',
+            fill='tonexty', fillcolor='rgba(239, 68, 68, 0.06)',
             hovertemplate='%{text}<br>Projected: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
         ))
@@ -888,13 +1011,13 @@ elif st.session_state.page == 'agent':
 
         fig_mco.update_layout(
             xaxis=dict(tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
-                       tickfont=dict(size=10, color=PFZ_GRAY), showgrid=False),
+                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'), showgrid=False),
             yaxis=dict(title=f'{selected_mco} Market Share (%)', ticksuffix='%',
-                       range=[mco_y_lo, mco_y_hi], gridcolor='#F0F2F5',
-                       tickfont=dict(size=10, color=PFZ_GRAY),
-                       title_font=dict(size=11, color=PFZ_DARK_BLUE)),
-            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY)),
-            plot_bgcolor=PFZ_WHITE, paper_bgcolor=PFZ_WHITE,
+                       range=[mco_y_lo, mco_y_hi], gridcolor='rgba(15,23,42,0.05)',
+                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'),
+                       title_font=dict(size=11, color=PFZ_DARK_BLUE, family='Manrope')),
+            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY, family='Inter')),
+            plot_bgcolor=PFZ_WHITE, paper_bgcolor='rgba(0,0,0,0)',
             height=380, margin=dict(l=50, r=20, t=50, b=30),
             hovermode='x unified',
         )
@@ -934,8 +1057,8 @@ elif st.session_state.page == 'agent':
         st.info("Select a valid status transition to see national impact.")
 
     # Footer
-    st.markdown(f'<p style="text-align:center;color:{PFZ_GRAY};font-size:10px;margin-top:14px;'
-                f'padding-top:8px;border-top:1px solid #E4ECF2;">'
+    st.markdown(f'<p style="text-align:center;color:{PFZ_GRAY};font-family:Inter,sans-serif;font-size:10px;margin-top:18px;'
+                f'padding-top:10px;border-top:1px solid rgba(15,23,42,0.08);">'
                 f'Data Source: Xponent (Plantrak) via Dataiku &bull; '
                 f'Analog: {analog_name} &bull; '
                 f'Forecast: Apr 2026 &ndash; Dec 2027 &bull; '
