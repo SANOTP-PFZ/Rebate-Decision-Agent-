@@ -249,6 +249,25 @@ st.markdown("""
         font-weight: 600 !important;
         border: 1px solid rgba(28,79,192,0.15) !important;
     }
+    /* Global disabled text input override */
+    .stTextInput input,
+    .stTextInput input:disabled,
+    .stTextInput [data-baseweb="input"] input,
+    .stTextInput [data-baseweb="base-input"] input {
+        background-color: white !important;
+        color: var(--navy-900) !important;
+        -webkit-text-fill-color: var(--navy-900) !important;
+        opacity: 1 !important;
+    }
+    .stTextInput [data-baseweb="input"],
+    .stTextInput [data-baseweb="base-input"] {
+        background-color: white !important;
+    }
+    .stTextInput input:disabled,
+    .stTextInput [data-baseweb="input"]:has(input:disabled),
+    .stTextInput [data-baseweb="base-input"]:has(input:disabled) {
+        background-color: rgba(28,79,192,0.05) !important;
+    }
     section[data-testid="stSidebar"] .stButton > button {
         background: linear-gradient(135deg, var(--navy-600), var(--navy-500)) !important;
         color: white !important;
