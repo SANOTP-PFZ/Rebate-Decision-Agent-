@@ -753,6 +753,86 @@ st.markdown("""
     .agent-kpi .delta.pos { color: var(--up); font-weight: 600; }
     .agent-kpi .delta.neg { color: var(--down); font-weight: 600; }
 
+    /* Agent — Back-to-Home compact button (overrides the global sidebar button style) */
+    .st-key-agent_back_home .stButton > button,
+    div[class*="st-key-agent_back_home"] .stButton > button {
+        background: rgba(255,255,255,0.72) !important;
+        color: var(--navy-700) !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 8px !important;
+        padding: 4px 10px !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.01em !important;
+        box-shadow: none !important;
+        min-height: 0 !important;
+        line-height: 1.2 !important;
+    }
+    .st-key-agent_back_home .stButton > button:hover,
+    div[class*="st-key-agent_back_home"] .stButton > button:hover {
+        background: #ffffff !important;
+        color: var(--navy-900) !important;
+        border-color: rgba(28,79,192,0.22) !important;
+        transform: none !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+
+    /* Agent — segmented toggle: darker label color + kill Streamlit's default
+       block spacing around the radio so no white strip appears below */
+    .st-key-agent_chart_view .stRadio > div[role="radiogroup"],
+    div[class*="st-key-agent_chart_view"] .stRadio > div[role="radiogroup"] {
+        display: inline-flex !important;
+        gap: 0 !important;
+        background: var(--surface-2) !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 999px !important;
+        padding: 3px !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+    .st-key-agent_chart_view .stRadio label,
+    div[class*="st-key-agent_chart_view"] .stRadio label {
+        margin: 0 !important;
+        padding: 6px 18px !important;
+        border-radius: 999px !important;
+        cursor: pointer !important;
+        transition: all 0.18s var(--ease-out) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        color: var(--navy-900) !important;
+        letter-spacing: -0.005em !important;
+    }
+    .st-key-agent_chart_view .stRadio label:hover,
+    div[class*="st-key-agent_chart_view"] .stRadio label:hover {
+        color: var(--navy-700) !important;
+    }
+    .st-key-agent_chart_view .stRadio label:has(input:checked),
+    div[class*="st-key-agent_chart_view"] .stRadio label:has(input:checked) {
+        background: linear-gradient(135deg, var(--navy-600), var(--navy-500)) !important;
+        color: #ffffff !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+    .st-key-agent_chart_view .stRadio input[type="radio"],
+    div[class*="st-key-agent_chart_view"] .stRadio input[type="radio"] {
+        display: none !important;
+    }
+    .st-key-agent_chart_view .stRadio > label > div:first-child,
+    div[class*="st-key-agent_chart_view"] .stRadio > label > div:first-child {
+        display: none !important;
+    }
+    /* Kill the empty white strip Streamlit inserts below the radio */
+    .st-key-agent_chart_view,
+    div[class*="st-key-agent_chart_view"] {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    .st-key-agent_chart_view [data-testid="stRadio"],
+    div[class*="st-key-agent_chart_view"] [data-testid="stRadio"] {
+        background: transparent !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     /* Agent — segmented toggle (radio styled as pills) */
     .agent-toggle-wrap {
         display: flex;
@@ -1418,7 +1498,7 @@ elif st.session_state.page == 'agent':
     # =========================================================================
     _bh_l, _bh_r = st.columns([1, 6])
     with _bh_l:
-        st.button("← Back to Home", on_click=go_to_landing, use_container_width=True, key="agent_back_home")
+        st.button("← Back to Home", on_click=go_to_landing, use_container_width=False, key="agent_back_home")
 
     # =========================================================================
     # COMPUTE (backend math unchanged)
@@ -1484,7 +1564,6 @@ elif st.session_state.page == 'agent':
         with _tog_l:
             st.markdown('<div class="agent-sec-title">Market Share Trend</div>', unsafe_allow_html=True)
         with _tog_r:
-            st.markdown('<div class="agent-toggle">', unsafe_allow_html=True)
             chart_view = st.radio(
                 "chart-view",
                 options=["National", "MCO"],
@@ -1493,7 +1572,6 @@ elif st.session_state.page == 'agent':
                 label_visibility="collapsed",
                 key="agent_chart_view",
             )
-            st.markdown('</div>', unsafe_allow_html=True)
 
         # Pick series + labels based on active view
         if chart_view == "National":
