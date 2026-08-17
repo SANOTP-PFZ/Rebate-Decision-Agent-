@@ -463,7 +463,7 @@ st.markdown("""
     }
     [data-testid="stDataFrame"] td {
         background: white !important;
-        color: var(--text) !important;
+        color: #0F172A !important;
     }
     [data-testid="stDataFrame"] table {
         background: white !important;
@@ -484,11 +484,26 @@ st.markdown("""
     }
     [data-testid="stDataFrame"] [role="gridcell"] {
         background-color: white !important;
-        color: var(--text) !important;
+        color: #0F172A !important;
     }
     [data-testid="stDataFrame"] [role="columnheader"] {
         background-color: var(--navy-900) !important;
         color: white !important;
+    }
+    /* Force all text inside dataframe to be dark */
+    [data-testid="stDataFrame"] * {
+        color: #0F172A !important;
+        -webkit-text-fill-color: #0F172A !important;
+    }
+    [data-testid="stDataFrame"] [role="columnheader"],
+    [data-testid="stDataFrame"] [role="columnheader"] * {
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+    [data-testid="stDataFrame"] th,
+    [data-testid="stDataFrame"] th * {
+        color: white !important;
+        -webkit-text-fill-color: white !important;
     }
 
     /* Info box */
