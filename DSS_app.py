@@ -326,28 +326,28 @@ st.markdown("""
         background: #ffffff !important;
         color: var(--navy-900) !important;
         border: 1px solid var(--hairline) !important;
-        border-radius: 18px !important;
-        padding: 28px 30px !important;
-        min-height: 210px !important;
+        border-radius: 20px !important;
+        padding: 76px 32px 32px 32px !important;
+        min-height: 240px !important;
         text-align: left !important;
         justify-content: flex-start !important;
         align-items: flex-start !important;
         white-space: pre-wrap !important;
         font-family: 'Inter', sans-serif !important;
-        font-size: 13px !important;
-        line-height: 1.6 !important;
+        font-size: 13.5px !important;
+        line-height: 1.65 !important;
         letter-spacing: 0.005em !important;
-        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06),
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06),
                     0 1px 3px rgba(15, 23, 42, 0.04) !important;
-        transition: transform 0.22s var(--ease-out),
-                    box-shadow 0.22s var(--ease-out),
-                    border-color 0.22s var(--ease-out) !important;
+        transition: transform 0.24s var(--ease-out),
+                    box-shadow 0.24s var(--ease-out),
+                    border-color 0.24s var(--ease-out) !important;
         cursor: pointer !important;
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
     }
-    /* Force text color on inner spans/paragraphs (Streamlit wraps label) */
+    /* Force description text color (Streamlit wraps label in <p>/<div>) */
     .st-key-landing_go_agent .stButton > button *,
     .st-key-landing_go_rules .stButton > button *,
     div[class*="st-key-landing_go_agent"] .stButton > button *,
@@ -355,104 +355,157 @@ st.markdown("""
         color: var(--text-soft) !important;
         -webkit-text-fill-color: var(--text-soft) !important;
     }
-    /* First line = the title. Bump it. */
+    /* First line = the title — larger, bolder, navy */
     .st-key-landing_go_agent .stButton > button::first-line,
     .st-key-landing_go_rules .stButton > button::first-line,
     div[class*="st-key-landing_go_agent"] .stButton > button::first-line,
     div[class*="st-key-landing_go_rules"] .stButton > button::first-line {
         font-family: 'Manrope', sans-serif;
-        font-size: 1.28rem;
+        font-size: 1.45rem;
         font-weight: 800;
-        letter-spacing: -0.022em;
-        line-height: 1.2;
+        letter-spacing: -0.024em;
+        line-height: 1.18;
         color: var(--navy-900);
     }
-    /* Top accent bar — thin navy→cyan gradient at the top of each card */
+
+    /* Ambient background flourish — soft radial glow bottom-right of each card */
+    .st-key-landing_go_agent .stButton > button,
+    div[class*="st-key-landing_go_agent"] .stButton > button {
+        background:
+            radial-gradient(120% 90% at 100% 100%, rgba(65, 182, 230, 0.10) 0%, rgba(255,255,255,0) 60%),
+            radial-gradient(90% 70% at 0% 0%, rgba(22, 57, 144, 0.06) 0%, rgba(255,255,255,0) 55%),
+            #ffffff !important;
+    }
+    .st-key-landing_go_rules .stButton > button,
+    div[class*="st-key-landing_go_rules"] .stButton > button {
+        background:
+            radial-gradient(120% 90% at 100% 100%, rgba(22, 57, 144, 0.08) 0%, rgba(255,255,255,0) 60%),
+            radial-gradient(90% 70% at 0% 0%, rgba(65, 182, 230, 0.08) 0%, rgba(255,255,255,0) 55%),
+            #ffffff !important;
+    }
+
+    /* Icon badge — decorative ::before pinned top-left of the card.
+       Uses an inline SVG data URI (chart-line for agent, book-open for rules). */
     .st-key-landing_go_agent .stButton > button::before,
+    div[class*="st-key-landing_go_agent"] .stButton > button::before {
+        content: '';
+        position: absolute;
+        top: 26px;
+        left: 30px;
+        width: 46px;
+        height: 46px;
+        border-radius: 13px;
+        background:
+            linear-gradient(135deg, rgba(22, 57, 144, 0.14), rgba(65, 182, 230, 0.18)),
+            #ffffff;
+        border: 1px solid rgba(22, 57, 144, 0.18);
+        box-shadow: 0 2px 6px rgba(22, 57, 144, 0.10),
+                    inset 0 -6px 12px rgba(22, 57, 144, 0.04);
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23163990' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3v18h18'/><path d='M7 15l3.5-4 3.5 3 5-7'/><circle cx='10.5' cy='11' r='0.9' fill='%23163990'/><circle cx='14' cy='14' r='0.9' fill='%23163990'/><circle cx='19' cy='7' r='0.9' fill='%23163990'/></svg>");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 24px 24px;
+    }
     .st-key-landing_go_rules .stButton > button::before,
-    div[class*="st-key-landing_go_agent"] .stButton > button::before,
     div[class*="st-key-landing_go_rules"] .stButton > button::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--navy-700), var(--navy-600), var(--accent));
-        opacity: 0.85;
+        top: 26px;
+        left: 30px;
+        width: 46px;
+        height: 46px;
+        border-radius: 13px;
+        background:
+            linear-gradient(135deg, rgba(22, 57, 144, 0.14), rgba(65, 182, 230, 0.18)),
+            #ffffff;
+        border: 1px solid rgba(22, 57, 144, 0.18);
+        box-shadow: 0 2px 6px rgba(22, 57, 144, 0.10),
+                    inset 0 -6px 12px rgba(22, 57, 144, 0.04);
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23163990' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6.5a4.5 4.5 0 0 0-4.5-4.5H3v16h4.5A4.5 4.5 0 0 1 12 22.5'/><path d='M12 6.5A4.5 4.5 0 0 1 16.5 2H21v16h-4.5A4.5 4.5 0 0 0 12 22.5'/><path d='M12 6.5v16'/></svg>");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 22px 22px;
     }
-    /* Decorative arrow tucked in the bottom-right */
-    .st-key-landing_go_agent .stButton > button::after,
-    .st-key-landing_go_rules .stButton > button::after,
-    div[class*="st-key-landing_go_agent"] .stButton > button::after,
-    div[class*="st-key-landing_go_rules"] .stButton > button::after {
-        content: '\2192';
-        position: absolute;
-        right: 24px;
-        bottom: 22px;
-        width: 34px;
-        height: 34px;
-        border-radius: 999px;
-        background: rgba(28, 79, 192, 0.08);
-        border: 1px solid rgba(28, 79, 192, 0.18);
-        color: var(--navy-700);
-        -webkit-text-fill-color: var(--navy-700);
-        font-size: 15px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.22s var(--ease-out),
-                    transform 0.22s var(--ease-out),
-                    border-color 0.22s var(--ease-out);
-    }
-    /* Hover: lift + accent border + fill arrow */
+
+    /* Hover: lift + accent border + icon badge tinted deeper */
     .st-key-landing_go_agent .stButton > button:hover,
     .st-key-landing_go_rules .stButton > button:hover,
     div[class*="st-key-landing_go_agent"] .stButton > button:hover,
     div[class*="st-key-landing_go_rules"] .stButton > button:hover {
-        transform: translateY(-3px) !important;
-        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12),
+        transform: translateY(-4px) !important;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12),
                     0 4px 10px rgba(22, 57, 144, 0.10) !important;
         border-color: rgba(28, 79, 192, 0.35) !important;
     }
-    .st-key-landing_go_agent .stButton > button:hover::after,
-    .st-key-landing_go_rules .stButton > button:hover::after,
-    div[class*="st-key-landing_go_agent"] .stButton > button:hover::after,
-    div[class*="st-key-landing_go_rules"] .stButton > button:hover::after {
-        background: linear-gradient(135deg, var(--navy-700), var(--navy-600));
-        border-color: var(--navy-600);
-        color: #ffffff;
-        -webkit-text-fill-color: #ffffff;
-        transform: translateX(3px);
+    .st-key-landing_go_agent .stButton > button:hover::before,
+    .st-key-landing_go_rules .stButton > button:hover::before,
+    div[class*="st-key-landing_go_agent"] .stButton > button:hover::before,
+    div[class*="st-key-landing_go_rules"] .stButton > button:hover::before {
+        border-color: rgba(28, 79, 192, 0.4);
+        box-shadow: 0 4px 12px rgba(22, 57, 144, 0.20),
+                    inset 0 -6px 12px rgba(22, 57, 144, 0.06);
     }
 
-    /* Always-visible disclaimer card */
+    /* Always-visible disclaimer — styled as a proper warning/notice callout */
     .landing-disclaimer-wrap {
         max-width: 920px;
-        margin: 18px auto 20px auto;
+        margin: 18px auto 22px auto;
     }
     .landing-disclaimer-card {
-        background: rgba(255,255,255,0.75);
-        border: 1px solid var(--hairline);
-        border-left: 3px solid var(--accent);
+        position: relative;
+        background:
+            linear-gradient(180deg, rgba(255, 244, 214, 0.55) 0%, rgba(255, 249, 232, 0.4) 100%),
+            #ffffff;
+        border: 1px solid #F5D08A;
+        border-left: 4px solid #D97706;
         border-radius: 12px;
-        padding: 16px 22px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        padding: 18px 22px 18px 58px;
+        box-shadow: 0 2px 8px rgba(217, 119, 6, 0.06),
+                    0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+    /* Warning icon (triangle exclamation) as ::before */
+    .landing-disclaimer-card::before {
+        content: '';
+        position: absolute;
+        top: 18px;
+        left: 20px;
+        width: 26px;
+        height: 26px;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B45309' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg>");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 26px 26px;
+    }
+    /* "DISCLAIMER" badge pill at top-right */
+    .landing-disclaimer-card::after {
+        content: 'DISCLAIMER';
+        position: absolute;
+        top: 14px;
+        right: 18px;
+        font-family: 'Inter', sans-serif;
+        font-size: 9.5px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        color: #B45309;
+        background: rgba(217, 119, 6, 0.10);
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        padding: 3px 8px;
+        border-radius: 999px;
     }
     .landing-disclaimer-card .ld-title {
         font-family: 'Manrope', sans-serif;
         font-size: 13px;
-        font-weight: 700;
-        color: var(--navy-900);
+        font-weight: 800;
+        color: #7A3E00;
         letter-spacing: -0.005em;
         margin-bottom: 8px;
+        padding-right: 100px; /* leave room for the DISCLAIMER pill */
     }
     .landing-disclaimer-card .ld-lede {
         font-family: 'Inter', sans-serif;
         font-size: 12.5px;
         line-height: 1.65;
-        color: var(--text-soft);
+        color: #4A3200;
         margin: 0 0 10px 0;
     }
     .landing-disclaimer-card .ld-list {
@@ -462,8 +515,11 @@ st.markdown("""
     .landing-disclaimer-card .ld-list li {
         font-family: 'Inter', sans-serif;
         font-size: 12px;
-        line-height: 1.7;
-        color: var(--text-soft);
+        line-height: 1.75;
+        color: #6B4A00;
+    }
+    .landing-disclaimer-card .ld-list li::marker {
+        color: #D97706;
     }
 
     /* Compact disclaimer (expander) */
