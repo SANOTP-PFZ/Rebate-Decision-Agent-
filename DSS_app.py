@@ -329,9 +329,9 @@ st.markdown("""
         border-radius: 20px !important;
         padding: 76px 32px 32px 32px !important;
         min-height: 240px !important;
-        text-align: left !important;
-        justify-content: flex-start !important;
-        align-items: flex-start !important;
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
         white-space: pre-wrap !important;
         font-family: 'Inter', sans-serif !important;
         font-size: 13.5px !important;
@@ -354,16 +354,17 @@ st.markdown("""
     div[class*="st-key-landing_go_rules"] .stButton > button * {
         color: var(--text-soft) !important;
         -webkit-text-fill-color: var(--text-soft) !important;
+        text-align: center !important;
     }
-    /* First line = the title — larger, bolder, navy */
+    /* First line = the title — larger, extra-bold, navy */
     .st-key-landing_go_agent .stButton > button::first-line,
     .st-key-landing_go_rules .stButton > button::first-line,
     div[class*="st-key-landing_go_agent"] .stButton > button::first-line,
     div[class*="st-key-landing_go_rules"] .stButton > button::first-line {
         font-family: 'Manrope', sans-serif;
-        font-size: 1.45rem;
-        font-weight: 800;
-        letter-spacing: -0.024em;
+        font-size: 1.5rem;
+        font-weight: 900;
+        letter-spacing: -0.026em;
         line-height: 1.18;
         color: var(--navy-900);
     }
@@ -390,8 +391,9 @@ st.markdown("""
     div[class*="st-key-landing_go_agent"] .stButton > button::before {
         content: '';
         position: absolute;
-        top: 26px;
-        left: 30px;
+        top: 22px;
+        left: 50%;
+        transform: translateX(-50%);
         width: 46px;
         height: 46px;
         border-radius: 13px;
@@ -410,8 +412,9 @@ st.markdown("""
     div[class*="st-key-landing_go_rules"] .stButton > button::before {
         content: '';
         position: absolute;
-        top: 26px;
-        left: 30px;
+        top: 22px;
+        left: 50%;
+        transform: translateX(-50%);
         width: 46px;
         height: 46px;
         border-radius: 13px;
@@ -685,7 +688,8 @@ st.markdown("""
     body:has(.landing-page-marker) .st-key-landing_go_rules .stButton > button::before,
     body:has(.landing-page-marker) div[class*="st-key-landing_go_agent"] .stButton > button::before,
     body:has(.landing-page-marker) div[class*="st-key-landing_go_rules"] .stButton > button::before {
-        top: 18px; left: 22px;
+        top: 16px; left: 50%;
+        transform: translateX(-50%);
         width: 36px; height: 36px;
         border-radius: 10px;
         background-size: 20px 20px;
@@ -1918,13 +1922,6 @@ if st.session_state.page == 'landing':
             key="landing_go_rules",
         )
     st.markdown('</div>', unsafe_allow_html=True)
-
-    # ---- Footer
-    st.markdown("""
-    <div class="landing-footer">
-        Developed by <strong>ZS Primary Care Analytics Team</strong>
-    </div>
-    """, unsafe_allow_html=True)
 
 
 # =============================================================================
