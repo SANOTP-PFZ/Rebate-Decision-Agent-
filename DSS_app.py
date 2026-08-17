@@ -193,6 +193,45 @@ st.markdown("""
     section[data-testid="stSidebar"] .stSelectbox svg {
         fill: var(--navy-600) !important;
     }
+
+    /* Selectbox dropdown menu (listbox) */
+    [data-baseweb="popover"] {
+        background-color: white !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 12px !important;
+        box-shadow: var(--shadow-lg) !important;
+    }
+    [data-baseweb="popover"] ul {
+        background-color: white !important;
+    }
+    [data-baseweb="popover"] li,
+    [data-baseweb="menu"] [role="option"] {
+        background-color: white !important;
+        color: var(--navy-900) !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+    [data-baseweb="popover"] li:hover,
+    [data-baseweb="menu"] [role="option"]:hover,
+    [data-baseweb="menu"] [role="option"][aria-selected="true"] {
+        background-color: rgba(28,79,192,0.06) !important;
+        color: var(--navy-700) !important;
+    }
+    [data-baseweb="select"] [data-baseweb="tag"] {
+        background-color: rgba(28,79,192,0.08) !important;
+        color: var(--navy-900) !important;
+    }
+    /* Selectbox placeholder text */
+    [data-baseweb="select"] [data-baseweb="select"] span[aria-live="polite"] {
+        color: var(--text-muted) !important;
+    }
+    .stSelectbox [data-baseweb="select"] > div {
+        background-color: white !important;
+        color: var(--navy-900) !important;
+    }
+    .stSelectbox [data-baseweb="select"] input {
+        color: var(--navy-900) !important;
+        -webkit-text-fill-color: var(--navy-900) !important;
+    }
     section[data-testid="stSidebar"] .stTextInput input {
         background-color: var(--surface-2) !important;
         color: var(--navy-900) !important;
@@ -488,9 +527,6 @@ if st.session_state.page == 'landing':
         section[data-testid="stSidebar"] { display: none !important; }
     </style>
     """, unsafe_allow_html=True)
-
-    first_name = get_first_name()
-    st.markdown(f'<div class="greeting">Hi, {first_name}</div>', unsafe_allow_html=True)
 
     st.markdown("""
     <div class="disclaimer-box">
