@@ -572,10 +572,21 @@ st.markdown("""
        ------------------------------------------------------------------ */
     body:has(.landing-page-marker) .block-container {
         padding-top: 0.6rem !important;
-        padding-bottom: 0.4rem !important;
+        padding-bottom: 0.6rem !important;
         padding-left: 1.4rem !important;
         padding-right: 1.4rem !important;
         max-width: 100% !important;
+        min-height: calc(100vh - 1.2rem) !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    /* The vertical stack Streamlit renders inside block-container */
+    body:has(.landing-page-marker) .block-container > [data-testid="stVerticalBlock"],
+    body:has(.landing-page-marker) [data-testid="stAppViewBlockContainer"] > div,
+    body:has(.landing-page-marker) section[data-testid="stMain"] .block-container > div {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
     /* Widen every landing section to the full container */
     body:has(.landing-page-marker) .landing-brandbar,
@@ -587,6 +598,10 @@ st.markdown("""
     }
     body:has(.landing-page-marker) .landing-hero .lede {
         max-width: 780px;
+    }
+    /* Footer pinned to bottom of the landing viewport */
+    body:has(.landing-page-marker) .landing-footer {
+        margin-top: auto !important;
     }
     /* Brandbar — trim vertical padding */
     body:has(.landing-page-marker) .landing-brandbar {
@@ -654,11 +669,11 @@ st.markdown("""
     body:has(.landing-page-marker) .st-key-landing_go_rules .stButton > button,
     body:has(.landing-page-marker) div[class*="st-key-landing_go_agent"] .stButton > button,
     body:has(.landing-page-marker) div[class*="st-key-landing_go_rules"] .stButton > button {
-        padding: 58px 24px 20px 24px !important;
-        min-height: 168px !important;
+        padding: 62px 28px 26px 28px !important;
+        min-height: 210px !important;
         border-radius: 16px !important;
-        font-size: 12.5px !important;
-        line-height: 1.55 !important;
+        font-size: 13px !important;
+        line-height: 1.6 !important;
     }
     body:has(.landing-page-marker) .st-key-landing_go_agent .stButton > button::first-line,
     body:has(.landing-page-marker) .st-key-landing_go_rules .stButton > button::first-line,
