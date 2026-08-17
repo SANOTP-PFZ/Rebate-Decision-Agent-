@@ -753,63 +753,77 @@ st.markdown("""
     .agent-kpi .delta.pos { color: var(--up); font-weight: 600; }
     .agent-kpi .delta.neg { color: var(--down); font-weight: 600; }
 
-    /* Agent — sidebar brand block (logo + product name at the very top) */
+    /* Agent — sidebar brand block (stacked: logo on top, title below,
+       spacing matched to Migraine Intelligence Hub reference) */
     .agent-sidebar-brand {
         display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 14px;
-        margin: -6px 0 16px 0;
-        background: linear-gradient(135deg, rgba(28,79,192,0.10), rgba(65,182,230,0.06));
-        border: 1px solid var(--hairline);
-        border-radius: 14px;
-        box-shadow: var(--shadow-sm);
-        position: relative;
-        overflow: hidden;
-    }
-    .agent-sidebar-brand::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--navy-600), var(--accent));
-        opacity: 0.85;
+        flex-direction: column;
+        gap: 0.7rem;
+        padding: 1.4rem 1.2rem 1.2rem 1.2rem;
+        margin: -8px -8px 0 -8px;
+        border-bottom: 1px solid var(--hairline);
     }
     .agent-sidebar-brand .brand-logo {
         height: 28px;
         width: auto;
         object-fit: contain;
+        align-self: flex-start;
         flex-shrink: 0;
     }
     .agent-sidebar-brand .brand-logo-fallback {
         font-family: 'Manrope', sans-serif;
         font-weight: 800;
         color: var(--navy-700);
-        font-size: 16px;
+        font-size: 18px;
         line-height: 1;
+        align-self: flex-start;
     }
-    .agent-sidebar-brand .brand-copy { line-height: 1.15; }
+    .agent-sidebar-brand .brand-copy { line-height: 1.18; }
     .agent-sidebar-brand .brand-title {
         font-family: 'Manrope', sans-serif;
-        font-size: 13px;
+        font-size: 1.22rem;
         font-weight: 800;
         color: var(--navy-900);
-        letter-spacing: -0.01em;
+        letter-spacing: -0.025em;
+        line-height: 1.18;
     }
     .agent-sidebar-brand .brand-subtitle {
         font-family: 'Inter', sans-serif;
-        font-size: 10px;
+        font-size: 0.72rem;
         color: var(--text-muted);
+        font-weight: 500;
+        margin-top: 0.35rem;
+    }
+
+    /* Section header labels — tighter, uppercase, matches reference sidebar-section-label */
+    .agent-sec-hdr {
+        font-family: 'Manrope', sans-serif;
+        font-size: 0.62rem;
         font-weight: 700;
-        letter-spacing: 0.14em;
+        color: var(--text-muted);
         text-transform: uppercase;
-        margin-top: 3px;
+        letter-spacing: 0.12em;
+        padding: 0.95rem 0.35rem 0.4rem 0.35rem;
+        margin: 0;
+        border-bottom: none;
+    }
+    .agent-sec-hdr:first-of-type { padding-top: 1rem; }
+
+    /* Streamlit puts each sidebar element in its own block with default margins.
+       Tighten those so sections stack neatly like the reference. */
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 0.25rem !important; }
+    section[data-testid="stSidebar"] .element-container,
+    section[data-testid="stSidebar"] [data-testid="stElementContainer"] { margin-bottom: 0 !important; }
+    section[data-testid="stSidebar"] > div:first-child > div { padding-top: 0 !important; }
+
+    /* Main-content top alignment — start at same vertical position as sidebar brand */
+    body:has(.agent-page-marker) .block-container {
+        padding-top: 1.2rem !important;
     }
 
     /* Agent — tighter main-content top padding so Back-to-Home aligns
        vertically with the sidebar brand block */
-    .agent-main-tight .block-container,
-    body:has(.agent-page-marker) .block-container {
+    .agent-main-tight .block-container {
         padding-top: 0.6rem !important;
     }
 
@@ -1550,7 +1564,7 @@ elif st.session_state.page == 'agent':
         return f'<span class="agent-status-tag {cls}">{status}</span>'
 
     with st.sidebar:
-        # ---- Brand block at the very top ----
+        # ---- Brand block at the very top (stacked: logo -> title -> subtitle) ----
         if _b64:
             _brand_logo = f'<img class="brand-logo" src="data:image/png;base64,{_b64}" alt="Pfizer">'
         else:
@@ -1559,8 +1573,8 @@ elif st.session_state.page == 'agent':
         <div class="agent-sidebar-brand">
             {_brand_logo}
             <div class="brand-copy">
-                <div class="brand-title">Rebate Decision</div>
-                <div class="brand-subtitle">Agent</div>
+                <div class="brand-title">Rebate Decision<br>Agent</div>
+                <div class="brand-subtitle">Nurtec&reg; Payer Model</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
