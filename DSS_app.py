@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 import dataiku
+import base64
 
 # =============================================================================
 # PAGE CONFIG
@@ -108,21 +109,22 @@ st.markdown("""
         opacity: 0.7;
     }
     .pfizer-logo {
-        font-family: 'Manrope', sans-serif;
-        font-size: 20px;
-        font-weight: 800;
-        color: var(--navy-600);
+        display: flex;
+        align-items: center;
         border-right: 1px solid var(--hairline);
         padding-right: 18px;
-        letter-spacing: -0.02em;
+    }
+    .pfizer-logo img {
+        height: 30px;
+        object-fit: contain;
     }
     .pfizer-header h1 {
         color: var(--navy-900);
         font-family: 'Manrope', sans-serif;
-        font-size: 16px;
+        font-size: 20px;
         margin: 0;
-        font-weight: 700;
-        letter-spacing: -0.01em;
+        font-weight: 800;
+        letter-spacing: -0.02em;
     }
 
     /* Landing page */
@@ -527,9 +529,18 @@ def get_first_name():
 # =============================================================================
 # HEADER (all pages)
 # =============================================================================
-st.markdown("""
+# Load logo as base64
+_logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png")
+if os.path.exists(_logo_path):
+    with open(_logo_path, "rb") as _f:
+        _logo_b64 = base64.b64encode(_f.read()).decode()
+    _logo_html = f'<img src="data:image/png;base64,{_logo_b64}" alt="Pfizer">'
+else:
+    _logo_html = '<span style="font-family:Manrope,sans-serif;font-weight:800;color:#1C4FC0;font-size:20px;">Pfizer</span>'
+
+st.markdown(f"""
 <div class="pfizer-header">
-    <span class="pfizer-logo">Pfizer</span>
+    <span class="pfizer-logo">{_logo_html}</span>
     <h1>REBATE DECISION AGENT</h1>
 </div>
 """, unsafe_allow_html=True)
