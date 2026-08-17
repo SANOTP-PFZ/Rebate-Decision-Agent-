@@ -606,15 +606,15 @@ st.markdown("""
     body:has(.landing-page-marker) .landing-footer {
         margin-top: auto !important;
     }
-    /* Brandbar — trim vertical padding */
+    /* Brandbar — larger, more prominent header */
     body:has(.landing-page-marker) .landing-brandbar {
-        padding: 10px 18px;
-        margin: 0 0 14px 0;
+        padding: 18px 26px;
+        margin: 0 0 18px 0;
     }
-    body:has(.landing-page-marker) .landing-brandbar .brand-logo { height: 26px; }
-    body:has(.landing-page-marker) .landing-brandbar .brand-divider { height: 26px; }
-    body:has(.landing-page-marker) .landing-brandbar .brand-title { font-size: 15.5px; }
-    body:has(.landing-page-marker) .landing-brandbar .brand-subtitle { font-size: 11px; }
+    body:has(.landing-page-marker) .landing-brandbar .brand-logo { height: 44px; }
+    body:has(.landing-page-marker) .landing-brandbar .brand-divider { height: 44px; }
+    body:has(.landing-page-marker) .landing-brandbar .brand-title { font-size: 22px; }
+    body:has(.landing-page-marker) .landing-brandbar .brand-subtitle { font-size: 13px; margin-top: 3px; }
 
     /* Hero — smaller title, tighter margins */
     body:has(.landing-page-marker) .landing-hero {
