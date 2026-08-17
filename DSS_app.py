@@ -753,14 +753,27 @@ st.markdown("""
     .agent-kpi .delta.pos { color: var(--up); font-weight: 600; }
     .agent-kpi .delta.neg { color: var(--down); font-weight: 600; }
 
+    /* Sidebar — pull content to the very top (zero out Streamlit's default top padding) */
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stSidebarContent"],
+    section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    section[data-testid="stSidebar"] .block-container {
+        padding-top: 0 !important;
+    }
+
     /* Agent — sidebar brand block (stacked: logo on top, title below,
        spacing matched to Migraine Intelligence Hub reference) */
     .agent-sidebar-brand {
         display: flex;
         flex-direction: column;
         gap: 0.7rem;
-        padding: 1.4rem 1.2rem 1.2rem 1.2rem;
-        margin: -8px -8px 0 -8px;
+        padding: 1.1rem 1.1rem 1rem 1.1rem;
+        margin: 0 -1rem 0 -1rem;
         border-bottom: 1px solid var(--hairline);
     }
     .agent-sidebar-brand .brand-logo {
@@ -795,7 +808,7 @@ st.markdown("""
         margin-top: 0.35rem;
     }
 
-    /* Section header labels — tighter, uppercase, matches reference sidebar-section-label */
+    /* Section header labels — proper breathing room above each section */
     .agent-sec-hdr {
         font-family: 'Manrope', sans-serif;
         font-size: 0.62rem;
@@ -803,28 +816,28 @@ st.markdown("""
         color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.12em;
-        padding: 0.95rem 0.35rem 0.4rem 0.35rem;
+        padding: 1.15rem 0.15rem 0.5rem 0.15rem;
         margin: 0;
         border-bottom: none;
     }
-    .agent-sec-hdr:first-of-type { padding-top: 1rem; }
+    .agent-sec-hdr:first-of-type { padding-top: 1.1rem; }
 
-    /* Streamlit puts each sidebar element in its own block with default margins.
-       Tighten those so sections stack neatly like the reference. */
-    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 0.25rem !important; }
+    /* Sidebar element rhythm — tight but breathable */
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 0.4rem !important; }
     section[data-testid="stSidebar"] .element-container,
     section[data-testid="stSidebar"] [data-testid="stElementContainer"] { margin-bottom: 0 !important; }
-    section[data-testid="stSidebar"] > div:first-child > div { padding-top: 0 !important; }
+
+    /* Label + input rhythm inside the sidebar */
+    section[data-testid="stSidebar"] .stSelectbox { margin-bottom: 0.35rem !important; }
+    section[data-testid="stSidebar"] label { margin-bottom: 0.15rem !important; }
+
+    /* Extra breathing room around the state and details panels */
+    .agent-state-panel { margin-top: 0.15rem; }
+    .agent-details-panel { margin-top: 0.15rem; }
 
     /* Main-content top alignment — start at same vertical position as sidebar brand */
     body:has(.agent-page-marker) .block-container {
-        padding-top: 1.2rem !important;
-    }
-
-    /* Agent — tighter main-content top padding so Back-to-Home aligns
-       vertically with the sidebar brand block */
-    .agent-main-tight .block-container {
-        padding-top: 0.6rem !important;
+        padding-top: 1.1rem !important;
     }
 
     /* Agent — Back-to-Home compact button (overrides the global sidebar button style) */
@@ -1729,8 +1742,6 @@ elif st.session_state.page == 'agent':
             _yaxis_title     = f'{selected_mco} Market Share (%)'
             _actual_lbl      = 'Actual MCO MS'
 
-        st.markdown('<div class="agent-chart-wrap">', unsafe_allow_html=True)
-
         fig = go.Figure()
 
         # Shaded forecast region (from last actual to end)
@@ -1814,7 +1825,6 @@ elif st.session_state.page == 'agent':
         )
 
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
-        st.markdown('</div>', unsafe_allow_html=True)
 
         # =====================================================================
         # 2) KPI HERO ROW — National & MCO Impact
