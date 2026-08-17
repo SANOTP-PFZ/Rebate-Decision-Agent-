@@ -451,11 +451,38 @@ st.markdown("""
     }
 
     /* Dataframe / table styling */
-    [data-testid="stDataFrame"] {
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"] {
         border: 1px solid var(--hairline);
         border-radius: 12px;
         overflow: hidden;
     }
+    [data-testid="stTable"] table {
+        background: white !important;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    [data-testid="stTable"] th {
+        background: var(--navy-900) !important;
+        color: white !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        padding: 10px 14px !important;
+        text-align: left !important;
+    }
+    [data-testid="stTable"] td {
+        background: white !important;
+        color: #0F172A !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
+        padding: 8px 14px !important;
+        border-bottom: 1px solid rgba(15,23,42,0.06) !important;
+    }
+    [data-testid="stTable"] tr:hover td {
+        background: rgba(28,79,192,0.03) !important;
+    }
+    /* Also handle stDataFrame canvas-based fallback */
     [data-testid="stDataFrame"] th {
         background: var(--navy-900) !important;
         color: white !important;
@@ -467,43 +494,6 @@ st.markdown("""
     }
     [data-testid="stDataFrame"] table {
         background: white !important;
-    }
-    [data-testid="stDataFrame"] [data-testid="glideDataEditor"],
-    [data-testid="stDataFrame"] [class*="glide"] {
-        background: white !important;
-    }
-    /* Glide data grid (Streamlit's dataframe renderer) */
-    .dvn-scroller,
-    [data-testid="stDataFrame"] > div,
-    [data-testid="stDataFrame"] > div > div,
-    [data-testid="stDataFrame"] canvas + div {
-        background-color: white !important;
-    }
-    [data-testid="stDataFrame"] [role="grid"] {
-        background-color: white !important;
-    }
-    [data-testid="stDataFrame"] [role="gridcell"] {
-        background-color: white !important;
-        color: #0F172A !important;
-    }
-    [data-testid="stDataFrame"] [role="columnheader"] {
-        background-color: var(--navy-900) !important;
-        color: white !important;
-    }
-    /* Force all text inside dataframe to be dark */
-    [data-testid="stDataFrame"] * {
-        color: #0F172A !important;
-        -webkit-text-fill-color: #0F172A !important;
-    }
-    [data-testid="stDataFrame"] [role="columnheader"],
-    [data-testid="stDataFrame"] [role="columnheader"] * {
-        color: white !important;
-        -webkit-text-fill-color: white !important;
-    }
-    [data-testid="stDataFrame"] th,
-    [data-testid="stDataFrame"] th * {
-        color: white !important;
-        -webkit-text-fill-color: white !important;
     }
 
     /* Info box */
@@ -720,7 +710,7 @@ elif st.session_state.page == 'rules':
         {"Current": "Preferred", "Future": "Not Covered", "Analog": "Blended", "Step": -2, "Reverse": 1},
         {"Current": "Covered", "Future": "Not Covered", "Analog": "Providence", "Step": -1, "Reverse": 1},
     ])
-    st.dataframe(step_df, use_container_width=True, hide_index=True)
+    st.table(step_df)
     st.caption("Note: Specialty status is treated as equivalent to Covered for transition mapping purposes.")
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -743,7 +733,7 @@ elif st.session_state.page == 'rules':
                     -0.6465, -0.6195, -0.7056, -0.6482, -0.6110, -0.5966,
                     -0.6317, -0.6495, -0.6369, -0.6605, -0.7398],
     })
-    st.dataframe(analog_df, use_container_width=True, hide_index=True)
+    st.table(analog_df)
     st.caption("Note: Month 1 rate is applied at the change month, Month 2 rate at the next month, and so on. Each rate represents the total impact on market share at that point in time.")
 
     st.markdown("<br>", unsafe_allow_html=True)
