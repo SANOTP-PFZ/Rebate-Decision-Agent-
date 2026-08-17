@@ -1,6 +1,41 @@
 # Nurtec Payer Model — Streamlit Webapp Wireframe
 
-## App Layout
+## Rebate Decision Agent — Refreshed Layout (v2)
+
+```
++=====================================================================+
+|  [Pfizer]  REBATE DECISION AGENT                                     |   <- global brand header
++=====================================================================+
+|                                                     [ Back to Home ] |   <- action row (top-right)
++---------------------------------------------------------------------+
+|  Scenario   MCO · CVS HEALTH  ·  [Preferred] -> [Not Covered]  ·     |
+|             Change · Jul 2026                                        |   <- context chip row
++-------------+-------------------------------------------------------+
+| SIDEBAR     |                                                       |
+|             |  NATIONAL & MCO IMPACT                                |
+| SCENARIO    |  +----------+ +----------+ +----------+ +----------+ |
+| INPUTS      |  | Baseline | | Proj 12m | | MCO ΔPP  | | Analog   | |
+|  MCO        |  |  44.12%  | |  38.90%  | | ▼ 5.2 pp | | Blended  | |   <- KPI hero (single row)
+|  Future     |  | as of..  | | ▼ -5.22p | | 62→57%   | | Step -2  | |
+|  Change     |  +----------+ +----------+ +----------+ +----------+ |
+|  Month      |                                                       |
+|             |  MARKET SHARE TREND        [ National ]  [ MCO ]      |   <- segmented toggle
+| CURRENT     |  +-------------------------------------------------+  |
+| STATE       |  |  Actual --Baseline --Projected                  |  |
+|  Status tag |  |                    :                            |  |
+|  Payer      |  |    solid navy line : shaded forecast region     |  |
+|  OCGRP %    |  |                    ▼ Status change · Jul'26     |  |   <- single chart
+|             |  |   ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈dashed gray + red overlay┈ |  |
+| SCENARIO    |  +-------------------------------------------------+  |
+| DETAILS     |         Jan'25 ... Mar'26 | Apr'26 ...... Dec'27      |
+|  Analog     |                                                       |
+|  Step       |     Data as of Mar 2026 · Source: Xponent · Analog:.. |
+|  Reverse    |                                            (footer)   |
+|  Transition |                                                       |
++-------------+-------------------------------------------------------+
+```
+
+## App Layout (v1 — historical reference)
 
 ```
 +=====================================================================+

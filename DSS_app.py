@@ -505,6 +505,407 @@ st.markdown("""
         font-family: 'Inter', sans-serif !important;
     }
 
+    /* =====================================================================
+       AGENT PAGE — design token cheatsheet
+       ---------------------------------------------------------------------
+       Space scale : 8  / 12 / 16 / 24 / 32 / 48 px
+       Radii       : 10 (chip) / 14 (card) / 18 (panel)
+       Shadow      : var(--shadow-sm | --shadow-md | --shadow-lg)
+       Type        : 10 micro | 11 label | 12 body | 13 body+ | 14 kpi-label
+                     18 chart-title | 26 kpi-value | 34 page-title
+       Fonts       : Manrope (headings, KPI values), Inter (body/UI)
+       All new agent-page classes are namespaced under .agent-* so landing
+       and business-rules pages are untouched.
+       ===================================================================== */
+
+    /* Agent — action row above content (holds Back-to-Home) */
+    .agent-actionrow {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        margin: -8px 0 12px 0;
+    }
+
+    /* Agent — context chip row */
+    .agent-context {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 14px;
+        margin: 0 0 18px 0;
+        background: rgba(255,255,255,0.68);
+        backdrop-filter: saturate(180%) blur(18px);
+        -webkit-backdrop-filter: saturate(180%) blur(18px);
+        border: 1px solid var(--hairline);
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+    }
+    .agent-context .ctx-label {
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.10em;
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-right: 6px;
+    }
+    .agent-context .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: var(--surface-2);
+        border: 1px solid var(--hairline);
+        color: var(--navy-900);
+        font-family: 'Inter', sans-serif;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        font-variant-numeric: tabular-nums;
+    }
+    .agent-context .chip.chip-transition {
+        background: rgba(28,79,192,0.06);
+        border-color: rgba(28,79,192,0.18);
+        color: var(--navy-700);
+    }
+    .agent-context .chip .arrow {
+        color: var(--navy-600);
+        font-weight: 700;
+        margin: 0 2px;
+    }
+    .agent-context .sep {
+        width: 4px; height: 4px; border-radius: 50%;
+        background: rgba(15,23,42,0.18);
+        margin: 0 4px;
+    }
+
+    /* Agent — sidebar grouped panels */
+    .agent-sec-hdr {
+        font-family: 'Manrope', sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        margin: 18px 0 10px 0;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--hairline);
+    }
+    .agent-sec-hdr:first-of-type { margin-top: 4px; }
+
+    .agent-state-panel {
+        background: rgba(255,255,255,0.7);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 12px 14px;
+        box-shadow: var(--shadow-sm);
+    }
+    .agent-state-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px dashed rgba(15,23,42,0.06);
+        font-family: 'Inter', sans-serif;
+    }
+    .agent-state-row:last-child { border-bottom: none; }
+    .agent-state-row .k {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+    }
+    .agent-state-row .v {
+        font-family: 'Manrope', sans-serif;
+        font-size: 12px;
+        color: var(--navy-900);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Status tag chips (sidebar) */
+    .agent-status-tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-family: 'Inter', sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+    .agent-status-tag.tag-nc   { background: rgba(100,116,139,0.14); color: #475569; }
+    .agent-status-tag.tag-cov  { background: rgba(59,111,217,0.14); color: var(--navy-700); }
+    .agent-status-tag.tag-pref { background: var(--navy-700); color: #ffffff; }
+    .agent-status-tag.tag-spec { background: rgba(65,182,230,0.18); color: #0E6E93; }
+    .agent-status-tag.tag-na   { background: rgba(15,23,42,0.05); color: var(--text-muted); }
+
+    /* Details panel (analog / step / reverse) */
+    .agent-details-panel {
+        background: rgba(28,79,192,0.04);
+        border: 1px solid rgba(28,79,192,0.12);
+        border-left: 3px solid var(--navy-600);
+        border-radius: 12px;
+        padding: 12px 14px;
+    }
+    .agent-details-panel.warn {
+        background: rgba(239,68,68,0.05);
+        border: 1px solid rgba(239,68,68,0.18);
+        border-left: 3px solid var(--down);
+    }
+    .agent-details-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        font-family: 'Inter', sans-serif;
+    }
+    .agent-details-row .k {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .agent-details-row .v {
+        font-family: 'JetBrains Mono', 'Consolas', monospace;
+        font-size: 12px;
+        color: var(--navy-900);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .agent-details-warn {
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        color: var(--down);
+        font-weight: 600;
+        margin-top: 6px;
+    }
+
+    /* Agent — KPI hero row */
+    .agent-kpi-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin: 4px 0 20px 0;
+    }
+    @media (max-width: 1180px) {
+        .agent-kpi-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    .agent-kpi {
+        background: var(--surface);
+        border: 1px solid var(--hairline);
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
+        position: relative;
+        overflow: hidden;
+        min-height: 108px;
+    }
+    .agent-kpi::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        background: linear-gradient(180deg, var(--navy-600), var(--accent));
+    }
+    .agent-kpi.kpi-neg::before { background: var(--down); }
+    .agent-kpi.kpi-pos::before { background: linear-gradient(180deg, var(--up), #6EE7B7); }
+    .agent-kpi.kpi-accent::before { background: var(--accent); }
+    .agent-kpi:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    .agent-kpi .label {
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.10em;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .agent-kpi .value {
+        font-family: 'Manrope', sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--navy-900);
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        font-variant-numeric: tabular-nums;
+    }
+    .agent-kpi .value.small { font-size: 20px; }
+    .agent-kpi .value.pos { color: var(--up); }
+    .agent-kpi .value.neg { color: var(--down); }
+    .agent-kpi .delta {
+        margin-top: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 11.5px;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+    }
+    .agent-kpi .delta.pos { color: var(--up); font-weight: 600; }
+    .agent-kpi .delta.neg { color: var(--down); font-weight: 600; }
+
+    /* Agent — segmented toggle (radio styled as pills) */
+    .agent-toggle-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 4px 0 10px 0;
+    }
+    .agent-toggle-wrap .toggle-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: -0.01em;
+    }
+    .agent-toggle .stRadio > div[role="radiogroup"] {
+        display: inline-flex !important;
+        gap: 0 !important;
+        background: var(--surface-2) !important;
+        border: 1px solid var(--hairline) !important;
+        border-radius: 999px !important;
+        padding: 3px !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+    .agent-toggle .stRadio label {
+        margin: 0 !important;
+        padding: 6px 18px !important;
+        border-radius: 999px !important;
+        cursor: pointer !important;
+        transition: all 0.18s var(--ease-out) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: var(--text-muted) !important;
+    }
+    .agent-toggle .stRadio label:hover { color: var(--navy-700) !important; }
+    .agent-toggle .stRadio label:has(input:checked) {
+        background: linear-gradient(135deg, var(--navy-600), var(--navy-500)) !important;
+        color: #ffffff !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+    .agent-toggle .stRadio input[type="radio"] {
+        display: none !important;
+    }
+    .agent-toggle .stRadio > label > div:first-child { display: none !important; }
+
+    /* Agent — chart container */
+    .agent-chart-wrap {
+        background: var(--surface);
+        border: 1px solid var(--hairline);
+        border-radius: 18px;
+        padding: 18px 18px 8px 18px;
+        box-shadow: var(--shadow-sm);
+        animation: fadeIn 220ms var(--ease-out);
+    }
+
+    /* Agent — skeleton loader */
+    @keyframes agentShimmer {
+        0%   { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+    }
+    .agent-skeleton {
+        border-radius: 14px;
+        background: linear-gradient(90deg,
+            rgba(15,23,42,0.05) 0%,
+            rgba(15,23,42,0.10) 50%,
+            rgba(15,23,42,0.05) 100%);
+        background-size: 800px 100%;
+        animation: agentShimmer 1.4s infinite linear;
+    }
+    .agent-skeleton.k { height: 108px; }
+    .agent-skeleton.c { height: 380px; margin-top: 12px; }
+
+    /* Agent — empty state (invalid transition) */
+    .agent-empty {
+        background: var(--surface);
+        border: 1px solid var(--hairline);
+        border-radius: 18px;
+        padding: 32px 28px;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    .agent-empty .icon {
+        width: 48px; height: 48px;
+        border-radius: 12px;
+        background: rgba(245,158,11,0.14);
+        color: #B45309;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px;
+        font-weight: 700;
+        font-family: 'Manrope', sans-serif;
+        flex-shrink: 0;
+    }
+    .agent-empty h3 {
+        font-family: 'Manrope', sans-serif;
+        font-size: 16px;
+        color: var(--navy-900);
+        margin: 0 0 6px 0;
+        letter-spacing: -0.015em;
+    }
+    .agent-empty p {
+        font-family: 'Inter', sans-serif;
+        font-size: 12.5px;
+        color: var(--text-soft);
+        margin: 0;
+        line-height: 1.55;
+    }
+    .agent-empty .suggest {
+        margin-top: 10px;
+        display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .agent-empty .suggest span {
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: rgba(28,79,192,0.06);
+        color: var(--navy-700);
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Agent — section heading (KPI, Chart) */
+    .agent-sec-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--navy-900);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin: 8px 0 10px 2px;
+    }
+
+    /* Agent — footer meta */
+    .agent-footer {
+        text-align: right;
+        color: var(--text-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: 10.5px;
+        margin-top: 24px;
+        padding-top: 12px;
+        border-top: 1px solid var(--hairline);
+        font-variant-numeric: tabular-nums;
+    }
+    .agent-footer .dot { margin: 0 8px; opacity: 0.6; }
+
+    /* Accessibility — focus visible */
+    .agent-toggle .stRadio label:focus-within,
+    .agent-kpi:focus-within {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -926,10 +1327,21 @@ elif st.session_state.page == 'agent':
         return baseline_natl_ms, projected_natl_ms
 
     # =========================================================================
-    # SIDEBAR
+    # SIDEBAR — grouped panels (Inputs / Current State / Scenario Details)
     # =========================================================================
+    def _status_tag(status):
+        cls_map = {
+            'Not Covered': 'tag-nc',
+            'Covered':     'tag-cov',
+            'Preferred':   'tag-pref',
+            'Specialty':   'tag-spec',
+        }
+        cls = cls_map.get(status, 'tag-na')
+        return f'<span class="agent-status-tag {cls}">{status}</span>'
+
     with st.sidebar:
-        st.markdown('<div class="sidebar-header">SCENARIO INPUTS</div>', unsafe_allow_html=True)
+        # ---- Section A: Scenario Inputs ----
+        st.markdown('<div class="agent-sec-hdr">Scenario Inputs</div>', unsafe_allow_html=True)
 
         selected_mco = st.selectbox(
             "Select MCO (type to search)",
@@ -939,7 +1351,6 @@ elif st.session_state.page == 'agent':
         )
 
         current_status, payer_type, ocgrp_contrib = get_mco_metadata(selected_mco)
-        st.text_input("Current Status", value=current_status, disabled=True)
 
         if current_status in STATUS_OPTIONS:
             future_options = [s for s in STATUS_OPTIONS if s != current_status]
@@ -950,35 +1361,83 @@ elif st.session_state.page == 'agent':
         selected_change_month = st.selectbox("Change Month", CHANGE_MONTH_OPTIONS, index=6)
         change_idx = CHANGE_MONTH_IDX_MAP[selected_change_month]
 
+        # ---- Section B: Current State (read-only info panel) ----
+        st.markdown('<div class="agent-sec-hdr">Current State</div>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="agent-state-panel">
+            <div class="agent-state-row">
+                <span class="k">Status</span>
+                <span class="v">{_status_tag(current_status)}</span>
+            </div>
+            <div class="agent-state-row">
+                <span class="k">Payer Type</span>
+                <span class="v">{payer_type}</span>
+            </div>
+            <div class="agent-state-row">
+                <span class="k">OCGRP Contrib</span>
+                <span class="v">{ocgrp_contrib}</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # ---- Section C: Scenario Details ----
+        st.markdown('<div class="agent-sec-hdr">Scenario Details</div>', unsafe_allow_html=True)
         step_key = (current_status, future_status)
         if step_key in STEP_TABLE:
             info = STEP_TABLE[step_key]
             st.markdown(f"""
-            <div class="scenario-box">
-                <h4>Scenario Details</h4>
-                <p><b>Analog:</b> {info['analog']}</p>
-                <p><b>Step:</b> {info['step']} | <b>Reverse:</b> {info['reverse']}</p>
-                <p><b>Transition:</b> {current_status} &rarr; {future_status}</p>
-                <p><b>Payer Type:</b> {payer_type}</p>
-                <p><b>OCGRP Contribution:</b> {ocgrp_contrib}</p>
+            <div class="agent-details-panel">
+                <div class="agent-details-row">
+                    <span class="k">Analog</span><span class="v">{info['analog']}</span>
+                </div>
+                <div class="agent-details-row">
+                    <span class="k">Step</span><span class="v">{info['step']:+d}</span>
+                </div>
+                <div class="agent-details-row">
+                    <span class="k">Reverse</span><span class="v">{info['reverse']:+d}</span>
+                </div>
+                <div class="agent-details-row">
+                    <span class="k">Transition</span>
+                    <span class="v">{current_status} &rarr; {future_status}</span>
+                </div>
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
-            <div class="scenario-box">
-                <h4>Scenario Details</h4>
-                <p><b>Transition:</b> {current_status} &rarr; {future_status}</p>
-                <p><b>Payer Type:</b> {payer_type}</p>
-                <p><b>OCGRP Contribution:</b> {ocgrp_contrib}</p>
-                <p style="color:#E03C31;"><b>No analog defined for this transition</b></p>
+            <div class="agent-details-panel warn">
+                <div class="agent-details-row">
+                    <span class="k">Transition</span>
+                    <span class="v">{current_status} &rarr; {future_status}</span>
+                </div>
+                <div class="agent-details-warn">No analog defined for this transition</div>
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("---")
-        st.button("Back to Home", on_click=go_to_landing, use_container_width=True)
+    # =========================================================================
+    # ACTION ROW — Back to Home (top of main content)
+    # =========================================================================
+    _bh_l, _bh_r = st.columns([6, 1])
+    with _bh_r:
+        st.button("← Back to Home", on_click=go_to_landing, use_container_width=True, key="agent_back_home")
 
     # =========================================================================
-    # COMPUTE
+    # CONTEXT CHIP ROW
+    # =========================================================================
+    _current_tag = _status_tag(current_status)
+    _future_tag  = _status_tag(future_status)
+    st.markdown(f"""
+    <div class="agent-context">
+        <span class="ctx-label">Scenario</span>
+        <span class="chip">MCO&nbsp;·&nbsp;{selected_mco}</span>
+        <span class="sep"></span>
+        <span class="chip chip-transition">{_current_tag}&nbsp;<span class="arrow">&rarr;</span>&nbsp;{_future_tag}</span>
+        <span class="sep"></span>
+        <span class="chip">Change&nbsp;·&nbsp;{selected_change_month}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # =========================================================================
+    # COMPUTE (backend math unchanged)
     # =========================================================================
     baseline_ms = get_mco_ms(selected_mco)
 
@@ -993,191 +1452,232 @@ elif st.session_state.page == 'agent':
         projected = baseline_ms
 
     # =========================================================================
-    # CHART — NATIONAL MARKET SHARE
+    # NATIONAL ROLL-UP (cached per scenario in session_state — pure memoization,
+    # calls the untouched compute_national_ms)
     # =========================================================================
     if step_key in STEP_TABLE:
-        with st.spinner("Computing national roll-up..."):
-            baseline_natl_ms, projected_natl_ms = compute_national_ms(selected_mco, projected, change_idx)
+        if 'agent_rollup_cache' not in st.session_state:
+            st.session_state.agent_rollup_cache = {}
 
-        st.markdown('<p class="chart-title">National Market Share Trend</p>', unsafe_allow_html=True)
+        cache_key = (selected_mco, change_idx, analog_name, reverse)
+        if cache_key in st.session_state.agent_rollup_cache:
+            baseline_natl_ms, projected_natl_ms = st.session_state.agent_rollup_cache[cache_key]
+        else:
+            # Show skeleton placeholders while computing
+            _sk_kpi = st.empty()
+            _sk_chart = st.empty()
+            _sk_kpi.markdown(
+                '<div class="agent-kpi-row">'
+                '<div class="agent-skeleton k"></div>'
+                '<div class="agent-skeleton k"></div>'
+                '<div class="agent-skeleton k"></div>'
+                '<div class="agent-skeleton k"></div>'
+                '</div>', unsafe_allow_html=True)
+            _sk_chart.markdown('<div class="agent-skeleton c"></div>', unsafe_allow_html=True)
+            baseline_natl_ms, projected_natl_ms = compute_national_ms(selected_mco, projected, change_idx)
+            st.session_state.agent_rollup_cache[cache_key] = (baseline_natl_ms, projected_natl_ms)
+            _sk_kpi.empty()
+            _sk_chart.empty()
+
+        # =====================================================================
+        # KPI HERO ROW — 4 cards, value + delta (single row, replaces two strips)
+        # =====================================================================
+        natl_baseline_current = baseline_natl_ms[N_ACTUAL - 1]
+        natl_projected_12m    = projected_natl_ms[min(change_idx + 12, N_TOTAL - 1)]
+        natl_delta            = natl_projected_12m - natl_baseline_current
+
+        mco_baseline_current  = baseline_ms[N_ACTUAL - 1]
+        mco_projected_12m     = projected[min(change_idx + 12, N_TOTAL - 1)]
+        mco_delta             = mco_projected_12m - mco_baseline_current
+
+        # Card 2 (Projected National MS 12m)
+        c2_delta_cls = 'neg' if natl_delta < 0 else 'pos'
+        c2_arrow = '&#9660;' if natl_delta < 0 else '&#9650;'
+        c2_kpi_cls = 'kpi-neg' if natl_delta < 0 else 'kpi-pos'
+        # Card 3 (MCO delta) — big value colored by sign
+        c3_val_cls = 'neg' if mco_delta < 0 else 'pos'
+        c3_arrow = '&#9660;' if mco_delta < 0 else '&#9650;'
+        c3_kpi_cls = 'kpi-neg' if mco_delta < 0 else 'kpi-pos'
+
+        st.markdown('<div class="agent-sec-title">National &amp; MCO Impact</div>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="agent-kpi-row">
+            <div class="agent-kpi">
+                <div class="label">Baseline National MS</div>
+                <div class="value">{natl_baseline_current:.2f}%</div>
+                <div class="delta">as of Mar 2026 (last actual)</div>
+            </div>
+            <div class="agent-kpi {c2_kpi_cls}">
+                <div class="label">Projected · 12m post change</div>
+                <div class="value">{natl_projected_12m:.2f}%</div>
+                <div class="delta {c2_delta_cls}">{c2_arrow} {natl_delta:+.2f} pp vs baseline</div>
+            </div>
+            <div class="agent-kpi {c3_kpi_cls}">
+                <div class="label">MCO-Level Delta</div>
+                <div class="value {c3_val_cls}">{c3_arrow} {mco_delta:+.2f} pp</div>
+                <div class="delta">{mco_baseline_current:.2f}% &rarr; {mco_projected_12m:.2f}%</div>
+            </div>
+            <div class="agent-kpi kpi-accent">
+                <div class="label">Analog Applied</div>
+                <div class="value small">{analog_name}</div>
+                <div class="delta">{current_status} &rarr; {future_status} · Step {STEP_TABLE[step_key]['step']:+d}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # =====================================================================
+        # SINGLE CHART with segmented toggle (National | MCO)
+        # =====================================================================
+        _tog_l, _tog_r = st.columns([6, 2])
+        with _tog_l:
+            st.markdown('<div class="agent-sec-title">Market Share Trend</div>', unsafe_allow_html=True)
+        with _tog_r:
+            st.markdown('<div class="agent-toggle">', unsafe_allow_html=True)
+            chart_view = st.radio(
+                "chart-view",
+                options=["National", "MCO"],
+                index=0,
+                horizontal=True,
+                label_visibility="collapsed",
+                key="agent_chart_view",
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        # Pick series + labels based on active view
+        if chart_view == "National":
+            _series_actual   = baseline_natl_ms[:N_ACTUAL]
+            _series_baseline = baseline_natl_ms[N_ACTUAL - 1:]
+            _series_proj     = projected_natl_ms[change_idx:]
+            _yaxis_title     = 'National Market Share (%)'
+            _actual_lbl      = 'Actual National MS'
+        else:
+            _series_actual   = baseline_ms[:N_ACTUAL]
+            _series_baseline = baseline_ms[N_ACTUAL - 1:]
+            _series_proj     = projected[change_idx:]
+            _yaxis_title     = f'{selected_mco} Market Share (%)'
+            _actual_lbl      = 'Actual MCO MS'
+
+        st.markdown('<div class="agent-chart-wrap">', unsafe_allow_html=True)
 
         fig = go.Figure()
+
+        # Shaded forecast region (from last actual to end)
+        fig.add_vrect(
+            x0=N_ACTUAL - 1, x1=N_TOTAL - 1,
+            fillcolor='rgba(15,23,42,0.03)',
+            line_width=0, layer='below',
+        )
+
         fig.add_trace(go.Scatter(
-            x=list(range(N_ACTUAL)), y=baseline_natl_ms[:N_ACTUAL],
-            mode='lines+markers', name='Actual National MS',
-            line=dict(color=PFZ_DARK_BLUE, width=2.5), marker=dict(size=4),
+            x=list(range(N_ACTUAL)), y=_series_actual,
+            mode='lines+markers', name=_actual_lbl,
+            line=dict(color=PFZ_DARK_BLUE, width=2.75), marker=dict(size=4),
             hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(N_ACTUAL)],
         ))
         fig.add_trace(go.Scatter(
-            x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_natl_ms[N_ACTUAL - 1:],
+            x=list(range(N_ACTUAL - 1, N_TOTAL)), y=_series_baseline,
             mode='lines', name='Baseline (no change)',
             line=dict(color='#94A3B8', width=2, dash='dash'),
             hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(N_ACTUAL - 1, N_TOTAL)],
         ))
         fig.add_trace(go.Scatter(
-            x=list(range(change_idx, N_TOTAL)), y=projected_natl_ms[change_idx:],
+            x=list(range(change_idx, N_TOTAL)), y=_series_proj,
             mode='lines+markers', name='Projected (post change)',
-            line=dict(color=PFZ_RED, width=2.5), marker=dict(size=5),
+            line=dict(color=PFZ_RED, width=2.75), marker=dict(size=5),
             fill='tonexty', fillcolor='rgba(239, 68, 68, 0.06)',
             hovertemplate='%{text}<br>Projected: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
         ))
 
+        # Status change vertical line + badge
         fig.add_shape(type="line", x0=change_idx, x1=change_idx,
                       y0=0, y1=1, yref="paper",
                       line=dict(color=PFZ_ORANGE, width=2, dash="dash"))
-        fig.add_annotation(x=change_idx, y=1.05, yref="paper",
-                           text="Status Change", showarrow=False,
-                           font=dict(color=PFZ_ORANGE, size=9))
+        fig.add_annotation(
+            x=change_idx, y=1.06, yref="paper",
+            text=f"  Status change · {selected_change_month}  ",
+            showarrow=False, align='center',
+            font=dict(color='#B45309', size=10, family='Inter'),
+            bgcolor='rgba(245,158,11,0.14)',
+            bordercolor='rgba(245,158,11,0.35)', borderwidth=1, borderpad=4,
+        )
 
-        all_v = baseline_natl_ms + projected_natl_ms[change_idx:]
-        valid_v = [v for v in all_v if v > 0]
-        y_lo = min(valid_v) - 0.5 if valid_v else 0
-        y_hi = max(valid_v) + 0.5 if valid_v else 100
+        # Uniform y-axis padding
+        _all_v = list(_series_actual) + list(_series_baseline) + list(_series_proj)
+        _valid_v = [v for v in _all_v if v > 0]
+        if _valid_v:
+            _y_lo_raw, _y_hi_raw = min(_valid_v), max(_valid_v)
+            _pad = max((_y_hi_raw - _y_lo_raw) * 0.08, 0.5)
+            y_lo, y_hi = _y_lo_raw - _pad, _y_hi_raw + _pad
+        else:
+            y_lo, y_hi = 0, 100
 
         tick_idx = list(range(0, N_TOTAL, 6))
         tick_lbl = [MONTH_LABELS[i] for i in tick_idx]
 
         fig.update_layout(
-            xaxis=dict(tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
-                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'), showgrid=False),
-            yaxis=dict(title='National Market Share (%)', ticksuffix='%',
-                       range=[y_lo, y_hi], gridcolor='rgba(15,23,42,0.05)',
-                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'),
-                       title_font=dict(size=11, color=PFZ_DARK_BLUE, family='Manrope')),
-            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY, family='Inter')),
+            xaxis=dict(
+                tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
+                tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'),
+                showgrid=False, showspikes=True, spikemode='across',
+                spikecolor='rgba(15,23,42,0.18)', spikethickness=1,
+            ),
+            yaxis=dict(
+                title=_yaxis_title, ticksuffix='%',
+                range=[y_lo, y_hi],
+                gridcolor='rgba(15,23,42,0.04)',
+                tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'),
+                title_font=dict(size=11, color=PFZ_DARK_BLUE, family='Manrope'),
+            ),
+            legend=dict(
+                orientation='h', xanchor='right', x=1, y=1.14,
+                font=dict(size=10.5, color=PFZ_GRAY, family='Inter'),
+                bgcolor='rgba(0,0,0,0)',
+            ),
             plot_bgcolor=PFZ_WHITE, paper_bgcolor='rgba(0,0,0,0)',
-            height=380, margin=dict(l=50, r=20, t=50, b=30),
+            height=400, margin=dict(l=60, r=20, t=60, b=30),
             hovermode='x unified',
         )
 
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        # =========================================================================
-        # NATIONAL IMPACT METRICS
-        # =========================================================================
-        st.markdown('<div class="impact-header">NATIONAL MARKET SHARE IMPACT</div>', unsafe_allow_html=True)
-
-        natl_baseline_current = baseline_natl_ms[N_ACTUAL - 1]
-        natl_projected_12m = projected_natl_ms[min(change_idx + 12, N_TOTAL - 1)]
-        natl_delta = natl_projected_12m - natl_baseline_current
-
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.markdown(f'<div class="metric-card border-positive"><div class="label">Baseline National MS</div>'
-                        f'<div class="value positive">{natl_baseline_current:.2f}%</div></div>',
-                        unsafe_allow_html=True)
-        with c2:
-            cls = "negative" if natl_projected_12m < natl_baseline_current else "positive"
-            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">Projected National MS (12m)</div>'
-                        f'<div class="value {cls}">{natl_projected_12m:.2f}%</div></div>',
-                        unsafe_allow_html=True)
-        with c3:
-            cls = "negative" if natl_delta < 0 else "positive"
-            arrow = "&#9660;" if natl_delta < 0 else "&#9650;"
-            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">National Delta</div>'
-                        f'<div class="value {cls}">{arrow} {natl_delta:+.2f} pp</div></div>',
-                        unsafe_allow_html=True)
-        with c4:
-            st.markdown(f'<div class="metric-card border-accent"><div class="label">Analog Used</div>'
-                        f'<div class="value accent">{analog_name}</div></div>',
-                        unsafe_allow_html=True)
-
-        # =========================================================================
-        # MCO-LEVEL CHART
-        # =========================================================================
-        st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-        st.markdown(f'<p class="chart-title">{selected_mco} — Market Share Trend</p>', unsafe_allow_html=True)
-
-        fig_mco = go.Figure()
-        fig_mco.add_trace(go.Scatter(
-            x=list(range(N_ACTUAL)), y=baseline_ms[:N_ACTUAL],
-            mode='lines+markers', name='Actual MCO MS',
-            line=dict(color=PFZ_DARK_BLUE, width=2.5), marker=dict(size=4),
-            hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
-            text=[MONTH_LABELS[i] for i in range(N_ACTUAL)],
-        ))
-        fig_mco.add_trace(go.Scatter(
-            x=list(range(N_ACTUAL - 1, N_TOTAL)), y=baseline_ms[N_ACTUAL - 1:],
-            mode='lines', name='Baseline (no change)',
-            line=dict(color='#94A3B8', width=2, dash='dash'),
-            hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
-            text=[MONTH_LABELS[i] for i in range(N_ACTUAL - 1, N_TOTAL)],
-        ))
-        fig_mco.add_trace(go.Scatter(
-            x=list(range(change_idx, N_TOTAL)), y=projected[change_idx:],
-            mode='lines+markers', name='Projected (post change)',
-            line=dict(color=PFZ_RED, width=2.5), marker=dict(size=5),
-            fill='tonexty', fillcolor='rgba(239, 68, 68, 0.06)',
-            hovertemplate='%{text}<br>Projected: %{y:.2f}%<extra></extra>',
-            text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
-        ))
-
-        fig_mco.add_shape(type="line", x0=change_idx, x1=change_idx,
-                          y0=0, y1=1, yref="paper",
-                          line=dict(color=PFZ_ORANGE, width=2, dash="dash"))
-        fig_mco.add_annotation(x=change_idx, y=1.05, yref="paper",
-                               text="Status Change", showarrow=False,
-                               font=dict(color=PFZ_ORANGE, size=9))
-
-        mco_all_v = baseline_ms + projected[change_idx:]
-        mco_valid_v = [v for v in mco_all_v if v > 0]
-        mco_y_lo = min(mco_valid_v) - 2 if mco_valid_v else 0
-        mco_y_hi = max(mco_valid_v) + 2 if mco_valid_v else 100
-
-        fig_mco.update_layout(
-            xaxis=dict(tickmode='array', tickvals=tick_idx, ticktext=tick_lbl,
-                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'), showgrid=False),
-            yaxis=dict(title=f'{selected_mco} Market Share (%)', ticksuffix='%',
-                       range=[mco_y_lo, mco_y_hi], gridcolor='rgba(15,23,42,0.05)',
-                       tickfont=dict(size=10, color=PFZ_GRAY, family='Inter'),
-                       title_font=dict(size=11, color=PFZ_DARK_BLUE, family='Manrope')),
-            legend=dict(orientation='h', x=0, y=1.12, font=dict(size=10, color=PFZ_GRAY, family='Inter')),
-            plot_bgcolor=PFZ_WHITE, paper_bgcolor='rgba(0,0,0,0)',
-            height=380, margin=dict(l=50, r=20, t=50, b=30),
-            hovermode='x unified',
-        )
-
-        st.plotly_chart(fig_mco, use_container_width=True, config={'displayModeBar': False})
-
-        # =========================================================================
-        # MCO-LEVEL IMPACT METRICS
-        # =========================================================================
-        st.markdown('<div class="impact-header">MCO-LEVEL IMPACT</div>', unsafe_allow_html=True)
-
-        mco_baseline_current = baseline_ms[N_ACTUAL - 1]
-        mco_projected_12m = projected[min(change_idx + 12, N_TOTAL - 1)]
-        mco_delta = mco_projected_12m - mco_baseline_current
-
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.markdown(f'<div class="metric-card border-positive"><div class="label">Current MCO MS</div>'
-                        f'<div class="value positive">{mco_baseline_current:.2f}%</div></div>',
-                        unsafe_allow_html=True)
-        with c2:
-            cls = "negative" if mco_projected_12m < mco_baseline_current else "positive"
-            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">Projected MCO MS (12m)</div>'
-                        f'<div class="value {cls}">{mco_projected_12m:.2f}%</div></div>',
-                        unsafe_allow_html=True)
-        with c3:
-            cls = "negative" if mco_delta < 0 else "positive"
-            arrow = "&#9660;" if mco_delta < 0 else "&#9650;"
-            st.markdown(f'<div class="metric-card border-{cls}"><div class="label">MCO Delta</div>'
-                        f'<div class="value {cls}">{arrow} {mco_delta:+.2f} pp</div></div>',
-                        unsafe_allow_html=True)
-        with c4:
-            st.markdown(f'<div class="metric-card border-accent"><div class="label">Analog Used</div>'
-                        f'<div class="value accent">{analog_name}</div></div>',
-                        unsafe_allow_html=True)
     else:
-        st.info("Select a valid status transition to see national impact.")
+        # =====================================================================
+        # EMPTY STATE — invalid transition
+        # =====================================================================
+        _valid_futures = [s for s in STATUS_OPTIONS
+                          if s != current_status and (current_status, s) in STEP_TABLE]
+        _chips_html = ''.join(f'<span>{s}</span>' for s in _valid_futures) \
+            if _valid_futures else '<span>None available</span>'
+        st.markdown(f"""
+        <div class="agent-empty">
+            <div class="icon">!</div>
+            <div>
+                <h3>No analog defined for this transition</h3>
+                <p>The combination <b>{current_status} &rarr; {future_status}</b> is not
+                mapped in the Step Table. Pick a different Future Status to project market
+                share, or review the mapping in Business Rules.</p>
+                <div class="suggest">
+                    <span style="color:var(--text-muted); background:transparent; padding:3px 0;">Valid from {current_status}:</span>
+                    {_chips_html}
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # Footer
-    st.markdown(f'<p style="text-align:center;color:{PFZ_GRAY};font-family:Inter,sans-serif;font-size:10px;margin-top:18px;'
-                f'padding-top:10px;border-top:1px solid rgba(15,23,42,0.08);">'
-                f'Data Source: Xponent (Plantrak) via Dataiku &bull; '
-                f'Analog: {analog_name} &bull; '
-                f'Forecast: Apr 2026 &ndash; Dec 2027 &bull; '
-                f'Pfizer Confidential</p>', unsafe_allow_html=True)
+    # =========================================================================
+    # FOOTER META
+    # =========================================================================
+    st.markdown(
+        f'<div class="agent-footer">'
+        f'Data as of Mar 2026<span class="dot">·</span>'
+        f'Source: Xponent (Plantrak) via Dataiku<span class="dot">·</span>'
+        f'Analog: {analog_name}<span class="dot">·</span>'
+        f'Forecast: Apr 2026 – Dec 2027<span class="dot">·</span>'
+        f'Pfizer Confidential'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
