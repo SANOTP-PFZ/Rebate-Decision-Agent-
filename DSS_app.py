@@ -850,10 +850,19 @@ st.markdown("""
     .agent-details-panel { margin-top: 0.15rem; }
 
     /* Main-content top alignment — line the Back-to-Home button up with
-       the sidebar brand block's logo (sidebar brand has padding-top: 1.6rem
-       so match it here) */
+       the sidebar brand block's logo. Streamlit's sidebar has hidden internal
+       top offsets we can't reliably zero, so we push the button down with an
+       explicit margin. Value derived from measured screenshot offset (~34 px). */
     body:has(.agent-page-marker) .block-container {
-        padding-top: 1.6rem !important;
+        padding-top: 0.5rem !important;
+    }
+    .st-key-agent_back_home,
+    div[class*="st-key-agent_back_home"] {
+        margin-top: 60px !important;
+    }
+    .st-key-agent_back_home .stButton,
+    div[class*="st-key-agent_back_home"] .stButton {
+        margin-top: 0 !important;
     }
 
     /* Agent — Back-to-Home compact button (overrides the global sidebar button style) */
