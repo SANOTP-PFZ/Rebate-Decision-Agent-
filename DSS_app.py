@@ -2570,17 +2570,24 @@ elif st.session_state.page == 'agent':
 
         # Pick series + labels based on active view
         if chart_view == "National":
-            _series_actual   = baseline_natl_ms[:N_ACTUAL]
-            _series_baseline = baseline_natl_ms[N_ACTUAL - 1:]
-            _series_proj     = projected_natl_ms[change_idx:]
-            _yaxis_title     = 'National Market Share (%)'
-            _actual_lbl      = 'Actual National MS'
+            _base_full   = baseline_natl_ms
+            _proj_full   = projected_natl_ms
+            _yaxis_title = 'National Market Share (%)'
+            _actual_lbl  = 'Actual National MS'
         else:
-            _series_actual   = baseline_ms[:N_ACTUAL]
-            _series_baseline = baseline_ms[N_ACTUAL - 1:]
-            _series_proj     = projected[change_idx:]
-            _yaxis_title     = f'{selected_mco} Market Share (%)'
-            _actual_lbl      = 'Actual MCO MS'
+            _base_full   = baseline_ms
+            _proj_full   = projected
+            _yaxis_title = f'{selected_mco} Market Share (%)'
+            _actual_lbl  = 'Actual MCO MS'
+
+        _series_actual    = _base_full[:N_ACTUAL]
+        # Pre-change forecast continuation: last actual through change month (inclusive)
+        _prechange_lo     = max(N_ACTUAL - 1, 0)
+        _prechange_hi     = max(change_idx + 1, _prechange_lo)
+        _series_prechange = _base_full[_prechange_lo:_prechange_hi]
+        # Baseline post-change starts AT the change month (not at the last actual)
+        _series_baseline  = _base_full[change_idx:]
+        _series_proj      = _proj_full[change_idx:]
 
         fig = go.Figure()
 
@@ -2598,12 +2605,23 @@ elif st.session_state.page == 'agent':
             hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(N_ACTUAL)],
         ))
+        # Pre-change forecast continuation (single line up to the change month)
+        if len(_series_prechange) >= 2:
+            fig.add_trace(go.Scatter(
+                x=list(range(_prechange_lo, _prechange_hi)),
+                y=_series_prechange,
+                mode='lines',
+                line=dict(color=PFZ_DARK_BLUE, width=2, dash='dot'),
+                hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
+                text=[MONTH_LABELS[i] for i in range(_prechange_lo, _prechange_hi)],
+                showlegend=False,
+            ))
         fig.add_trace(go.Scatter(
-            x=list(range(N_ACTUAL - 1, N_TOTAL)), y=_series_baseline,
+            x=list(range(change_idx, N_TOTAL)), y=_series_baseline,
             mode='lines', name='Baseline (no change)',
             line=dict(color='#94A3B8', width=2, dash='dash'),
             hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
-            text=[MONTH_LABELS[i] for i in range(N_ACTUAL - 1, N_TOTAL)],
+            text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
         ))
         fig.add_trace(go.Scatter(
             x=list(range(change_idx, N_TOTAL)), y=_series_proj,
@@ -2628,7 +2646,7 @@ elif st.session_state.page == 'agent':
         )
 
         # Uniform y-axis padding
-        _all_v = list(_series_actual) + list(_series_baseline) + list(_series_proj)
+        _all_v = list(_series_actual) + list(_series_prechange) + list(_series_baseline) + list(_series_proj)
         _valid_v = [v for v in _all_v if v > 0]
         if _valid_v:
             _y_lo_raw, _y_hi_raw = min(_valid_v), max(_valid_v)
