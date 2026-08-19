@@ -2695,22 +2695,31 @@ elif st.session_state.page == 'agent':
             hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(_effective_last_actual_idx + 1)],
         ))
-        # Pre-change forecast continuation (single continuous line up to the change month)
+        # Pre-change forecast continuation (single continuous line up to the change month).
+        # Markers only on interior months so we get exactly one dot per pre-change month
+        # (the actual trace owns the last-actual marker; the baseline/projected traces own
+        # the change-month markers, giving 2 dots per post-change month).
         if len(_series_prechange) >= 2:
+            _pre_x = list(range(_prechange_lo, _prechange_hi))
+            _pre_marker_sizes = [
+                0 if (_i == _prechange_lo or _i == change_idx) else 4
+                for _i in _pre_x
+            ]
             fig.add_trace(go.Scatter(
-                x=list(range(_prechange_lo, _prechange_hi)),
+                x=_pre_x,
                 y=_series_prechange,
                 mode='lines+markers',
                 line=dict(color=PFZ_DARK_BLUE, width=2.75),
-                marker=dict(size=4),
+                marker=dict(size=_pre_marker_sizes, color=PFZ_DARK_BLUE),
                 hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
-                text=[MONTH_LABELS[i] for i in range(_prechange_lo, _prechange_hi)],
+                text=[MONTH_LABELS[i] for i in _pre_x],
                 showlegend=False,
             ))
         fig.add_trace(go.Scatter(
             x=list(range(change_idx, N_TOTAL)), y=_series_baseline,
-            mode='lines', name='Baseline (no change)',
+            mode='lines+markers', name='Baseline (no change)',
             line=dict(color='#94A3B8', width=2, dash='dash'),
+            marker=dict(size=4, color='#94A3B8'),
             hovertemplate='%{text}<br>Baseline: %{y:.2f}%<extra></extra>',
             text=[MONTH_LABELS[i] for i in range(change_idx, N_TOTAL)],
         ))
