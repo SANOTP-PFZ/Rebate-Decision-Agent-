@@ -1927,6 +1927,79 @@ def _get_logo_b64():
             return None
 
 _b64 = _get_logo_b64()
+
+# =========================================================================
+# DYNAMIC ACTUALS CUTOFF
+# Source of truth: MAX(MONTH) in SQL_XPONENT_OCGRP_MOC_LEVEL_CLAIMS_SF
+# Everything downstream (N_ACTUAL, CHANGE_MONTH_OPTIONS, header labels)
+# derives from this so a backend refresh flows through automatically.
+# =========================================================================
+_TIMELINE_START_YYYYMM = 202501
+_MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+def _to_yyyymm(v):
+    """Best-effort parse of a MONTH value into an int YYYYMM."""
+    if v is None:
+        return None
+    try:
+        if isinstance(v, float) and pd.isna(v):
+            return None
+    except Exception:
+        pass
+    if hasattr(v, 'year') and hasattr(v, 'month'):
+        return int(v.year) * 100 + int(v.month)
+    s = str(v).strip()
+    if not s:
+        return None
+    digits = ''.join(ch for ch in s if ch.isdigit())
+    if len(digits) >= 6:
+        return int(digits[:6])
+    if len(digits) == 4:
+        return int(digits) * 100 + 1
+    try:
+        dt = pd.to_datetime(s, errors='coerce')
+        if pd.notna(dt):
+            return dt.year * 100 + dt.month
+    except Exception:
+        pass
+    return None
+
+@st.cache_data(ttl=300)
+def get_last_actual_yyyymm():
+    """Return MAX(MONTH) from the OCGRP MoC-level claims table as YYYYMM int."""
+    try:
+        df = dataiku.Dataset("SQL_XPONENT_OCGRP_MOC_LEVEL_CLAIMS_SF").get_dataframe(columns=['MONTH'])
+    except TypeError:
+        df = dataiku.Dataset("SQL_XPONENT_OCGRP_MOC_LEVEL_CLAIMS_SF").get_dataframe()
+    values = [_to_yyyymm(v) for v in df['MONTH'].tolist()]
+    values = [x for x in values if x is not None]
+    return max(values) if values else 202603  # safe fallback
+
+def _yyyymm_to_label(y):
+    return f"{_MONTH_ABBR[(y % 100) - 1]} {y // 100}"
+
+def _yyyymm_to_idx(y):
+    return ((y // 100) - (_TIMELINE_START_YYYYMM // 100)) * 12 + (
+        (y % 100) - (_TIMELINE_START_YYYYMM % 100)
+    )
+
+LAST_ACTUAL_YYYYMM  = get_last_actual_yyyymm()
+LAST_ACTUAL_LABEL   = _yyyymm_to_label(LAST_ACTUAL_YYYYMM)      # e.g. "Mar 2026"
+DATA_TIMELINE_LABEL = f"{_yyyymm_to_label(_TIMELINE_START_YYYYMM)} - {LAST_ACTUAL_LABEL}"
+
+# Derived helpers for the rules-page Data Timeline card
+_N_TOTAL_MOD = 36
+_N_ACTUAL_MOD = max(1, min(_yyyymm_to_idx(LAST_ACTUAL_YYYYMM) + 1, _N_TOTAL_MOD))
+def _add_months(yyyymm, k):
+    total = (yyyymm // 100) * 12 + (yyyymm % 100) - 1 + k
+    return (total // 12) * 100 + (total % 12) + 1
+FORECAST_START_YYYYMM = _add_months(LAST_ACTUAL_YYYYMM, 1)
+FORECAST_END_YYYYMM   = _add_months(_TIMELINE_START_YYYYMM, _N_TOTAL_MOD - 1)
+FORECAST_PERIOD_LABEL = f"{_yyyymm_to_label(FORECAST_START_YYYYMM)} - {_yyyymm_to_label(FORECAST_END_YYYYMM)}"
+ACTUAL_MONTHS_COUNT   = _N_ACTUAL_MOD
+FORECAST_MONTHS_COUNT = _N_TOTAL_MOD - _N_ACTUAL_MOD
+
 # On the agent page, the brand block lives in the sidebar (see agent-sidebar-brand).
 # Render the wide global header only on the business-rules page.
 # The landing page renders its own polished .landing-brandbar; the agent page
@@ -1991,7 +2064,7 @@ if st.session_state.page == 'landing':
     """, unsafe_allow_html=True)
 
     # ---- Hero
-    st.markdown("""
+    st.markdown(f"""
     <div class="landing-hero">
         <h1>Model formulary changes.<br/>See the market-share impact.</h1>
         <p class="lede">Simulate the projected impact of a status change &mdash; Preferred, Covered, Not&nbsp;Covered, Specialty &mdash; across MCOs and roll it up to national market share, in seconds.</p>
@@ -1999,7 +2072,7 @@ if st.session_state.page == 'landing':
             <span class="landing-stat-pill"><strong>2,700+</strong> MCOs</span>
             <span class="landing-stat-pill"><strong>36-month</strong> horizon</span>
             <span class="landing-stat-pill"><strong>3</strong> analog curves</span>
-            <span class="landing-stat-pill">Data as of <strong>Mar 2026</strong></span>
+            <span class="landing-stat-pill">Data as of <strong>{LAST_ACTUAL_LABEL}</strong></span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -2223,19 +2296,19 @@ elif st.session_state.page == 'rules':
     st.markdown('<h4 style="font-family:Manrope,sans-serif; color:#0A1A3D; border-bottom:2px solid #41B6E6; padding-bottom:6px;">Data Timeline</h4>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("""
+        st.markdown(f"""
         <div style="background:rgba(28,79,192,0.04); border:1px solid rgba(28,79,192,0.1); border-radius:14px; padding:16px 20px; text-align:center;">
             <p style="font-family:Inter,sans-serif; font-size:11px; color:#64748B; margin:0; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Actual Period</p>
-            <p style="font-family:Manrope,sans-serif; font-size:1.2rem; font-weight:700; color:#0A1A3D; margin:6px 0; letter-spacing:-0.02em;">Jan 2025 - Mar 2026</p>
-            <p style="font-family:Inter,sans-serif; font-size:11px; color:#475569; margin:0;">15 months of historical data</p>
+            <p style="font-family:Manrope,sans-serif; font-size:1.2rem; font-weight:700; color:#0A1A3D; margin:6px 0; letter-spacing:-0.02em;">{DATA_TIMELINE_LABEL}</p>
+            <p style="font-family:Inter,sans-serif; font-size:11px; color:#475569; margin:0;">{ACTUAL_MONTHS_COUNT} months of historical data</p>
         </div>
         """, unsafe_allow_html=True)
     with col2:
-        st.markdown("""
+        st.markdown(f"""
         <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:14px; padding:16px 20px; text-align:center;">
             <p style="font-family:Inter,sans-serif; font-size:11px; color:#64748B; margin:0; text-transform:uppercase; font-weight:600; letter-spacing:0.06em;">Forecast Period</p>
-            <p style="font-family:Manrope,sans-serif; font-size:1.2rem; font-weight:700; color:#0A1A3D; margin:6px 0; letter-spacing:-0.02em;">Apr 2026 - Dec 2027</p>
-            <p style="font-family:Inter,sans-serif; font-size:11px; color:#475569; margin:0;">21 months of projected data</p>
+            <p style="font-family:Manrope,sans-serif; font-size:1.2rem; font-weight:700; color:#0A1A3D; margin:6px 0; letter-spacing:-0.02em;">{FORECAST_PERIOD_LABEL}</p>
+            <p style="font-family:Inter,sans-serif; font-size:11px; color:#475569; margin:0;">{FORECAST_MONTHS_COUNT} months of projected data</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2311,16 +2384,21 @@ elif st.session_state.page == 'agent':
         "Jan'27", "Feb'27", "Mar'27", "Apr'27", "May'27", "Jun'27",
         "Jul'27", "Aug'27", "Sep'27", "Oct'27", "Nov'27", "Dec'27",
     ]
-    CHANGE_MONTH_OPTIONS = [
-        "Apr 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Sep 2026",
-        "Oct 2026", "Nov 2026", "Dec 2026", "Jan 2027", "Feb 2027", "Mar 2027",
-        "Apr 2027", "May 2027", "Jun 2027", "Jul 2027", "Aug 2027", "Sep 2027",
-        "Oct 2027", "Nov 2027", "Dec 2027",
-    ]
-    CHANGE_MONTH_IDX_MAP = {label: i + 15 for i, label in enumerate(CHANGE_MONTH_OPTIONS)}
     STATUS_OPTIONS = ['Not Covered', 'Covered', 'Preferred', 'Specialty']
-    N_ACTUAL = 15
     N_TOTAL = 36
+    # N_ACTUAL derived from MAX(MONTH) of SQL_XPONENT_OCGRP_MOC_LEVEL_CLAIMS_SF
+    N_ACTUAL = _yyyymm_to_idx(LAST_ACTUAL_YYYYMM) + 1
+    N_ACTUAL = max(1, min(N_ACTUAL, N_TOTAL))
+    # Change month options = every month strictly after the last actual, up to end of timeline
+    CHANGE_MONTH_OPTIONS = []
+    for _i in range(N_ACTUAL, N_TOTAL):
+        _y = (_TIMELINE_START_YYYYMM // 100) + (_i // 12)
+        _m = (_TIMELINE_START_YYYYMM % 100) + (_i % 12)
+        if _m > 12:
+            _y += 1
+            _m -= 12
+        CHANGE_MONTH_OPTIONS.append(f"{_MONTH_ABBR[_m - 1]} {_y}")
+    CHANGE_MONTH_IDX_MAP = {label: N_ACTUAL + i for i, label in enumerate(CHANGE_MONTH_OPTIONS)}
 
     # =========================================================================
     # HELPERS
@@ -2450,7 +2528,7 @@ elif st.session_state.page == 'agent':
             future_options = STATUS_OPTIONS
 
         future_status = st.selectbox("Future Status", future_options)
-        selected_change_month = st.selectbox("Change Month", CHANGE_MONTH_OPTIONS, index=6)
+        selected_change_month = st.selectbox("Change Month", CHANGE_MONTH_OPTIONS, index=min(6, len(CHANGE_MONTH_OPTIONS) - 1))
         change_idx = CHANGE_MONTH_IDX_MAP[selected_change_month]
 
         # ---- Section B: Current State (read-only info panel) ----
@@ -2710,7 +2788,7 @@ elif st.session_state.page == 'agent':
             <div class="agent-kpi">
                 <div class="label">Baseline National MS</div>
                 <div class="value">{natl_baseline_current:.2f}%</div>
-                <div class="delta">as of Mar 2026 (last actual)</div>
+                <div class="delta">as of {LAST_ACTUAL_LABEL} (last actual)</div>
             </div>
             <div class="agent-kpi {c2_kpi_cls}">
                 <div class="label">Projected · 12m post change</div>
@@ -2759,7 +2837,7 @@ elif st.session_state.page == 'agent':
     # =========================================================================
     st.markdown(
         f'<div class="agent-footer">'
-        f'Data as of Mar 2026<span class="dot">·</span>'
+        f'Data as of {LAST_ACTUAL_LABEL}<span class="dot">·</span>'
         f'Source: Xponent (Plantrak) via Dataiku<span class="dot">·</span>'
         f'Analog: {analog_name}<span class="dot">·</span>'
         f'Forecast: Apr 2026 – Dec 2027<span class="dot">·</span>'
