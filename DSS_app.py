@@ -2658,9 +2658,21 @@ elif st.session_state.page == 'agent':
             _yaxis_title = f'{selected_mco} Market Share (%)'
             _actual_lbl  = 'Actual MCO MS'
 
-        _series_actual    = _base_full[:N_ACTUAL]
-        # Pre-change forecast continuation: last actual through change month (inclusive)
-        _prechange_lo     = max(N_ACTUAL - 1, 0)
+        # Effective end of the actual line — the last month within the actuals window
+        # where the market-share data is actually populated. This protects against
+        # the OCGRP-claims table advancing the cutoff before the MS table catches up
+        # (which otherwise renders a trailing 0% "spike").
+        _effective_last_actual_idx = None
+        for _i in range(N_ACTUAL - 1, -1, -1):
+            if _base_full[_i] and _base_full[_i] > 0:
+                _effective_last_actual_idx = _i
+                break
+        if _effective_last_actual_idx is None:
+            _effective_last_actual_idx = N_ACTUAL - 1
+
+        _series_actual    = _base_full[:_effective_last_actual_idx + 1]
+        # Pre-change forecast continuation: effective last actual through change month (inclusive)
+        _prechange_lo     = max(_effective_last_actual_idx, 0)
         _prechange_hi     = max(change_idx + 1, _prechange_lo)
         _series_prechange = _base_full[_prechange_lo:_prechange_hi]
         # Baseline post-change starts AT the change month (not at the last actual)
@@ -2677,19 +2689,20 @@ elif st.session_state.page == 'agent':
         )
 
         fig.add_trace(go.Scatter(
-            x=list(range(N_ACTUAL)), y=_series_actual,
+            x=list(range(_effective_last_actual_idx + 1)), y=_series_actual,
             mode='lines+markers', name=_actual_lbl,
             line=dict(color=PFZ_DARK_BLUE, width=2.75), marker=dict(size=4),
             hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
-            text=[MONTH_LABELS[i] for i in range(N_ACTUAL)],
+            text=[MONTH_LABELS[i] for i in range(_effective_last_actual_idx + 1)],
         ))
-        # Pre-change forecast continuation (single line up to the change month)
+        # Pre-change forecast continuation (single continuous line up to the change month)
         if len(_series_prechange) >= 2:
             fig.add_trace(go.Scatter(
                 x=list(range(_prechange_lo, _prechange_hi)),
                 y=_series_prechange,
-                mode='lines',
-                line=dict(color=PFZ_DARK_BLUE, width=2, dash='dot'),
+                mode='lines+markers',
+                line=dict(color=PFZ_DARK_BLUE, width=2.75),
+                marker=dict(size=4),
                 hovertemplate='%{text}<br>MS: %{y:.2f}%<extra></extra>',
                 text=[MONTH_LABELS[i] for i in range(_prechange_lo, _prechange_hi)],
                 showlegend=False,
@@ -2765,11 +2778,22 @@ elif st.session_state.page == 'agent':
         # =====================================================================
         # 2) KPI HERO ROW — National & MCO Impact
         # =====================================================================
-        natl_baseline_current = baseline_natl_ms[N_ACTUAL - 1]
+        # Effective last-actual index per series (guards against a series being
+        # unpopulated at the OCGRP-driven cutoff month).
+        def _last_populated_idx(_series, _upper):
+            for _k in range(_upper - 1, -1, -1):
+                if _series[_k] and _series[_k] > 0:
+                    return _k
+            return max(_upper - 1, 0)
+
+        _natl_last_idx = _last_populated_idx(baseline_natl_ms, N_ACTUAL)
+        _mco_last_idx  = _last_populated_idx(baseline_ms, N_ACTUAL)
+
+        natl_baseline_current = baseline_natl_ms[_natl_last_idx]
         natl_projected_12m    = projected_natl_ms[min(change_idx + 12, N_TOTAL - 1)]
         natl_delta            = natl_projected_12m - natl_baseline_current
 
-        mco_baseline_current  = baseline_ms[N_ACTUAL - 1]
+        mco_baseline_current  = baseline_ms[_mco_last_idx]
         mco_projected_12m     = projected[min(change_idx + 12, N_TOTAL - 1)]
         mco_delta             = mco_projected_12m - mco_baseline_current
 
